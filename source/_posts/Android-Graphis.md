@@ -1,8 +1,8 @@
 ---
 title: Android Graphis
 date: 2017-09-22 23:00:07
-tags: Android
-catagories: Paint Canvas
+tags: [Paint,Canvas]
+categories: Android
 ---
 # Paint
 
