@@ -1,10 +1,12 @@
 ---
-title: 小米天气24小时天气预报折线图
+title: 天气预报折线图
 date: 2017-09-23 15:34:58
 tags: [自定义View,Geather]
 categories: Android
 ---
-## 项目地址地址
+自定义View高仿小米天气24小时天气预报折线图
+<!-- more -->
+## 项目地址
 [HourlyForecastView](https://github.com/MelonWXD/HourlyForecastView)
 
 
