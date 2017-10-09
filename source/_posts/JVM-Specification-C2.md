@@ -1,7 +1,7 @@
 ---
 title: JVM Specification C2    
 date: 2017-09-24 20:18:29  
-tags: [JVM,翻译,读书笔记]  
+tags: [JVM,翻译]  
 categories: JVM Specification
 ---
 Oracle JVM规范 简单翻译/笔记 - Chapter2
