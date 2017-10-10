@@ -1,10 +1,10 @@
 ---
 title: Kotlin 设计模式—工厂模式  
 date: 2017-09-27 20:38:32  
-tags: [设计模式,Kotlin]  
-categories:  
+tags: [设计模式]  
+categories: Kotlin
 ---
-学习Kotlin之设计模式
+Kotlin设计模式之工厂模式
 <!-- more -->
 
 ## 简单工厂模式

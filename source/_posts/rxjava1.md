@@ -112,7 +112,7 @@ Observable<Integer> observable = Observable.create(new ObservableOnSubscribe<Str
             }
         });
 ```
-#### 订阅subscrible立连接
+#### 订阅subscrible
 ```java
 observable.subscrible(subsricber)
 ```
