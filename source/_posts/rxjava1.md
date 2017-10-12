@@ -31,6 +31,7 @@ public interface Observable{
 - onError  
 
 ## RxJava基本实现
+这里展示一下1.0的基本用法 后续都是基于rxjava2.0来演示
 ### RxJava1.0
 #### 观察者Observer/Subscriber
 ```java
@@ -116,3 +117,42 @@ Observable<Integer> observable = Observable.create(new ObservableOnSubscribe<Str
 ```java
 observable.subscrible(subsricber)
 ```
+#### rxjava链式写法
+```java
+Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
+                emitter.onNext("Event1");
+                emitter.onNext("Event2");
+                emitter.onNext("Event3");
+                emitter.onComplete();
+            }
+        }).subscrible(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, "subscribe");
+            }
+
+            @Override
+            public void onNext(String value) {
+                Log.d(TAG, value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "error");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "complete");
+            }
+        });
+```
+### 1.0 2.0差别
+#### ObservableEmitter
+这里2.0在实例化Observable的时候，使用的是ObservableOnSubscribe这个类，并且重写onSubscribe方法，参数是ObservableEmitter（Emitter译为发射器）。通过调用emitter的onNext(T value)、onComplete()和onError(Throwable error)就可以分别发出next事件、complete事件和error事件，对应Observer的三个方法。
+#### Disposable
+在Observer的onSubscribe方法中，参数类型为Disposable，拿到这个参数，Observer可以随时调用dipose方法来结束本次订阅，尽管Observable的事件依然会按顺序发送直到接送，但Observer在调用dipose之后就停止了接收。
+
+

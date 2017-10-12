@@ -80,3 +80,10 @@ deploy:
   type: git
   repository: git@github.com:MelonWXD/MelonWXD.github.io.git
   branch: master
+
+sitemap:
+  path: sitemap.xml
+baidusitemap: 
+  path: baidusitemap.xml
+
+google-site-verification: google8b7784f35d398e36.html
