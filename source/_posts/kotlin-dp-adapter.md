@@ -52,3 +52,4 @@ fun main(args: Array<String>) {
     plug.powerWithTwo()
 }
 ```
+越写感觉越不对，后面再改改吧..
