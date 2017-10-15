@@ -105,7 +105,7 @@ Observer<Integer> observer = new Observer<String>() {
 
 #### 被观察者Observable
 ```java
-Observable<Integer> observable =Observable.create(new ObservableOnSubscribe<String>() {
+Observable<String> observable =Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 emitter.onNext("Event1");
