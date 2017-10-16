@@ -26,6 +26,8 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - "google8b7784f35d398e36.html"
+
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -85,5 +87,4 @@ sitemap:
   path: sitemap.xml
 baidusitemap: 
   path: baidusitemap.xml
-
-google-site-verification: google8b7784f35d398e36.html
+ 
