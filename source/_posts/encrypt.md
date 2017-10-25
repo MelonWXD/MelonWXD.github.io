@@ -2,7 +2,7 @@
 title: RSA/AES加密
 date: 2017-10-25 16:43:34
 tags: [加密]
-categories: AndRoid代码库
+categories: Android代码库
 ---
 RSA/AES加密工具类
 <!-- more -->
@@ -132,6 +132,14 @@ public class RSAUtil {
 }
 
 ```
+输出
+```
+公钥：MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwX7B6S8teU8b7YXgaT9kOoJXP6GHrPnrV9VNQUrKYP701dsIVzWuTCxqp99JJTtRb6KRhzpTdUkwG4bWLVq5mhBb5ItglV6sU9bXQdx8Lc69xKQ0+5W6WvGYfosQEdv/h3eKvQEPbs5rGfoTka4u3Gh4Ncf9McYzI6O5E+eHQRQIDAQAB
+私钥：MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALBfsHpLy15TxvtheBpP2Q6glc/oYes+etX1U1BSspg/vTV2whXNa5MLGqn30klO1FvopGHOlN1STAbhtYtWrmaEFvki2CVXqxT1tdB3Hwtzr3EpDT7lbpa8Zh+ixAR2/+Hd4q9AQ9uzmsZ+hORri7caHg1x/0xxjMjo7kT54dBFAgMBAAECgYBfg4KLyC4bKB1zFya2gRVYAYj/7aXRgqV85v02W4KSRrpNkMGskvE10WagMy/zOThxiXwz527gqGe5tlPdYJTS03zZlgky1IwL80ZN6F5CIc2LzDTkbDHXHIG5kMt4OOZf/UtM4W+lCNGt4azt5sWlIOoWE6vXQOLfv1eUiQfsAQJBANdThIeP+O4kn0MA2QWkcV39v4ZBnftK4wsXvrFOhMBceiSqJCPwpU2/Tf65JO0KH3lEo/s+ZUjctz2SFX/yc0UCQQDRsI6And20aZi4+SaRnK/4BZIWbklchdkrWloWRj0Rp/NBi9p4lX9ZCNQs0zPDo8pRY2Qvhlj7yuPUHnMPATkBAkEAu/5c3QZj7Xbn3VXmJDj4CXm7N3oedgFhzJOEl8TXviJ/OXeaag52JDT74YK/rHyEEhpNmNNXFpAtI4JhZv3EiQJAPgvAHs6Xi4qzZghTIUL7zqfXUkvP6VCxseJKRc0CxPatQ/fd7VBPHkk+fwT/jCQq+WoveuCF8/tU7q8T3JzAAQJAOXPzNmxQaD+Jt7I8nbJdU70lpRkuU2dwhmOG9DS8ICwo2JGk5woXbUfGTA7DW5K9MMb3oz9cjWV0Dj+tLJicYA==
+�nL��߫�0�GR�mĨ������������m+��9u�}0��5H�_B��9�'�"vU������ކ?~_f�ϭ˪=��ʩ�/�O�T��q��"�jn4�}
+密文转码后为:ORHTTIVB8bRDeFGU5SZNyELbU32ADdduTJvs36vwMLUZR1KVbcSo574Qxx3wzBu+tQSJ0dn4pcVtK6T4OXXSHRd9MP4f+TVImV9C/LoLOeMnyCIbdlW2j6TIw/Xehj9+X2bez63Lqj3D68qpuC/pT+EHVK+icfwZ5iL+am405H0=
+转码后解码为:this is content
+```
 
 ## AES
 ```java
@@ -233,4 +241,10 @@ public class AESUtil {
     }
 
 }
+```
+输出
+```
+密文为:����������Fq<
+密文转码后为:/hKckfWZxuqJ467Rx0ZxPA==
+转码后解码为:this is content
 ```
