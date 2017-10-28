@@ -1,10 +1,10 @@
 ---
-title: 浅析Android进程间通信
+title: 浅析Android进程间通信（一）
 date: 2017-10-19 20:35:38
 tags: [IPC]
 categories: Android
 ---
-浅析Android进程间通信
+浅析Android进程间通信（一）：简单介绍ADIL的使用
 <!-- more -->
 ## 序列化接口Parcelable
 ### 为什么会有序列化这么个东西？   
@@ -44,6 +44,8 @@ Project视图下可能看的更清楚，在AS中new直接选择AIDL-AIDL File即
 > 注意同名的java文件和aild文件的包名需要一样。
 
 ### 代码
+在写完AIDL和bean类之后，编译一下工程，AS会自动生成后续我们需要使用的代理类 MusicAIDLService.Stub，这个类是AS根据AIDL文件，自动创建的，在
+`app/build/generated/source/aidl/debug/`目录下， MusicAIDLService.Stub就是一个Binder的子类，后续就跟普通的Service的使用没有区别了。
 ```java
 //MusicAIDLService.aidl 声明远程进程方法 在Service重载
 package com.dongua.ipc.service;
@@ -176,6 +178,30 @@ public class MediaService extends Service {
 
 ```
 
+```java
+//MainActivity.java
+    private MusicAIDLService mMusicService ;
+    private ServiceConnection mConnection = new ServiceConnection(){
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMusicService = (MusicAIDLService) MusicAIDLService.Stub.asInterface(service);
+            try {
+                mMusicService.play();
+                mMusicService.pause();
+                mMusicService.stop();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+```
+
 
 输出  
 
@@ -189,7 +215,7 @@ public class MediaService extends Service {
 ```
 
 
-
+如果你只是想要了解如何使用AIDL来完成进程间的通信，实现功能即可，对底层的细节不感兴趣，那么后续的直接套上面的模板来，或者使用基于AIDL封装的更加完善的Messenger（注意与Message区别）来完成相应的需求即可。
 
 
 ## 参考
