@@ -4,7 +4,7 @@ date: 2017-10-19 20:35:38
 tags: [IPC]
 categories: Android
 ---
-浅析Android进程间通信（一）：简单介绍ADIL的使用
+简单介绍使用AIDL来实现进程间通信。
 <!-- more -->
 ## 序列化接口Parcelable
 ### 为什么会有序列化这么个东西？   
