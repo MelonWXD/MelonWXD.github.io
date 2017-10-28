@@ -1,5 +1,5 @@
 ---
-title: kotlin-delegated
+title: kotlin委托机制
 date: 2017-10-25 20:27:19
 tags:  [Kotlin语法,设计模式]
 categories:  Kotlin
@@ -61,4 +61,4 @@ fun main(args: Array<String>) {
 
 
 ## 代理属性
-
+理解有误，修改中。。
