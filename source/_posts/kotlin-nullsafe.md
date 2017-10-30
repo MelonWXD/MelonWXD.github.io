@@ -56,4 +56,13 @@ val l = b !!.length()
 ```
 
 ## 安全转换
-
+一般我们在做类型转换的时候，如果被转换的不是我们预估的类型，会报一个ClassCastException异常，这里可以使用安全转换来做，当失败的时候返回一个null
+```
+val aInt: Int? = a as? Int
+```
+## null集合
+如果想要过滤一个集合中的空值，可以使用
+```
+val nullableList: List<Int?> = listOf(1, 2, null, 4)
+val intList: List<Int> = nullableList.filterNotNull()
+```

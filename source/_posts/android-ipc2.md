@@ -91,7 +91,7 @@ Client再通过向Binder驱动写入请求信息流`使用地址0x001的Binder �
 
 ![](http://hi.csdn.net/attachment/201102/27/0_1298798582y7c5.gif)
 
-## 参考
+# 参考
 [popen()和pclose()](http://www.cnblogs.com/nufangrensheng/p/3561190.html)  
 [Linux命名管道FIFO的读写规则](http://blog.csdn.net/MONKEY_D_MENG/article/details/5570468)  
 [Android Binder设计与实现 - 设计篇](http://blog.csdn.net/universus/article/details/6211589)
