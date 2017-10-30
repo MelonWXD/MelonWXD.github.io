@@ -86,7 +86,7 @@ Server会创建了多个Binder的实体，对应着不同的Remote Service（Pow
 系统启动，Server向Binder驱动写入信息流：`使用0号Binder 注册name=PowerManagerService addr=0x001`，那么Binder就会解析，然后找到并调用0号Binder，对0号Binder写入`注册name=PowerManagerService addr=0x001`，然后0号Binder就会调用ServiceManager的方法，注册PowerManagerService。  
 Client向Binder驱动写入信息流`使用0号Binder 查找name=PowerManagerService`，那么Binder就会解析，然后找到并调用0号Binder，向ServiceManager请求得到PowerManagerService的引用地址。然后Binder驱动就把得到的`引用地址=0x001`返回给Client。
 Client再通过向Binder驱动写入请求信息流`使用地址0x001的Binder 执行命令 getPowerValue`，Binder驱动就会解析，然后找到并调用地址为0x001号Binder，写入命令`执行命令 getPowerValue`，那么 `0x001`所对应的Binder就会对他对应的PowerManagerService调用getPowerValue，再把得到的值返回给Binder驱动，Binder驱动再返回给Client，结束调用。
-#### 那么问题来了，Server和Client是怎么和Binder驱动进行通信的呢？
+### 那么问题来了，Server和Client是怎么和Binder驱动进行通信的呢？
 是通过内存映射，具体且听下回分解。。
 
 ![](http://hi.csdn.net/attachment/201102/27/0_1298798582y7c5.gif)
