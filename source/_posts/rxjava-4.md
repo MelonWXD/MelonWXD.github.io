@@ -1,5 +1,5 @@
 ---
-title: Rxjava (四)
+title: RxJava (四)
 date: 2017-11-01 19:21:30
 tags: [RxJava,Retrofit] 
 categories: Android  
@@ -104,11 +104,41 @@ BackPressure是什么？
 为什么上面要强调在RxJava1中呢，因为在RxJava2中Observable中没背压这个概念，官方引入了FLowable这个类来专门做背压的处理。上述同样的代码，只会引发OOM而不是MissingBackpressureException。  
 来看看FLowable的简单使用：
 ```java
-        Flowable<Long> flowable = Flowable.create(flowableEmitter-> 
-                Observable.interval(20,TimeUnit.MILLISECONDS)
-                          .subscribe(flowableEmitter::onNext)
-                ,BackpressureStrategy.DROP);
+    public static void main(String[] args) throws Exception {
+        System.out.println(Flowable.bufferSize());
+        
+        Flowable.create(flowableEmitter -> {
+                    for (int i = 0; i < 1000; i++) {
+                        flowableEmitter.onNext(i);
+                    }
+                }
+                , BackpressureStrategy.DROP)
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(cLong -> {
+                    Thread.sleep(100);
+                    System.out.println("recv" + cLong);
+                });
+
+
+        Thread.sleep(100000);
+    }
 ```
-内部flowableEmitter的数据流来自于一个Observable，也是起到interval的效果。
+输出
+```
+128
+recv0
+recv1
+recv2
+recv3
+recv4
+recv5
+...
+recv124
+recv125
+recv126
+recv127
+```
+内部flowableEmitter的数据流来自于一个Observable，也是起到interval的效果。第一行输出FLowable内置的BufferSize缓存区大小为128，同时设置背压策略为`BackpressureStrategy.DROP`，所以在发送和接收速率不匹配的时候，上游只会缓存128个值，剩下的DROP掉了，这也说明了为什么输出只到recv127。
 
 
