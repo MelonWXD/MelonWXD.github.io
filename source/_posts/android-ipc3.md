@@ -1,10 +1,10 @@
 ---
-title: android-ipc3
-date: 2017-11-03 14:28:11
-tags:
-categories:
+title: 浅析Android进程间通信（三）
+date: 2017-11-11 17:28:11
+tags: IPC
+categories: Android
 ---
-待完成..
+基于6.0源码走读，理解Binder
 <!-- more -->
 
 # ServiceManager
