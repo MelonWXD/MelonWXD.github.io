@@ -34,13 +34,21 @@ int main(int argc, char** argv) {
      ...
 }
 ```
-主要做了一下工作：
+主要做了以下工作：
 - 在系统第一阶段(stage1)，挂载系统目录
 - 在第二阶段(stage2)，初始化属性服务（[property_service](http://androidxref.com/6.0.1_r10/xref/system/core/init/property_service.cpp)）
 - 分析并执行init.rc脚本
 
 ## init.rc
-先来分析一下init.rc，这是android系统的启动配置文件，包括Android的第一个应用进程zygote的启动也是卸载这个文件中
+位置：`/system/core/rootdir/init.rc`
+先来分析一下init.rc，这是android系统的启动配置文件，包括Android的启动第一个应用进程zygote的执行命令也是这个文件中。  
+init.rc文件包含五个类型的声明：
+- Action
+- Commands
+- Service
+- Options
+- Import
+- 
 
 # Linux系统启动过程分析
 Linux系统启动流程图如下:  
