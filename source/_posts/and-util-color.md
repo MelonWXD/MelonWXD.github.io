@@ -9,6 +9,16 @@ Material Design 色表
 ```
 <?xml version="1.0" encoding="utf-8"?>
     <resources>
+    
+            <!-- 常用颜色值 -->
+        <color name="white40">#40FFFFFF</color>
+        <color name="white">#FFFFFF</color>
+        <color name="black">#000000</color>
+        <color name="gray">#808080</color>
+        <color name="green">#008000</color>
+        <color name="lightblue">#0083FF</color>
+    
+    
         <color name="red50">#fde0dc</color>
         <color name="red100">#f9bdbb</color>
         <color name="red200">#f69988</color>
