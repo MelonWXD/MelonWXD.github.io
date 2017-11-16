@@ -9,7 +9,6 @@ Activity管理类以及App类
 ## 代码
 > AppManager.java  
 
-
 ```java
 
 public class AppManager {
