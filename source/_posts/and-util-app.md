@@ -1,6 +1,6 @@
 ---
 title: App相关全局管理类
-date: 2017-11-25 20:30:45
+date: 2017-11-15 20:30:45
 tags: [Application]
 categories: Android代码库
 ---
