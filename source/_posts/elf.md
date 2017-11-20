@@ -1,5 +1,5 @@
 ---
-title: ELF格式分析
+title: 逆向之路(一) ELF格式分析
 date: 2017-11-19 15:35:45
 tags: [注入] 
 categories: Android逆向安全  
@@ -144,3 +144,94 @@ Key to Flags:
 和我们根据ELF文件头算出来的一样。  
 可以看到下面输出了很多个表项，每个表项的结构就是上述的Elf32_Shdr了，下面挑几个相关的来讲。  
 ### 符号表 .dynsym
+符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号。所谓的符号就是经过修饰了的函数名或者变量名，不同的编译器有不同的修饰规则。例如符号_ZL15global_static_a，就是由global_static_a变量名经过修饰而来。  
+通过命令`readelf -s libsurfaceflinger.so `来查看.dynsym的Section内容
+```
+duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -s libsurfaceflinger.so 
+
+Symbol table '.dynsym' contains 522 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 FUNC    GLOBAL DEFAULT  UND __cxa_finalize
+     2: 00000000     0 FUNC    GLOBAL DEFAULT  UND __cxa_atexit
+     3: 00000000     0 FUNC    GLOBAL DEFAULT  UND __aeabi_unwind_cpp_pr0
+     4: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZNK7android22ISurfaceCom
+     5: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZN7android10VectorImpl13
+     6: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZN7android16SortedVector
+	 ...
+     520: 00032009     0 NOTYPE  GLOBAL DEFAULT  ABS __bss_start
+     521: 000320a4     0 NOTYPE  GLOBAL DEFAULT  ABS _end
+
+```
+也可以通过`readelf -p [sectionIdx] libsurfaceflinger.so `来以string的方式查看指定序号的Section内容，值没有经过格式化，比如这里的.dynsym序号是2，那么`readelf -p 2 libsurfaceflinger.so`输出的内容为：
+```
+duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 2 libsurfaceflinger.so 
+
+String dump of section '.dynsym':
+  [    40]  4
+  [    50]  s
+  [    b0]  .^A
+  [    c0]  \^A
+  [    d0]  c^A
+  [   120]  A^B
+  [   130]  G^B
+  [   140]  _^B
+  [   1b0]  2^C
+  [   1c0]  Z^C
+  ...
+```
+
+跟上面分析节区表和节区表的表项一样，符号表的结构是节区表的表项，那符号表的表项结构体是怎么表示的呢，如下
+```
+typedef struct {  
+     Elf32_Word st_name;      //符号表 表项的名称。
+     //如果该值非0，则表示符号名在字符串表(.dynstr)中的索引值(offset)，为0即符号表项没有名称。
+     Elf32_Addr st_value;       //符号的取值。依赖于具体的上下文，可能是一个绝对值、一个地址等等。
+     Elf32_Word st_size;         //符号的尺寸大小。例如一个数据对象的大小是对象中包含的字节数。
+     unsigned char st_info;    //符号的类型和绑定属性。
+     unsigned char st_other;   
+     Elf32_Half st_shndx;        //每个符号表项都以和其他节区的关系的方式给出定义。
+　　　　　　　　　　　　　//此成员给出相关的节区头部表索引。
+} Elf32_sym; 
+```
+### 字符串表 .dynstr
+根据上面说的 符号表结构体的st_name项，非0值表示该符号名在字符串表中的索引，那么自然而然的就要介绍一下字符串表了。  
+字符串表中包含若干以 null 结尾的字符串，这些字符串通常是 symbol 或 section 的名字。当 ELF 文件的其它部分需要引用字符串时，只需提供该字符串在字符串表中的位置索引即可。  
+
+下图为一个长度为25字节的字符串表示例：  
+![](http://images0.cnblogs.com/blog2015/763648/201506/302242024621822.png)
+字符串引用示例：  
+![](http://images0.cnblogs.com/blog2015/763648/201506/302242336658657.png)  
+
+根据上面ELF文件头 字符串表的索引为3，通过`readelf -p 3 libsurfaceflinger.so`来打印一下：
+```
+duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 3 libsurfaceflinger.so 
+
+String dump of section '.dynstr':
+  [     1]  __cxa_finalize
+  [    10]  __cxa_atexit
+  [    1d]  __aeabi_unwind_cpp_pr0
+  ..
+  [  451a]  libc.so
+  [  4522]  libstdc++.so
+  [  452f]  libm.so
+  [  4537]  libsurfaceflinger.so
+```
+
+### 重定位表 
+在编译-汇编这2个操作中
+#### ELF文件中的 .rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系
+- .rel.text：定位的地方在.text段内，以offset指定具体要定位位置。在链接时候由链接器完成。
+- .rel.dyn：重定位的地方在.got段内，主要是针对外部数据变量符号。不支持延迟重定位(Lazy)，通常是在so文件执行时就在.init段中进行重定位操作。
+- .rel.plt：重定位的地方在.got.plt段内, 主要是针对外部函数符号。一般是函数首次被调用时候重定位。
+- .plt：Procedure Linkage Table，过程链接表。所有对外部函数的调用都经过PLT再到GOT的一个调用过程。
+- .got：Global Offset Table，全局偏移表，存放着调用外部函数的实际地址（第一次存放的是PLT中的指令，PLT执行完之后会把计算得到的实际值再存到GOT中）。
+- .got.plt：ELF将GOT拆分成两个表 .got和.got.plt,前者用来保存全局变量引用的地址，后者用来保存函数引用的地址。
+
+> Android不支持延迟绑定
+
+
+# 参考
+[ELF文件中的.plt .rel.dyn .rel.plt .got .got.plt的关系](https://www.cnblogs.com/leo0000/p/5604132.html)  
+[ELF文件格式解析](http://www.07net01.com/2016/05/1534423.html)  
+[difference-between-got-and-got-plt](https://stackoverflow.com/questions/11676472/what-is-the-difference-between-got-and-got-plt-section#comment16231745_11676472)
