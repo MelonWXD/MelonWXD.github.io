@@ -1,10 +1,10 @@
 ---
-title: 逆向之路(一) ELF格式分析
+title: 注入之道(一) ELF格式分析
 date: 2017-11-19 15:35:45
 tags: [注入] 
 categories: Android逆向安全  
 ---
-Linux下的ELF(可执行可链接)格式的分析
+32位ELF(可执行可链接文件)格式的分析
 <!-- more -->
 # 目标文件 Object File
 一个简单的c文件，经过预处理-编译-汇编-链接，四个耳熟能详的步骤后，就变成了一个可执行的目标文件。（如果根据Object File直译的话应该是对象文件，但是CSAPP写的是目标文件，还是听大佬的吧）   
@@ -32,7 +32,7 @@ Linux下的ELF(可执行可链接)格式的分析
 > 当ELF文件被加载到内存中后，系统会将多个具有相同权限（flg值）section合并一个segment。操作系统往往以页为基本单位来管理内存分配，一般页的大小为4096B，即4KB的大小。同时，内存的权限管理的粒度也是以页为单位，页内的内存是具有同样的权限等属性，并且操作系统对内存的管理往往追求高效和高利用率这样的目标。ELF文件在被映射时，是以系统的页长度为单位的，那么每个section在映射时的长度都是系统页长度的整数倍，如果section的长度不是其整数倍，则导致多余部分也将占用一个页。而我们从上面的例子中知道，一个ELF文件具有很多的section，那么会导致内存浪费严重。这样可以减少页面内部的碎片，节省了空间，显著提高内存利用率。
 
 # 分析
-下面我就从链接的角度，结合linux的命令`readelf`来分析Android的GUI系统中使用的libsurfaceflinger.so(Android 4.4)文件来逐一介绍EFL文件 节区头部表 与一些与重定位相关的节区。
+下面我就结合linux的命令`readelf`来分析Android的GUI系统中使用的libsurfaceflinger.so(Android 4.4)文件来逐一介绍EFL文件 节区头部表 与一些与重定位相关的节区。
 
 ## ELF文件头
 ELF文件头对应的结构体Elf32_Ehdr如下：
@@ -74,14 +74,14 @@ ELF 头：
   标志：             0x5000000, Version5 EABI
   本头的大小：       52 (字节)
   程序头大小：       32 (字节)
-  Number of program headers:         8
+  程序头表项数:         8
   节头大小：         40 (字节)
   节头数量：         24
   字符串表索引节头： 23
 
 ```
 
-## 节区头部表
+## “节”头表
 同样的，节区头部表的表项对应的结构体Elf32_Shdr如下：
 ```
  typedef struct elf32_shdr { 
@@ -101,7 +101,7 @@ ELF 头：
 ```
   节区头起点:          201044 (bytes into file)
 ```
-这个是起始位置，结束位置一般就是文件尾巴了。201044对应的16进制值为0x31154，我们使用命令`readelf -S libsurfaceflinger.so `来解析节区头看看：
+这个是起始位置，结束位置一般就是文件末尾。201044对应的16进制值为0x31154，我们使用命令`readelf -S libsurfaceflinger.so `来解析节区头看看：
 ```
 duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -S libsurfaceflinger.so 
 共有 24 个节头，从偏移量 0x31154 开始：
@@ -142,7 +142,7 @@ Key to Flags:
 >共有 24 个节头，从偏移量 0x31154 开始：  
 
 和我们根据ELF文件头算出来的一样。  
-可以看到下面输出了很多个表项，每个表项的结构就是上述的Elf32_Shdr了，下面挑几个相关的来讲。  
+可以看到输出了很多个表项，每个表项的结构就是上述的Elf32_Shdr了，下面挑几个相关的来讲。  
 ### 符号表 .dynsym
 符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号。所谓的符号就是经过修饰了的函数名或者变量名，不同的编译器有不同的修饰规则。例如符号_ZL15global_static_a，就是由global_static_a变量名经过修饰而来。  
 通过命令`readelf -s libsurfaceflinger.so `来查看.dynsym的Section内容
@@ -220,7 +220,7 @@ String dump of section '.dynstr':
 
 ### 重定位表 
 在编译-汇编这2个操作中，编译器和汇编器为每个文件创建程序地址一般都是从0开始，但是实际加载时模块的基址肯定不是0，为了避免加载地址重叠，就引入了重定位这个东西。重定位就是为程序不同部分分配加载地址，调整程序中的数据和代码以反映所分配地址的过程。简单的言之，则是将程序中的各个部分映射到合理的地址上来。
-#### ELF文件中的 .rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系
+#### .rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系
 - .rel.text：定位的地方在.text段内，以offset指定具体要定位位置。在链接时候由链接器完成。
 - .rel.dyn：重定位的地方在.got段内，主要是针对外部数据变量符号。不支持延迟重定位(Lazy)，通常是在so文件执行时就在.init段中进行重定位操作。
 - .rel.plt：重定位的地方在.got.plt段内, 主要是针对外部函数符号。一般是函数首次被调用时候重定位。
@@ -228,9 +228,43 @@ String dump of section '.dynstr':
 - .got：Global Offset Table，全局偏移表，存放着调用外部函数的实际地址（第一次存放的是PLT中的指令，PLT执行完之后会把计算得到的实际值再存到GOT中）。
 - .got.plt：ELF将GOT拆分成两个表 .got和.got.plt,前者用来保存全局变量引用的地址，后者用来保存函数引用的地址。
 
-> Android不支持延迟绑定
 
+## “程序”头表
+上面分析了这么多的Section区，但实际上so库加载到内存中，是按照执行视图来查找各个重定位表的，所以下面就来分析一下执行视图中必须存在的程序头表（Program Header Table）。  
+程序头表表项的结构体Elf32_phdr如下：
+```
+typedef struct {  
+    Elf32_Word p_type;           //此数组元素描述的段的类型，或者如何解释此数组元素的信息。 
+    Elf32_Off  p_offset;           //此成员给出从文件头到该段第一个字节的偏移
+    Elf32_Addr p_vaddr;         //此成员给出段的第一个字节将被放到内存中的虚拟地址
+    Elf32_Addr p_paddr;        //此成员仅用于与物理地址相关的系统中。system V忽略所有应用程序的物理地址信息。
+    Elf32_Word p_filesz;         //此成员给出段在文件映像中所占的字节数。可以为0。
+    Elf32_Word p_memsz;     //此成员给出段在内存映像中占用的字节数。可以为0。
+    Elf32_Word p_flags;         //此成员给出与段相关的标志。
+    Elf32_Word p_align;        //此成员给出段在文件中和内存中如何对齐。
+} Elf32_phdr;
+```
+这里的p_type就代表了当前Segment的类型，重点介绍2个：
+- PT_LOAD：指定可装入段，通过 p_filesz 和 p_memsz 进行描述。只有类型为PT_LOAD的段才是需要装入的。当然在装入之前，需要确定装入的地址，只要考虑的就是页面对齐，还有该段的p_vaddr域的值。确定了装入地址后，就通过elf_map()建立用户空间虚拟地址空间与目标映像文件中某个连续区间之间的映射，其返回值就是实际映射的起始地址。
+- PT_DYNAMIC：动态链接相关，如果目标文件参与动态链接，则其程序头表将包含一个类型为 PT_DYNAMIC 的元素。此段包含 .dynamic 节。
 
+### 动态节.dynamic
+和我们重定位相关的动态节的结构体如下：
+```
+typedef struct {
+        Elf32_Sword d_tag;
+        union {
+                Elf32_Word      d_val;
+                Elf32_Addr      d_ptr;
+        } d_un;
+} Elf32_Dyn;
+```
+- d_tag：表明该动态节类型，有DT_PLTGOT、DT_HASH、DT_STRTAB、DT_SYMTAB、DT_RELA等等
+- d_un->d_val：根据tag表示的不同有不同的意思，多数情况下表示该节大小值
+- d_un->d_ptr：表示该节的虚拟地址（文件的虚拟地址与实际执行过程中的虚拟地址不一定匹配）
+
+## ELF文件格式图例
+![](http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 # 参考
 [ELF文件中的.plt .rel.dyn .rel.plt .got .got.plt的关系](https://www.cnblogs.com/leo0000/p/5604132.html)  
 [ELF文件格式解析](http://www.07net01.com/2016/05/1534423.html)  
