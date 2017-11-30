@@ -228,6 +228,8 @@ String dump of section '.dynstr':
 - .got：Global Offset Table，全局偏移表，存放着调用外部函数的实际地址（第一次存放的是PLT中的指令，PLT执行完之后会把计算得到的实际值再存到GOT中）。
 - .got.plt：ELF将GOT拆分成两个表 .got和.got.plt,前者用来保存全局变量引用的地址，后者用来保存函数引用的地址。
 
+> Android ARM 下需要处理两个重定位表，plt_rel 和 rel，plt 指的是延迟绑定，但是 Android 目前并不对延迟绑定做特殊处理，直接与普通的重定位同时处理。
+
 
 ## “程序”头表
 上面分析了这么多的Section区，但实际上so库加载到内存中，是按照执行视图来查找各个重定位表的，所以下面就来分析一下执行视图中必须存在的程序头表（Program Header Table）。  

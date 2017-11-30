@@ -1,5 +1,5 @@
 ---
-title: JVM Specification C2    
+title: JVM Specification Chapter2    
 date: 2017-09-24 20:18:29  
 tags: [JVM Specification,翻译]  
 categories: JVM
