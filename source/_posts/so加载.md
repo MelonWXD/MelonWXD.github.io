@@ -189,7 +189,33 @@ ElfReader的定义在[linker_phdr](http://androidxref.com/6.0.1_r10/xref/bionic/
 ```
 load_bias_ = reinterpret_cast<uint8_t*>(start) - addr;
 ```
-这个在后续的hook中会进一步说明。
+在linker的line3339也可以看到，可以计算load_bias
+```
+3329/* Compute the load-bias of an existing executable. This shall only
+3330 * be used to compute the load bias of an executable or shared library
+3331 * that was loaded by the kernel itself.
+3332 *
+3333 * Input:
+3334 *    elf    -> address of ELF header, assumed to be at the start of the file.
+3335 * Return:
+3336 *    load bias, i.e. add the value of any p_vaddr in the file to get
+3337 *    the corresponding address in memory.
+3338 */
+3339static ElfW(Addr) get_elf_exec_load_bias(const ElfW(Ehdr)* elf) {
+3340  ElfW(Addr) offset = elf->e_phoff;
+3341  const ElfW(Phdr)* phdr_table =
+3342      reinterpret_cast<const ElfW(Phdr)*>(reinterpret_cast<uintptr_t>(elf) + offset);
+3343  const ElfW(Phdr)* phdr_end = phdr_table + elf->e_phnum;
+3344
+3345  for (const ElfW(Phdr)* phdr = phdr_table; phdr < phdr_end; phdr++) {
+3346    if (phdr->p_type == PT_LOAD) {
+3347      return reinterpret_cast<ElfW(Addr)>(elf) + phdr->p_offset - phdr->p_vaddr;
+3348    }
+3349  }
+3350  return 0;
+3351}
+```
+这个在后续的hook也是参考上述方法来得到实际的地址。
 
 ## 链接
 在加载完毕之后，就要通过[perlink_image](http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#2499)方法来链接。
