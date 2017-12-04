@@ -218,7 +218,7 @@ load_bias_ = reinterpret_cast<uint8_t*>(start) - addr;
 这个在后续的hook也是参考上述方法来得到实际的地址。
 
 ## 链接
-在加载完毕之后，就要通过[perlink_image](http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#2499)方法来链接。
+在加载完毕之后，在line1319来执行预链接[perlink_image](http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#2499)方法来链接。
 ```
 2499bool soinfo::prelink_image() {
 2500  /* Extract dynamic section */
@@ -235,10 +235,16 @@ load_bias_ = reinterpret_cast<uint8_t*>(start) - addr;
       }
 ```
 ### 定位动态节区
-通过`phdr_table_get_dynamic_section`来遍历phdr，程序头表，找到type为`PT_DYNAMIC`的动态节区。
+通过[phdr_table_get_dynamic_section](http://androidxref.com/6.0.1_r10/xref/ndk/sources/android/crazy_linker/src/linker_phdr.cpp#380)来找到type为`PT_DYNAMIC`的动态节区。
+
+然后再遍历解析，获取重定位相关的各种信息（DT_SYMTAB DT_HASH等）。
+
 ### 遍历动态节区
 找到动态节区之后，遍历来根据节区的结构体成员d_tag，确定需要用到的各种参数，各种节区，别如DT_PLTRELSZ就是与重定位有关的，DT_HASH DT_GNU_HASH就是和符号表索引相关的，DT_INIT就是初始化相关的节。
 ### 重定位
+
+在prelink_image之后，回到`find_libraries`函数中，line1527调用了[linke_image](http://androidxref.com/6.0.1_r10/xref/ndk/sources/android/crazy_linker/src/linker_phdr.cpp#2924)方法,内部调用[relocate](http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#1840)函数  
+
 解析完信息之后，就要遍历重定位表，来重定位每个符号的实际地址。
 占坑，放在（三）中和hook原理一起讲解。
 

@@ -7,32 +7,39 @@ categories: Android逆向安全
 32位ELF(可执行可链接文件)格式的分析
 <!-- more -->
 # 目标文件 Object File
-一个简单的c文件，经过预处理-编译-汇编-链接，四个耳熟能详的步骤后，就变成了一个可执行的目标文件。（如果根据Object File直译的话应该是对象文件，但是CSAPP写的是目标文件，还是听大佬的吧）   
+一个简单的c文件，经过预处理-编译-汇编-链接，四个耳熟能详的步骤后，就变成了一个可执行的目标文件。  
 目标文件有三种形式：
 - 可重定位文件（Relocatable file）：这是由汇编器汇编生成的.o文件，链接器会使用一个或多个的可重定位文件作为输入，生成一个可执行文件
 - 可执行文件（Executable file）：可以直接复制到内存中执行的文件
 - 可共享文件（Shared Object file）：也是Android中常说的so库。所谓的动态库文件，在运行时被动态的加载进内存，由动态链接器来负责链接so库和可执行文件的执行。
 
 这些目标文件都是按照特定的文件格式来组织的，比如Windows下是PE，Mac下是Mach-O，Linux/unix下就是ELF格式。  
-这里主要就是以Linux下的so的文件格式ELF来做分析，因为在逆向APK中主要也是针对so库做注入。
+这里主要就是以Linux下的so文件格式ELF来做分析，因为在逆向APK中主要也是针对so库做注入。
 # EFL文件格式
 先放2张图，可以直观的了解ELF文件格式
 ![](http://blog.chinaunix.net/photo/94212_101201164532.jpg)
 ![](https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511088380577&di=7d77512485a60706d6fd1ab9f949f7af&imgtype=0&src=http%3A%2F%2Fwww.yeolar.com%2Fmedia%2Fnote%2F2012%2F03%2F20%2Flinux-linking%2Ffig2.png)
 
 ## 结构综述
-- ELF文件头 ： 对ELF文件整体的一个描述
+- ELF文件头 ： 对ELF文件整体结构的一个描述
 - 程序头部表 Program Header Table ：描述下面的段区Segment，告诉系统如何创建进程影像
-- 节区Section/段区Segment ：section从链接角度具体描述这个elf文件，segment是从运行角度来描述这个elf文件
+- 节区Section ：section从链接角度具体描述这个elf文件
+- 段区Segment ：segment是从运行角度来描述这个elf文件，segment包含多个section
 - 节区头部表 Section Header Table ：描述上面的各个节区Section的属性信息
 
 
-## 链接视图和执行视图
-为什么要区分链接的视图和执行视图，ok，我不知道
-> 当ELF文件被加载到内存中后，系统会将多个具有相同权限（flg值）section合并一个segment。操作系统往往以页为基本单位来管理内存分配，一般页的大小为4096B，即4KB的大小。同时，内存的权限管理的粒度也是以页为单位，页内的内存是具有同样的权限等属性，并且操作系统对内存的管理往往追求高效和高利用率这样的目标。ELF文件在被映射时，是以系统的页长度为单位的，那么每个section在映射时的长度都是系统页长度的整数倍，如果section的长度不是其整数倍，则导致多余部分也将占用一个页。而我们从上面的例子中知道，一个ELF文件具有很多的section，那么会导致内存浪费严重。这样可以减少页面内部的碎片，节省了空间，显著提高内存利用率。
+
+
+**为什么要区别节区和段区？**
+
+> 当ELF文件被加载到内存中后，系统会将多个具有相同权限（flag值）section合并一个segment。操作系统往往以页为基本单位来管理内存分配，一般页的大小为4096B，即4KB的大小。同时，内存的权限管理的粒度也是以页为单位，页内的内存是具有同样的权限等属性，并且操作系统对内存的管理往往追求高效和高利用率这样的目标。ELF文件在被映射时，是以系统的页长度为单位的，那么每个section在映射时的长度都是系统页长度的整数倍，如果section的长度不是其整数倍，则导致多余部分也将占用一个页。而我们从上面的例子中知道，一个ELF文件具有很多的section，那么会导致内存浪费严重。这样可以减少页面内部的碎片，节省了空间，显著提高内存利用率。
+
+
 
 # 分析
-下面我就结合linux的命令`readelf`来分析Android的GUI系统中使用的libsurfaceflinger.so(Android 4.4)文件来逐一介绍EFL文件 节区头部表 与一些与重定位相关的节区。
+下面我就结合linux的命令`readelf`来分析Android的GUI系统中使用的`/system/lib/libsurfaceflinger.so`文件来逐一介绍EFL文件 节区头部表 与一些与重定位相关的节区。
+
+> Android 4.4 32位所以结构体都是ELF32开头，64位的文件格式即为ELF64 
 
 ## ELF文件头
 ELF文件头对应的结构体Elf32_Ehdr如下：
@@ -138,10 +145,7 @@ Key to Flags:
   O (extra OS processing required) o (OS specific), p (processor specific)
 
 ```
-打印出的第一行信息
->共有 24 个节头，从偏移量 0x31154 开始：  
-
-和我们根据ELF文件头算出来的一样。  
+可以看到打印出来的第一行信息和我们根据ELF文件头算出来的一样。  
 可以看到输出了很多个表项，每个表项的结构就是上述的Elf32_Shdr了，下面挑几个相关的来讲。  
 ### 符号表 .dynsym
 符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号。所谓的符号就是经过修饰了的函数名或者变量名，不同的编译器有不同的修饰规则。例如符号_ZL15global_static_a，就是由global_static_a变量名经过修饰而来。  
@@ -192,7 +196,7 @@ typedef struct {
      unsigned char st_other;   
      Elf32_Half st_shndx;        //每个符号表项都以和其他节区的关系的方式给出定义。
 　　　　　　　　　　　　　//此成员给出相关的节区头部表索引。
-} Elf32_sym; 
+} Elf32_Sym; 
 ```
 ### 字符串表 .dynstr
 根据上面说的 符号表结构体的st_name项，非0值表示该符号名在字符串表中的索引，那么自然而然的就要介绍一下字符串表了。  
@@ -220,18 +224,35 @@ String dump of section '.dynstr':
 
 ### 重定位表 
 在编译-汇编这2个操作中，编译器和汇编器为每个文件创建程序地址一般都是从0开始，但是实际加载时模块的基址肯定不是0，为了避免加载地址重叠，就引入了重定位这个东西。重定位就是为程序不同部分分配加载地址，调整程序中的数据和代码以反映所分配地址的过程。简单的言之，则是将程序中的各个部分映射到合理的地址上来。
-#### .rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系
+
+**.rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系**
+
 - .rel.text：定位的地方在.text段内，以offset指定具体要定位位置。在链接时候由链接器完成。
+
 - .rel.dyn：重定位的地方在.got段内，主要是针对外部数据变量符号。不支持延迟重定位(Lazy)，通常是在so文件执行时就在.init段中进行重定位操作。
+
 - .rel.plt：重定位的地方在.got.plt段内, 主要是针对外部函数符号。一般是函数首次被调用时候重定位。
+
 - .plt：Procedure Linkage Table，过程链接表。所有对外部函数的调用都经过PLT再到GOT的一个调用过程。
+
 - .got：Global Offset Table，全局偏移表，存放着调用外部函数的实际地址（第一次存放的是PLT中的指令，PLT执行完之后会把计算得到的实际值再存到GOT中）。
+
 - .got.plt：ELF将GOT拆分成两个表 .got和.got.plt,前者用来保存全局变量引用的地址，后者用来保存函数引用的地址。
 
-> Android ARM 下需要处理两个重定位表，plt_rel 和 rel，plt 指的是延迟绑定，但是 Android 目前并不对延迟绑定做特殊处理，直接与普通的重定位同时处理。
+  > Android ARM 下需要处理两个重定位表，plt_rel 和 rel，plt 指的是延迟绑定，但是 Android 目前并不对延迟绑定做特殊处理，直接与普通的重定位同时处理。
+
+### 重定位
+
+[【ARM】安卓SO中GOT REL PLT 作用与关系](https://bbs.pediy.com/thread-221821.htm)
+
+
+
+
+
 
 
 ## “程序”头表
+
 上面分析了这么多的Section区，但实际上so库加载到内存中，是按照执行视图来查找各个重定位表的，所以下面就来分析一下执行视图中必须存在的程序头表（Program Header Table）。  
 程序头表表项的结构体Elf32_phdr如下：
 ```
@@ -268,6 +289,9 @@ typedef struct {
 ## ELF文件格式图例
 ![](http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 # 参考
+[【ARM】安卓SO中GOT REL PLT 作用与关系](https://bbs.pediy.com/thread-221821.htm)
+
+[EFL PLT GOT跳转关系](http://blog.csdn.net/lifeshow/article/details/29597401)
 [ELF文件中的.plt .rel.dyn .rel.plt .got .got.plt的关系](https://www.cnblogs.com/leo0000/p/5604132.html)  
 [ELF文件格式解析](http://www.07net01.com/2016/05/1534423.html)  
 [difference-between-got-and-got-plt](https://stackoverflow.com/questions/11676472/what-is-the-difference-between-got-and-got-plt-section#comment16231745_11676472)

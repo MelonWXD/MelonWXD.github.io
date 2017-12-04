@@ -13,7 +13,7 @@ categories: Android逆向安全
 ## Ptrace
 Ptrace是Unix/类Unix操作系统的一个系统调用，通过使用Ptrace可以让一个进程控制另一个进程，从而查看并修改的内部状态，通常是被用在debug或者代码分析等一系列辅助工具上。
 
-> 下文中执行Ptrace的进程统称为控制进程，被控制进程、被注入进程统称目标进程
+> 下文中执行Ptrace的进程统称为控制进程，被控制、被注入进程统称目标进程
 
 Ptrace也是注入程序Inject的核心功能支撑，通过Ptrace来读取、修改目标进程的寄存器，控制目标进程的挂起、执行，来达到我们想要的目的，即在目标进程中加载我们自己写的so库。
 
@@ -265,9 +265,7 @@ bool Tracer::traceCall(void *addr, t_long *params, uint8_t num_params, arch_regs
 [ Android Hook学习之ptrace函数的使用](http://blog.csdn.net/qq1084283172/article/details/45967633)
 [ptrace函数详解  ](http://blog.163.com/yuanxiaohei@126/blog/static/6742308720123683433989/)
 [arm 寄存器](https://www.cnblogs.com/xiaojinma/archive/2012/12/19/2825481.html)
-[waitpid之status意义解析  ](http://tsecer.blog.163.com/blog/static/15018172012323975152/)
-
+[waitpid之status意义解析 ](http://tsecer.blog.163.com/blog/static/15018172012323975152/)
 [gnu_hash](https://blogs.oracle.com/ali/gnu-hash-elf-sections)
 [Linker和So加壳](http://dev.qq.com/topic/57e3a3bc42eb88da6d4be143)
-
 [Android的so注入( inject)和函数Hook(基于got表)](http://blog.csdn.net/QQ1084283172/article/details/53942648?locationNum=1&fps=1)
