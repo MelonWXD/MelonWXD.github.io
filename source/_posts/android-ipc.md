@@ -20,9 +20,9 @@ categories: Android
 ### Parcelable又是什么？  
 Parcelable是Android特有功能，效率比实现Serializable接口高效，可用于Intent数据传递，也可以用于进程间通信（IPC） 
 ### Parcelable和Serializable如何选择？
- 1. 在使用内存的时候，Parcelable比Serializable性能高，所以推荐使用Parcelable。  
- 2. Serializable在序列化的时候会产生大量的临时变量，从而引起频繁的GC。  
- 3. Parcelable不能使用在要将数据存储在磁盘上的情况，因为Parcelable不能很好的保证数据的持续性在外界有变化的情况下。尽管Serializable效率低点，但此时还是建议使用Serializable 。
+  1. 在使用内存的时候，Parcelable比Serializable性能高，所以推荐使用Parcelable。  
+  2. Serializable在序列化的时候会产生大量的临时变量，从而引起频繁的GC。  
+  3. Parcelable不能使用在要将数据存储在磁盘上的情况，因为Parcelable不能很好的保证数据的持续性在外界有变化的情况下。尽管Serializable效率低点，但此时还是建议使用Serializable 。
 
 > 注意：writeToParcel和参数为Parcel的构造方法，里面的读写顺序一定要一致  
 
@@ -30,7 +30,7 @@ Parcelable是Android特有功能，效率比实现Serializable接口高效，可
 假设要做一个音乐播放的App，除去前台UI展示，还要能够后台播放，实现方案分析可以查看这篇[博文](http://blog.csdn.net/seu_calvin/article/details/53932171)，讲的很深入了。
 我们就采用多进程的方式来实现这个需求吧。
 
-### 项目结构：
+### 项目结构
 
 ![](http://owu391pls.bkt.clouddn.com/ss20171016210148.png)
 ![](http://owu391pls.bkt.clouddn.com/2017-10-24%2022-00-27%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)  
@@ -105,7 +105,7 @@ public class MusicTrack implements Parcelable {
     }
 }
 ```
- 
+
 ```java
 public class MediaService extends Service {
 

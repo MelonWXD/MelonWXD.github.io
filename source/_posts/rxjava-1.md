@@ -6,9 +6,6 @@ categories: Android
 ---
 RxJava 基本用法
 <!-- more -->
-## 参考资料
-[Rxjava 2.0](http://www.jianshu.com/u/c50b715ccaeb)  
-[Rxjava 1.0](http://gank.io/post/560e15be2dca930e00da1083)
 ## 观察者模式和RxJava的异同
 先来快速的写一个观察者模式的实现，大致如下：
 ```java
@@ -251,3 +248,11 @@ onNext: Event1
 onComplete
 ```
 
+
+
+## 参考资料
+
+[Rxjava 2.0](http://www.jianshu.com/u/c50b715ccaeb)  
+[Rxjava 1.0](http://gank.io/post/560e15be2dca930e00da1083)
+
+## 
