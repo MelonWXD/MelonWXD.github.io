@@ -10,9 +10,12 @@ categories: Android代码库
 ## BaseActivity
 ```java
 
-public abstract class BaseActivity extends AppCompatActivity implements BaseView {
+
+public abstract class BaseActivity extends AppCompatActivity {
 
     private Unbinder mUnbinder;
+
+//    protected BasePresenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,14 +24,27 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         mUnbinder = ButterKnife.bind(this);
 
+        setTranslucentStatus();
 
-
-        init(savedInstanceState);
+        initBundle(savedInstanceState);
+//        initPresenter();
         initView();
         initData();
     }
 
-    protected void init(Bundle savedInstanceState) {
+    protected void initPresenter() {
+//        mPresenter = getPresenter();
+    }
+//
+//    protected BasePresenter getPresenter() {
+//        return null;
+//    }
+
+    protected void initBundle(Bundle savedInstanceState) {
+
+    }
+
+    protected void saveBundle(Bundle outState) {
 
     }
 
@@ -51,6 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        saveBundle(outState);
 //        Logger.d("onSaveInstanceState");
     }
 
@@ -60,11 +77,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
 
     protected void initData() {
-
-    }
-
-    @Override
-    public void setPresenter(Object presenter) {
 
     }
 }
