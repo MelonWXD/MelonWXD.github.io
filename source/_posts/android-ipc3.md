@@ -177,6 +177,56 @@ BpCamera继承BpInterface，是代理Binder。`takePicture`这个方法中data�
 
 ## 通过0号Binder来获取SM的代理
 
+### JAVA层
+
+在[ServiceManager.java](http://androidxref.com/6.0.1_r10/xref/frameworks/base/core/java/android/os/ServiceManager.java)中通过`ServiceManagerNative`来获取ServiceManager
+
+```java
+33    private static IServiceManager getIServiceManager() {
+34        if (sServiceManager != null) {
+35            return sServiceManager;
+36        }
+37
+38        // Find the service manager
+39        sServiceManager = ServiceManagerNative.asInterface(BinderInternal.getContextObject());
+40        return sServiceManager;
+41    }
+```
+
+在`ServiceManagerNative`中，返回`IServiceManager`的实现类`ServiceManagerProxy`实例，来获取0号Binder
+
+```java
+    static public IServiceManager asInterface(IBinder obj)
+    {
+        if (obj == null) {
+            return null;
+        }
+        IServiceManager in =
+            (IServiceManager)obj.queryLocalInterface(descriptor);
+        if (in != null) {
+            return in;
+        }
+        
+        return new ServiceManagerProxy(obj);
+    }
+    public ServiceManagerProxy(IBinder remote) 
+	{
+    	mRemote = remote;//
+	}
+```
+
+
+引用红茶话Binder中2句话
+> 1） ServiceManagerProxy就是IServiceManager代理接口；
+>
+> 2） ServiceManagerNative显得很鸡肋；
+
+
+
+
+
+### C层
+
 在[IServiceManager.cpp](http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/IServiceManager.cpp#33)中line40提供了获取0号Binder的方法
 
 ```c
@@ -197,9 +247,14 @@ BpCamera继承BpInterface，是代理Binder。`takePicture`这个方法中data�
 47    return gDefaultServiceManager;
 48}
 ```
-再进入到[ProcessState](http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/ProcessState.cpp#85)中查看相关代码，最后调用`getStrongProxyForHandle`方法。
+再进入到[ProcessState](http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/ProcessState.cpp#85)中查看相关代码，`getContextObject`中调用`getStrongProxyForHandle(0)`方法。
 
 ```c
+85sp<IBinder> ProcessState::getContextObject(const sp<IBinder>& /*caller*/)
+86{
+87    return getStrongProxyForHandle(0);
+88}
+
 179sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
 180{
 181    sp<IBinder> result;
@@ -253,13 +308,16 @@ inline sp<INTERFACE> interface_cast(const sp<IBinder>& obj)
 
 ![](http://img.blog.csdn.net/20150909225436079)
 ## 通过SM代理来向SM注册其他系统服务
-```
+```cpp
     power = new PowerManagerService();
     ServiceManager.addService(Context.POWER_SERVICE, power);
 ```
 SystemServer向SM注册PowerManagerService
 ## 通过SM代理向SM获得其他系统服务
-```
+
+`IServiceManager`的实现类`ServiceManagerProxy`实例中提供了`add`、`get`等方法
+
+```java
 public IBinder getService(String name) throws RemoteException 
 {
     Parcel data = Parcel.obtain();
