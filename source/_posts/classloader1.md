@@ -435,7 +435,7 @@ DexClassPath则可以从一个jar包或者未安装的apk中加载dex
 58    }
 ```
 
-一般我们都是用这个DexClassLoader来作为动态加载的加载器
+一般我们都是用这个DexClassLoader来作为动态加载的加载器  
 
 
 
