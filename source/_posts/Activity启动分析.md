@@ -18,11 +18,15 @@ categories: Android
 
 # 相关知识
 
-在学习整体流程之前先介绍几个和Activity关系比较密切的类，之前分析的zygote进程的启动流程，最后是启动了`app_process`这个进程，那么启动之后是怎么样的呢，贴张老罗的图：
+在学习整体流程之前先介绍几个和Activity关系比较密切的类。
+
+## SystemServer
+
+之前分析的zygote进程的启动流程，最后是启动了`app_process`这个进程，那么启动之后是怎么样的呢，贴张老罗的图：
 
 ![](http://hi.csdn.net/attachment/201109/16/0_1316190384ZuU0.gif)
 
-具体源码流程就略过，最后是启动了`SystemServer`这个进程，[`main`](http://androidxref.com/6.0.0_r1/xref/frameworks/base/services/java/com/android/server/SystemServer.java)方法如下：
+具体源码流程就略过，最后是启动了[SystemServer](http://androidxref.com/6.0.0_r1/xref/frameworks/base/services/java/com/android/server/SystemServer.java)这个进程，`main`方法如下：
 
 ```java
 167    public static void main(String[] args) {
@@ -59,60 +63,58 @@ categories: Android
 285    }
 ```
 
-## ActivityRecord和ActivityStack
+- startBootstrapServices() 启动一些重量级服务 如AMS
+- startCoreServices() 启动一些核心服务 如电池管理
+- startOtherServices() 启动一些有的没的杂七杂八服务
 
-![](http://img.blog.csdn.net/20161220142454652?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2ViZWx6YzI0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+在`startOtherServices`中，最后会调用
+
+```java
+1096        mActivityManagerService.systemReady(new Runnable() {...}
+```
+
+在AMS中又调用`startHomeActivityLocked`来启动Launcher组件（桌面）
+
+```java
+11719    public void systemReady(final Runnable goingCallback) {
+  ...
+11876            // Start up initial activity.
+11877            mBooting = true;
+11878            startHomeActivityLocked(mCurrentUserId, "systemReady");
+  ...
+}
+```
+
+至于`startHomeActivityLocked`怎么搞的，相信看完这篇文章心里大概就有数了。
 
 ## ActivityManagerService(AMS)
 
-先介绍上面代码段中的`startBootstrapServices()`方法，这里通过模板方法`startService`初始化了AMS：
+上面废话说了一堆，还是没说AMS是啥，直译就是Activity管理服务，实际上也是起到这么一个功能。
 
-```java
-/**
-316     * Starts the small tangle of critical services that are needed to get
-317     * the system off the ground.  These services have complex mutual dependencies
-318     * which is why we initialize them all in one place here.  Unless your service
-319     * is also entwined in these dependencies, it should be initialized in one of
-320     * the other functions.
-321     */
-322    private void startBootstrapServices() {
-  		...
-329        mActivityManagerService = mSystemServiceManager.startService(
-330                ActivityManagerService.Lifecycle.class).getService();
-331        mActivityManagerService.setSystemServiceManager(mSystemServiceManager);
-332        mActivityManagerService.setInstaller(installer);
-		}
-```
+**划重点了，要考的**
 
-AMS就是个基于Binder通信的一个底层服务，是Android中最核心的服务，主要负责系统中四大组件的启动、切换、调度及应用进程的管理和调度等工作，其职责与操作系统中的进程管理和调度模块相类似。
+在Android的跨进程通信中，都有这么一个命名套路。有兴趣的可以看看源码，很容易理清楚。
 
-### 几个Record成员：
+- xxxNative：一般为抽象类，如[ActivityManagerNative](http://androidxref.com/6.0.1_r10/xref/frameworks/base/core/java/android/app/ActivityManagerNative.java#61)，继承自IActivityManager。实现了一些Binder服务端的一些方法，类似于base的功能吧。
+- xxxService：如[ActivityManagerService](http://androidxref.com/6.0.1_r10/xref/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java)，继承自ActivityManagerNative。实现了IActivityManager中声明的所有这个Binder远程服务提供的方法，是远程服务实现类。一些默认实现也会写在AMNative中。
+- xxxProxy：如ActivityManagerProxy，为AMNative内部类，通常是外部xxxNative的`getDefault`方法返回值。这个就是AIDL中对应的Proxy类，是远程服务在本地进程的代理，在本地进程我们都是通过xxxNative.getDefault，然后执行某些特定的方法来调用到远程的服务。
 
-- ActivityRecord
-- TaskRecord
-- ProcessRecord
+这个AMS、AMN、AMP在下面的分析经常会见到，同理ApplicationThreadNative、ApplicationThread(没有Service。。)和ApplicationThreadProxy。
 
-![](http://img.blog.csdn.net/20170519150259246?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbXdxMzg0ODA3Njgz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+**可以参考[从ActivityManagerNative看Android系统AIDL的实现](https://www.jianshu.com/p/18517a4ef8e1)**
+
+
+
+
+
+
 
 ## ActivityThread
 
+ActivityThread代表了一个安卓应用的进程。
 
-再把目光移到最开始的代码块中line260关注一下`createSystemContext`,这里创建了ActivityThread实例并且通过attach(true)来表示该ActivityThread是系统进程的ActivityThread:
+Android应用的入口是Application的`onCreate`吗？no！是ActivityThread的`main`，这么一回答，B格是不是就上去了。
 
-```java
-309    private void createSystemContext() {
-310        ActivityThread activityThread = ActivityThread.systemMain();
-311        mSystemContext = activityThread.getSystemContext();
-312        mSystemContext.setTheme(android.R.style.Theme_DeviceDefault_Light_DarkActionBar);
-313    }
-
-@http://androidxref.com/6.0.0_r1/xref/frameworks/base/core/java/android/app/ActivityThread.java#5318
-5318    public static ActivityThread systemMain() {
-5327        ActivityThread thread = new ActivityThread();//实例化ActivityThread
-5328        thread.attach(true);//
-5329        return thread;
-5330    }
-```
 
 再看一下ActivityThread这个类的几个相关的成员变量：
 
@@ -124,9 +126,9 @@ final H mH = new H(); //这个H继承自Handler 定义了许多命令 详见line
 1227    private class H extends Handler {...}
 ```
 
+主要关注一下ApplicationThread，后续流程AMS会通过ApplicationThreadProxy，来调用ApplicationThread的服务，从而调用到ApplicationThread外部类，ActivityThread的相关方法来达到控制Activity生命周期的功能。
 
-
-### ApplicationThread
+**ApplicationThread**
 
 ```java
 574    private class ApplicationThread extends ApplicationThreadNative {...}
@@ -136,15 +138,36 @@ public abstract class ApplicationThreadNative extends Binder
 	       implements IApplicationThread {...}
 ```
 
-所以ApplicationThread就是一个Binder的实现类
 
 
 
-# Launcher启动Activity过程综述
+
+## ActivityStack和ActivityStackSupervisor：
+
+每一个ActivityRecord都会有一个Activity与之对应，一个Activity可能会有多个ActivityRecord，因为Activity可以被多次实例化，取决于其launchmode。一系列相关的ActivityRecord组成了一个TaskRecord，TaskRecord是存在于ActivityStack中，ActivityStackSupervisor是用来管理这些ActivityStack的。
+
+ActivityStack和ActivityRecord的关系如下：
+![](http://img.blog.csdn.net/20161220142454652?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2ViZWx6YzI0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+
+**先说个关于ProcessRecord的知识：**
+
+ 在AMS中每个ProcessRecord代表一个应用程序进程，AMS的成员ActivityStackSupervisor(ASS)在`startActivityMayWait`中通过caller（IApplicationThread）这个参数，向他的成员mService（指向AMS）调用`getRecordForAppLocked`来获取caller对应的ProcessRecord，包含了对应进程的信息pid、uid等。
+
+ ActivityRecord  TaskRecord  ProcessRecord三者关系图
+
+![](http://img.blog.csdn.net/20170519150259246?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbXdxMzg0ODA3Njgz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+
+
+
+
+
+
+
+# Launcher启动Activity过程概述
 
 ##　Launcher——Activity——Instrumentation——AMP
 
-Launcher逐级调用到ActivityManagerProxy（AMS的BInder代理）
+Launcher逐级调用到Instrumentation，利用`ActivityManagerNative.getDefault()`得到ActivityManagerProxy（AMS的Binder代理）并调用其`startActivity`方法。
 
 ## AMP——AMS——ActivityStack
 
@@ -164,16 +187,7 @@ AMP通过Binder来与AMS通信，调用AMS的成员ActivityStackSupervisor(Activ
 
 
 
-ActivityStack和ActivityRecord的关系如下：
-![](http://img.blog.csdn.net/20161220142454652?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2ViZWx6YzI0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
 
-每一个ActivityRecord都会有一个Activity与之对应，一个Activity可能会有多个ActivityRecord，这个跟Activity的launchmode有关。
-
-
-
-**先说个关于ProcessRecord的知识：**
-
- 在AMS中每个ProcessRecord代表一个应用程序进程，AMS的成员ActivityStackSupervisor(ASS)在`startActivityMayWait`中通过caller（IApplicationThread）这个参数，像他的成员mService（指向AMS）调用`getRecordForAppLocked`来获取caller对应的ProcessRecord，包含了对应进程的信息pid、uid等。
 
 AMS调用ActivityStack来执行启动Activity操作，先使用`PackageManagerService`去解析启动参数Intent中各种信息(判断启动flag啊，获取caller的ProcessRecord进程信息，是否需要新建一个ProcessRecord等等)。之后再根据Intent的信息(newTask)来判断是否要把即将启动的Activity放到上述的ActivityStack成员mTaskHistory的顶部。后续检查一些是否mResumeActivity就是要启动，是否有结束Activity动作发生，关机等等等。都OK的话才会通知当前的Activity-mResumeActivity（如果从桌面启动的话就是Launcher组件）来进入onPaused流程。
 
@@ -238,98 +252,9 @@ ActivityThread的main中调用attach，其中通过AMP执行attachApplication，
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Activity的启动
+
+**以下是无脑跟源码过程，可略！**
 
 从Activity的startActivity方法开始一步步跟进，走读Activity的启动流程，子标题为相关类的递进
 
