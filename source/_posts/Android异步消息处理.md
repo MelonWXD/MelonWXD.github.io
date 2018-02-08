@@ -1,8 +1,8 @@
 ---
 title: Android异步消息处理
 date: 2017-12-26 20:47:13
-tags: Android
-categories: Handler
+tags: 多线程
+categories: Android
 ---
 源码角度分析Android异步消息处理机制
 <!-- more -->
