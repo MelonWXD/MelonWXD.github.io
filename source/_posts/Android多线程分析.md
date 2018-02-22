@@ -496,7 +496,7 @@ public class MyIntentService extends IntentService {
 
 # ThreadPoolExecutor
 
-再补充一下线程池中相关。ThreadPoolExecutor提供了4个构造方法，最后都会调用到下面这个。
+再补充一下线程池中相关。ThreadPoolExecutor提供了4个构造方法，最后都会调用到下面这个。通过构造方法的一系列参数，来构成不同配置的线程池。
 
 ```java
     public ThreadPoolExecutor(int corePoolSize,
@@ -524,11 +524,11 @@ public class MyIntentService extends IntentService {
 
 挑几个比较重要的拿出来讲一下。
 
-BlockingQueue<Runnable> workQueue，主要有三个类实现了BlockingQueue这个接口：
+BlockingQueue<Runnable> workQueue，维护着等待执行的Runnable对象
 
-- SynchronousQueue
-- LinkedBlockingDeque
-- ArrayBlockingQueue
+- SynchronousQueue 直接将Runnable交给核心线程处理，如果核心线程都在工作则新建工作线程来执行（一般来说maximumPoolSize为Integer.MAX_VALUE）。
+- LinkedBlockingDeque 当前线程数小于核心线程数，新建核心线程处理任务。如果当前线程数等于核心线程数，则进入队列等待。
+- ArrayBlockingQueue 创建时可以指定capacity，能新建核心线程就新建，不能就入队等待，等待数如果超过capacity，则新建工作线程执行任务，如果总线程数超过了maximumPoolSize则报错。
 
 ThreadFactory threadFactory，提供对线程一些属性定制的操作
 
@@ -580,3 +580,133 @@ public void execute(Runnable command) {
     }
 ```
 
+### ctl变量
+
+原子级操作的整数，前3位表示运行状态，后29位表示运行的线程数。
+
+```java
+    private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+    private static final int COUNT_BITS = Integer.SIZE - 3;
+    private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
+
+    // runState is stored in the high-order bits
+    private static final int RUNNING    = -1 << COUNT_BITS;
+    private static final int SHUTDOWN   =  0 << COUNT_BITS;
+    private static final int STOP       =  1 << COUNT_BITS;
+    private static final int TIDYING    =  2 << COUNT_BITS;
+    private static final int TERMINATED =  3 << COUNT_BITS;
+
+    // Packing and unpacking ctl
+    private static int runStateOf(int c)     { return c & ~CAPACITY; }
+    private static int workerCountOf(int c)  { return c & CAPACITY; }
+    private static int ctlOf(int rs, int wc) { return rs | wc; }
+```
+
+### addWorker
+
+```java
+private boolean addWorker(Runnable firstTask, boolean core) {
+        retry:
+        for (;;) {
+
+			//省略了一些状态检查代码
+
+        }
+
+        boolean workerStarted = false;
+        boolean workerAdded = false;
+        Worker w = null;
+        try {
+            w = new Worker(firstTask);//实现Runnable接口的类 对firstTask封装
+            final Thread t = w.thread;
+            if (t != null) {
+                final ReentrantLock mainLock = this.mainLock;
+                mainLock.lock();
+                try {
+                    int rs = runStateOf(ctl.get());
+					//再对状态进行一次检查
+                    if (rs < SHUTDOWN ||
+                        (rs == SHUTDOWN && firstTask == null)) {
+                        if (t.isAlive()) // precheck that t is startable
+                            throw new IllegalThreadStateException();
+                      //没问题就把上面new的worker添加到workers
+                        workers.add(w);
+                        int s = workers.size();
+                        if (s > largestPoolSize)
+                            largestPoolSize = s;
+                        workerAdded = true;
+                    }
+                } finally {
+                    mainLock.unlock();
+                }
+                if (workerAdded) {
+                    t.start();
+                    workerStarted = true;
+                }
+            }
+        } finally {
+            if (! workerStarted)
+                addWorkerFailed(w);
+        }
+        return workerStarted;
+    }
+```
+
+```java
+    private final class Worker extends AbstractQueuedSynchronizer implements Runnable
+    {
+        Worker(Runnable firstTask) {
+            setState(-1); // inhibit interrupts until runWorker
+            this.firstTask = firstTask;
+            this.thread = getThreadFactory().newThread(this);
+        }
+	}
+```
+
+去掉了一些对状态检测的代码，检测没问题就会实例化一个Worker的实例，然后对状态再进行一次check，没问题就调用`t = w.thread,t.start()`。根据Worker的封装 这个t在实例的时候传入的Runnable参数就是worker本身，所以这个t.start调用的就是w的run方法
+
+```java
+        public void run() {
+            runWorker(this);
+        }
+final void runWorker(Worker w) {
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try {
+            while (task != null || (task = getTask()) != null) {
+                w.lock();
+                try {
+                    beforeExecute(wt, task);
+                    Throwable thrown = null;
+                    try {
+                        task.run();
+                    } catch (RuntimeException x) {
+                        thrown = x; throw x;
+                    } catch (Error x) {
+                        thrown = x; throw x;
+                    } catch (Throwable x) {
+                        thrown = x; throw new Error(x);
+                    } finally {
+                        afterExecute(task, thrown);
+                    }
+                } finally {
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                }
+            }
+            completedAbruptly = false;
+        } finally {
+            processWorkerExit(w, completedAbruptly);
+        }
+    }
+```
+
+在runWorker中去除firstTask，并调用其run方法来执行任务。
+
+# 参考
+
+[JAVA线程池的使用](https://www.jianshu.com/p/ae67972d1156)
