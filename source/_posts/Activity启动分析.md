@@ -165,7 +165,7 @@ ActivityStack和ActivityRecord的关系如下：
 
 # Launcher启动Activity过程概述
 
-##　Launcher——Activity——Instrumentation——AMP
+## Launcher——Activity——Instrumentation——AMP
 
 Launcher逐级调用到Instrumentation，利用`ActivityManagerNative.getDefault()`得到ActivityManagerProxy（AMS的Binder代理）并调用其`startActivity`方法。
 
