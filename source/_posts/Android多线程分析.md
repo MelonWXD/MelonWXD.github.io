@@ -317,6 +317,10 @@ mWorker最后会被Executor调用，call方法中调用了由用户重写的doIn
 
 同样的在mWorker的call方法中finally块执行了`postResult`，发送了`MESSAGE_POST_RESULT`
 
+## 内存泄漏
+
+与Handler一样，如果作为内部类，AsyncTask也是持有外部Activity的引用的，当两者生命周期不同步的时候，容易造成内存泄露。务必在Activity的onDestroy中调用`onCancelled`方法，在`onCancelled`中关闭网络连接与资源请求等。
+
 
 
 # IntentService
