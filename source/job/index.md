@@ -1,1 +1,1 @@
-guide:[索引页](http://localhost:4000/job/guide.html)
+guide:[索引页](https://melonwxd.github.io/job/guide.html)
