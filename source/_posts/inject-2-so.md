@@ -249,4 +249,4 @@ load_bias_ = reinterpret_cast<uint8_t*>(start) - addr;
 占坑，放在（三）中和hook原理一起讲解。
 
 # 参考
-[Android Linker 与 SO 加壳技术](http://dev.qq.com/topic/57e3a3bc42eb88da6d4be143)
+[Android Linker 与 SO 加壳技术](http://blog.csdn.net/tencent_bugly/article/details/52668772)
