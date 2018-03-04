@@ -141,15 +141,40 @@ BnInterface和BpInterface又分别继承自[Binder.h](http://androidxref.com/6.0
 104    I##INTERFACE::~I##INTERFACE() { }      
 ```
 
-
+## 实例分析
 
 下面就以Camera服务来实际理一遍Bn和Bp是如何工作的。
 
-在[Camera.cpp](http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/Camera.cpp)中各个方法内部实际调用[ICamera.cpp](http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/ICamera.cpp)来实现，随便贴一段里头[BpCamera]()的代码
+在[Camera.cpp](http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/Camera.cpp)中各个方法内部实际调用[ICamera.cpp](http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/ICamera.cpp)来实现
+
+[BnCamera](http://androidxref.com/6.0.1_r10/xref/frameworks/av/include/camera/ICamera.h)在`ICamera.h`中定义了
+
+```java
+118class BnCamera: public BnInterface<ICamera>
+119{
+120public:
+121    virtual status_t    onTransact( uint32_t code,
+122                                    const Parcel& data,
+123                                    Parcel* reply,
+124                                    uint32_t flags = 0);
+125};
+```
+
+而[BpCamera](http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/ICamera.cpp#54)是ICamera.cpp中定义的类
 
 ```cpp
-54 class BpCamera: public BpInterface<ICamera>{
-  ...
+54 class BpCamera: public BpInterface<ICamera>
+55 {
+56 public:
+57    BpCamera(const sp<IBinder>& impl)
+58        : BpInterface<ICamera>(impl)
+59    {
+60    }
+	...
+	}
+```
+其他进程请求Camera服务的时候，就需要通过BpCamera来了。下面从BpCamera中一次实际的请求`takePicture`切入分析：
+```java
 206    // take a picture - returns an IMemory (ref-counted mmap)
 207    status_t takePicture(int msgType)
 208    {
@@ -165,7 +190,19 @@ BnInterface和BpInterface又分别继承自[Binder.h](http://androidxref.com/6.0
    }
 ```
 
-BpCamera继承BpInterface，是代理Binder。`takePicture`这个方法中data根据一些传输协议来写入数据，通过`remote`来transact，同时还有`reply`作为响应。remote上面说了就是BpBinder。
+```java
+373        case TAKE_PICTURE: {
+374            ALOGV("TAKE_PICTURE");
+375            CHECK_INTERFACE(ICamera, data, reply);
+376            int msgType = data.readInt32();
+377            reply->writeInt32(takePicture(msgType));
+378            return NO_ERROR;
+379        } break;
+```
+
+通过请求码`TAKE_PICTURE`来最后调用到`(takePicture(msgType));`
+
+BpCamera继承BpInterface，是代理Binder。`takePicture`这个方法中data根据一些传输协议来写入数据，通过`remote`来transact，同时还有`reply`作为响应。
 
 
 
