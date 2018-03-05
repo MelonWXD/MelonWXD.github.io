@@ -1,8 +1,8 @@
 ---
 title: JVM虚拟机，Dalvik虚拟机，ART虚拟机分析
 date: 2017-10-10 11:40:24
-tags: [jvm,Dalvik,ART]
-categories: Dalvik
+tags: [JVM,Dalvik,ART]
+categories: 虚拟机
 ---
 JVM虚拟机，Dalvik虚拟机，ART虚拟机简介
 <!-- more -->

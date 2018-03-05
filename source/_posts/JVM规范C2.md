@@ -2,7 +2,7 @@
 title: JVM Specification Chapter2    
 date: 2017-09-24 20:18:29  
 tags: [JVM Specification,翻译]  
-categories: JVM
+categories: 虚拟机
 ---
 Oracle JVM规范 简单翻译/笔记 - Chapter2
 <!-- more -->
