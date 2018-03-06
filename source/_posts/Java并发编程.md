@@ -104,6 +104,10 @@ synchronized是只允许持有锁的线程对这个变量进行操作，当前�
 
 
 
+# Lock
+
+
+
 # yield、join
 
 [看这里](http://www.cnblogs.com/paddix/p/5381958.html)
