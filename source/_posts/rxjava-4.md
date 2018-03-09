@@ -1,7 +1,7 @@
 ---
 title: RxJava (四)
 date: 2017-11-01 19:21:30
-tags: [RxJava,Retrofit] 
+tags: [RxJava] 
 categories: Android  
 ---
 Backpressure背压和Flowable

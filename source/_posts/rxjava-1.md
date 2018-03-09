@@ -1,7 +1,7 @@
 ---
 title: RxJava (一)  
 date: 2017-10-09 21:59:07  
-tags: [RxJava,Retrofit] 
+tags: [RxJava] 
 categories: Android  
 ---
 RxJava 基本用法
