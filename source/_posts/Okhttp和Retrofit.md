@@ -388,8 +388,8 @@ public static void main(String[] args) {
  	//实例化委托类传入代理类
   	UserDao userImp = new UserDaoImp();
   	UserDao userProxy = (UserDao)Proxy.newProxyInstance(
-      			Imp.getClass().getClassLoader()
-      			,Imp.getClass().getInterfaces()
+      			userImp.getClass().getClassLoader()
+      			,userImp.getClass().getInterfaces()
       			,new MyInvocationHandler(userImp)
       			);       
    System.out.println(userProxy.getName()); 
