@@ -350,7 +350,7 @@ synchronized void enqueue(AsyncCall call) {
 
 **动态代理**
 
-通过jdk在内存中动态生成一个代理对象，设计Proxy类的静态方法`newProxyInstance`和`InvocationHandler`接口。
+通过jdk在内存中动态生成一个代理对象，涉及Proxy类的静态方法`newProxyInstance`和`InvocationHandler`接口。
 
 下面大体讲一下使用，直接手打可能有点错误，意思到了就行了。。。
 
