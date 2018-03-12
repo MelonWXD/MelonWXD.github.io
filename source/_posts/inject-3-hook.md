@@ -58,7 +58,7 @@ void __attribute__ ((constructor)) hooker_main() {
 
 寄存器的保存和恢复比较简单，直接调用Ptrace的方法，下面主要讲一下方法地址的查找和执行。
 ## 确定方法地址
-对于so文件来说，内部的函数一般分为导出函数和非导出函数，使用命令`nm -D xx.so`即可看到导出函数的偏移值，虽然每次加载so库的内存不同，但是如果知道so文件的内存基址base_addr，那么base_addr+偏移值就是某个导出函数的内存地址。
+对于so文件来说，内部的函数一般分为导出函数和非导出函数，使用命令`nm -D xx.so`即可看到导出函数的偏移值，虽然每次加载so库的内存地址不同，但是偏移值是固定的。如果知道so文件的内存基址base_addr，那么base_addr+偏移值就是某个导出函数的内存地址。
 libc.so的导出函数mmap的偏移值如下：
 ```
 duoyi@duoyi-OptiPlex-7010:~/Desktop$ nm -D libc.so | grep mmap
@@ -70,7 +70,7 @@ duoyi@duoyi-OptiPlex-7010:~/Desktop$ nm -D libc.so | grep mmap
 
 基于这样一个式子，我们在控制进程中，主动加载libc库，取得mmap函数地址，记为`local_base_addr`和`local_method_addr`。
 
-再通过遍历查询目标进程的内存映射文件，找到libc库在目标进程中的基址`remote_base_addr`，即可算出函数mmap地址`remote_base_addr`。目标进程的内存映射文件的位置为`/proc/pid/maps`，我这里用命令快速查看一下这样做的可行性，具体实现请看代码。
+再通过遍历查询目标进程的内存映射文件，找到libc库在目标进程中的基址`remote_base_addr`，即可算出函数mmap地址`remote_base_addr`。目标进程的内存映射文件的位置为`/proc/pid/maps`，我这里用命令行来快速查看一下这样做的可行性，具体实现请看代码。
 
 ```
 //权限
@@ -175,7 +175,7 @@ bool Tracer::traceCall(void *addr, t_long *params, uint8_t num_params, arch_regs
 ## 哈希查找
 通过计算`symbol`的哈希值，查找哈希表得到索引值`symidx`。
 目前ELF有2种Hash表，一种就是DT_HASH，详见`ELF文件格式系统3.8.6`，另一种就是DT_GNU_HASH，详见参考。
-如果哈希表的类型是DT_GNU_HASH时，是存在`symbol`通过GNU_HASH无法找到对应的`symidx`的，根据文档原文解释，`symndx`是能被GNU_HASH找到的第一个符号的索引值。假设符号表的项数为`dynsymcount`，那么可以被找到的项数为`dynsymcount-symndx`。所以当通过GNU_HASH无法找到的时候，就要手动遍历符号表的前`symndx`项来计算`symidx`，部分代码如下：
+如果哈希表的类型是DT_GNU_HASH时，是存在`symbol`通过GNU_HASH无法找到对应的`symidx`的，根据文档原文解释，`symndx`是能被GNU_HASH找到的第一个符号的索引值。假设符号表的项数为`dynsymcount`，那么可以被找到的项数为`dynsymcount-symndx`。所以当通过GNU_HASH无法找到的时候，就要手动遍历符号表的`前symndx`项来计算`symidx`，部分代码如下：
 ```c
 		if (0 == gnuLookup(symbol, sym, symidx)) {
             return 0;
