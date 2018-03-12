@@ -129,7 +129,7 @@ gourpBy操作符将数据源进行分组，生成多个GroupedObservable，一�
 
 
 ## 不写了 健身去
-写一半找例子的时候发现居然有人[翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/)了  
+写一半找例子的时候发现居然有人[翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/)和[总结](https://www.jianshu.com/p/7b1f57bd1489)了  
 这么火的技术，肯定早就有人翻译了..  
 ![](http://ww2.sinaimg.cn/large/9150e4e5ly1fjkl5d4d1tj204g04fglo.jpg)
 
