@@ -709,7 +709,63 @@ final void runWorker(Worker w) {
     }
 ```
 
-在runWorker中去除firstTask，并调用其run方法来执行任务。
+在runWorker中取出firstTask，并调用其run方法来执行任务。
+
+## 常见的4个线程池
+
+###　newCachedThreadPool
+
+```java
+    public static ExecutorService newCachedThreadPool() {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                      60L, TimeUnit.SECONDS,
+                                      new SynchronousQueue<Runnable>());
+    }
+```
+
+核心线程数0，最大工作线程数为Integer.MAX_VALUE，可灵活回收空闲线程，若无可回收，则新建线程。
+
+### **newFixedThreadPool**
+
+```java
+    public static ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
+    }
+```
+
+核心线程数即最大工作线程数，由用户控制，可控制线程最大并发数，超出的线程会在队列中等待。
+
+### **newScheduledThreadPool**
+
+```java
+public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+    return new ScheduledThreadPoolExecutor(corePoolSize);
+}
+public ScheduledThreadPoolExecutor(int corePoolSize) {
+        super(corePoolSize, Integer.MAX_VALUE,
+              DEFAULT_KEEPALIVE_MILLIS, MILLISECONDS,
+              new DelayedWorkQueue());
+    }
+```
+
+核心线程数由用户控制，最大工作线程数为Integer.MAX_VALUE，可创建支持定时及周期性任务执行的线程。比起Timer来应该优先使用这个。
+
+### **newSingleThreadExecutor**
+
+```java
+    public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+    }
+```
+
+核心线程=最大工作线程=1。创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序执行。
+
+
 
 # 参考
 
