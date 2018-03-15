@@ -1,7 +1,7 @@
 ---
 title: HTTP基础知识
 date: 2017-09-24 20:18:29  
-tags: [计算机网络]  
+tags: [网络编程]  
 categories: 网络基础
 ---
 ## 网关
