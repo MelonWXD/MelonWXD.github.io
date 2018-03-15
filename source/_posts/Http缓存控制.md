@@ -1,6 +1,6 @@
 ---
-title: Http的缓存控制 
-date: 2018-01-11 22:02:59
+title: HTTP的缓存控制 
+date: 2018-03-15 17:48:48
 tags: [网络编程]  
 categories: 网络基础
 ---
