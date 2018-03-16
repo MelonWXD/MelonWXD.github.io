@@ -2,7 +2,7 @@
 title: ClassLoader 相关面试题
 date: 2017-10-17 17:43:11 
 tags: [ClassLoader]
-categories: JVM
+categories: 虚拟机
 ---
 
 检测你是否掌握了[ClassLoader的基础知识](https://melonwxd.github.io/2017/10/17/classloader1/)

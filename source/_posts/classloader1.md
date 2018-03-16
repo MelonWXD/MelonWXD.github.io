@@ -1,8 +1,8 @@
 ---
 title: ClassLoader的分析与使用
 date: 2017-10-17 11:53:31  
-tags: [ClassLoader,HotFix]  
-categories: JVM  
+tags: [ClassLoader,JVM]  
+categories: 虚拟机  
 ---
 深入学习ClassLoader原理与学习自定义ClassLoader的使用
 <!-- more -->
