@@ -303,6 +303,8 @@ synchronized void enqueue(AsyncCall call) {
 
 ## 基本用法
 
+**这块暂时不看，看下一个**
+
 ```java
     public static RetrofitClient getInstance() {
         if (mInstance == null) {
@@ -325,11 +327,38 @@ synchronized void enqueue(AsyncCall call) {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(mHttpClient)
                 .build();
-
+    
         mApi = mRetrofit.create(ApiService.class);
     }
 ```
 
+
+**↓↓看这个↓↓**
+
+```java
+public interface BlogService {
+    @GET("blog/{id}")
+    Call<ResponseBody> getBlog(@Path("id") int id);
+}
+
+
+Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl("http://localhost:4567/")
+    .build();
+BlogService service = retrofit.create(BlogService.class);
+Call<ResponseBody> call = service.getBlog(2);
+call.enqueue(new Callback<ResponseBody>() {
+  @Override
+  public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+  }
+
+  @Override
+  public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+  }
+});
+```
 ## create
 
 ```java
@@ -340,7 +369,7 @@ synchronized void enqueue(AsyncCall call) {
           , new InvocationHandler() {
               @Override public Object invoke(Object proxy, Method method, @Nullable Object[] args)
                   throws Throwable {
-					...
+    				...
               }
         });
   }
@@ -376,7 +405,7 @@ public class MyInvocationHandler implements InvocationHandler {
         super();  
         this.target = target;  //在这里获取到委托类的实例
     }  
- 
+     
     @Override  
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {  
             System.out.println("当前invoke的方法为：" + method.getName() );  
@@ -501,9 +530,15 @@ T body = serviceMethod.toResponse(catchingBody);
 
 ## callAdapter.adapt
 
-调用callAdapter.adapt来适配委托类的方法返回值。
+再关注动态代理方法`invoke`的返回值
 
-在loadServiceMethod中创建ServiceMethod时，`callAdapter = createCallAdapter();`，跟进
+```java
+return serviceMethod.callAdapter.adapt(okHttpCall);
+```
+
+调用serviceMethod的成员变量callAdapter.adapt来适配委托类的方法返回值。
+
+在loadServiceMethod中创建ServiceMethod时，`callAdapter = createCallAdapter()`，跟进
 
 ```java
    private CallAdapter<T, R> createCallAdapter() {
@@ -536,7 +571,51 @@ public CallAdapter<?, ?> nextCallAdapter(@Nullable CallAdapter.Factory skipPast,
 
 ```
 
-通过`adapterFactories.get(i).get(returnType, annotations, this);`可以知道是遍历retrofit的adapterFactories，调用get方法，以`RxJava2CallAdapterFactory`为例，看RxJava2CallAdapterFactory的get方法。
+通过`adapterFactories.get(i).get(returnType, annotations, this);`可以知道是遍历retrofit的adapterFactories，并调用每个item的`get`方法来获取与返回值对应的Adapter
+
+### adapterFactories
+
+这个adapterFactories是在构造Retrofit时由Builder默认添加了一个
+
+```java
+   public Retrofit build() {
+     ...
+      // Make a defensive copy of the adapters and add the default Call adapter.
+      List<CallAdapter.Factory> adapterFactories = new ArrayList<>(this.adapterFactories);
+      adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
+	...
+  }
+```
+
+以默认的`DefaultCallAdapterFactory`为例，看看他的get方法
+
+```java
+final class DefaultCallAdapterFactory extends CallAdapter.Factory {
+  static final CallAdapter.Factory INSTANCE = new DefaultCallAdapterFactory();
+
+  @Override
+  public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    if (getRawType(returnType) != Call.class) {
+      return null;
+    }
+
+    final Type responseType = Utils.getCallResponseType(returnType);
+    return new CallAdapter<Object, Call<?>>() {
+      @Override public Type responseType() {
+        return responseType;
+      }
+
+      @Override public Call<Object> adapt(Call<Object> call) {
+        return call;
+      }
+    };
+  }
+}
+```
+
+返回的`new CallAdapter`对传入的OkHttpCall毫无包装，直接返回Call，毕竟是默认的。
+
+我们再以常用的`RxJava2CallAdapterFactory`为例，看RxJava2CallAdapterFactory的get方法。
 
 ```java
  @Override
@@ -555,7 +634,28 @@ public CallAdapter<?, ?> nextCallAdapter(@Nullable CallAdapter.Factory skipPast,
   }
 ```
 
-RxJava2CallAdapter的adapt方法再根据不同的条件返回不同的对象，具体见源码。
+返回的是RxJava2CallAdapter的实例，在看看RxJava2CallAdapter的adapt方法。
+
+```java
+ @Override public Object adapt(Call<R> call) {
+    Observable<Response<R>> responseObservable = isAsync
+        ? new CallEnqueueObservable<>(call)
+        : new CallExecuteObservable<>(call);
+
+    Observable<?> observable;
+    if (isResult) {
+      observable = new ResultObservable<>(responseObservable);
+    } else if (isBody) {
+      observable = new BodyObservable<>(responseObservable);
+    } else {
+      observable = responseObservable;
+    }
+	...
+    return observable;
+  }
+```
+
+根据各种条件做了一些判断，对Call进行封装，具体见源码。
 
 
 
