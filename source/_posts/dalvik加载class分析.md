@@ -186,4 +186,4 @@ dvmInitClass
 
 # 参考
 
-http://www.infoq.com/cn/articles/android-in-depth-dalvik
+[深入理解Android（二）：Java虚拟机Dalvik](http://www.infoq.com/cn/articles/android-in-depth-dalvik)
