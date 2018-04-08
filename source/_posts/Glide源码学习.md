@@ -526,7 +526,159 @@ class EngineRunnable implements Runnable, Prioritized {...}
     }
 ```
 
+进入到EngineRunnable的run方法中：
 
+```java
+    @Override
+    public void run() {
+        Exception exception = null;
+        Resource<?> resource = null;
+        try {
+            resource = decode();
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        if (resource == null) {
+            onLoadFailed(exception);
+        } else {
+            onLoadComplete(resource);
+        }
+    }
+    private Resource<?> decode() throws Exception {
+        if (isDecodingFromCache()) {
+            return decodeFromCache();
+        } else {
+            return decodeFromSource();
+        }
+    }
+    private Resource<?> decodeFromSource() throws Exception {
+        return decodeJob.decodeFromSource();
+    }
+```
+
+最后走到decodeJob来做网络请求
+
+```java
+    public Resource<Z> decodeFromSource() throws Exception {
+        Resource<T> decoded = decodeSource();
+        return transformEncodeAndTranscode(decoded);
+    }
+
+    private Resource<T> decodeSource() throws Exception {
+        Resource<T> decoded = null;
+        try {
+            final A data = fetcher.loadData(priority);
+            decoded = decodeFromSourceData(data);
+        } finally {
+            fetcher.cleanup();
+        }
+        return decoded;
+    }
+```
+
+根据上面分析，可以知道这个fetcher是从ImageVideoModelLoader中获取的，返回的是ImageVideoFetcher实例。
+
+跟进ImageVideoFetcher的`loadData`
+
+```java
+		@Override
+        public ImageVideoWrapper loadData(Priority priority) throws Exception {
+            InputStream is = null;
+            if (streamFetcher != null) {
+                try {
+                    is = streamFetcher.loadData(priority);
+                } catch (Exception e) {
+                }
+            }
+            ParcelFileDescriptor fileDescriptor = null;
+            if (fileDescriptorFetcher != null) {
+                try {
+                    fileDescriptor = fileDescriptorFetcher.loadData(priority);
+                } catch (Exception e) {
+                }
+            }
+            return new ImageVideoWrapper(is, fileDescriptor);
+        }
+```
+
+
+
+```java
+    @Override
+    public DataFetcher<ImageVideoWrapper> getResourceFetcher(A model, int width, int height) {
+        DataFetcher<InputStream> streamFetcher = null;
+        if (streamLoader != null) {
+            streamFetcher = streamLoader.getResourceFetcher(model, width, height);
+        }
+        DataFetcher<ParcelFileDescriptor> fileDescriptorFetcher = null;
+        if (fileDescriptorLoader != null) {
+            fileDescriptorFetcher = fileDescriptorLoader.getResourceFetcher(model, width, height);
+        }
+
+        if (streamFetcher != null || fileDescriptorFetcher != null) {
+            return new ImageVideoFetcher(streamFetcher, fileDescriptorFetcher);
+        } else {
+            return null;
+        }
+    }
+```
+
+这个streamFetcher结合初始化`loadGeneric`的代码可以知道是HttpUrlFetcher的实例，跟进查看其`loadData`方法
+
+```java
+@Override
+    public InputStream loadData(Priority priority) throws Exception {
+        return loadDataWithRedirects(glideUrl.toURL(), 0 /*redirects*/, null /*lastUrl*/, glideUrl.getHeaders());
+    }
+
+    private InputStream loadDataWithRedirects(URL url, int redirects, URL lastUrl, Map<String, String> headers)
+            throws IOException {
+        if (redirects >= MAXIMUM_REDIRECTS) {
+            throw new IOException("Too many (> " + MAXIMUM_REDIRECTS + ") redirects!");
+        } else {
+            // Comparing the URLs using .equals performs additional network I/O and is generally broken.
+            // See http://michaelscharf.blogspot.com/2006/11/javaneturlequals-and-hashcode-make.html.
+            try {
+                if (lastUrl != null && url.toURI().equals(lastUrl.toURI())) {
+                    throw new IOException("In re-direct loop");
+                }
+            } catch (URISyntaxException e) {
+                // Do nothing, this is best effort.
+            }
+        }
+        urlConnection = connectionFactory.build(url);
+        for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
+          urlConnection.addRequestProperty(headerEntry.getKey(), headerEntry.getValue());
+        }
+        urlConnection.setConnectTimeout(2500);
+        urlConnection.setReadTimeout(2500);
+        urlConnection.setUseCaches(false);
+        urlConnection.setDoInput(true);
+
+        // Connect explicitly to avoid errors in decoders if connection fails.
+        urlConnection.connect();
+        if (isCancelled) {
+            return null;
+        }
+        final int statusCode = urlConnection.getResponseCode();
+        if (statusCode / 100 == 2) {
+            return getStreamForSuccessfulRequest(urlConnection);
+        } else if (statusCode / 100 == 3) {
+            String redirectUrlString = urlConnection.getHeaderField("Location");
+            if (TextUtils.isEmpty(redirectUrlString)) {
+                throw new IOException("Received empty or null redirect url");
+            }
+            URL redirectUrl = new URL(url, redirectUrlString);
+            return loadDataWithRedirects(redirectUrl, redirects + 1, url, headers);
+        } else {
+            if (statusCode == -1) {
+                throw new IOException("Unable to retrieve response code from HttpUrlConnection.");
+            }
+            throw new IOException("Request failed " + statusCode + ": " + urlConnection.getResponseMessage());
+        }
+    }
+```
 
 
 
