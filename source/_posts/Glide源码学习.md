@@ -415,7 +415,7 @@ requestTrack也是构造RequestManager的时候传入一个`new RequestTracker()
 
   ​
 
-#### engin.load
+### engin.load
 
 理清了loadprovider再回到onSizeReady中
 
@@ -581,6 +581,8 @@ class EngineRunnable implements Runnable, Prioritized {...}
 
 跟进ImageVideoFetcher的`loadData`
 
+#### streamFetcher.loadData
+
 ```java
 		@Override
         public ImageVideoWrapper loadData(Priority priority) throws Exception {
@@ -601,8 +603,6 @@ class EngineRunnable implements Runnable, Prioritized {...}
             return new ImageVideoWrapper(is, fileDescriptor);
         }
 ```
-
-
 
 ```java
     @Override
@@ -634,19 +634,7 @@ class EngineRunnable implements Runnable, Prioritized {...}
 
     private InputStream loadDataWithRedirects(URL url, int redirects, URL lastUrl, Map<String, String> headers)
             throws IOException {
-        if (redirects >= MAXIMUM_REDIRECTS) {
-            throw new IOException("Too many (> " + MAXIMUM_REDIRECTS + ") redirects!");
-        } else {
-            // Comparing the URLs using .equals performs additional network I/O and is generally broken.
-            // See http://michaelscharf.blogspot.com/2006/11/javaneturlequals-and-hashcode-make.html.
-            try {
-                if (lastUrl != null && url.toURI().equals(lastUrl.toURI())) {
-                    throw new IOException("In re-direct loop");
-                }
-            } catch (URISyntaxException e) {
-                // Do nothing, this is best effort.
-            }
-        }
+
         urlConnection = connectionFactory.build(url);
         for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
           urlConnection.addRequestProperty(headerEntry.getKey(), headerEntry.getValue());
@@ -665,24 +653,65 @@ class EngineRunnable implements Runnable, Prioritized {...}
         if (statusCode / 100 == 2) {
             return getStreamForSuccessfulRequest(urlConnection);
         } else if (statusCode / 100 == 3) {
-            String redirectUrlString = urlConnection.getHeaderField("Location");
-            if (TextUtils.isEmpty(redirectUrlString)) {
-                throw new IOException("Received empty or null redirect url");
-            }
-            URL redirectUrl = new URL(url, redirectUrlString);
-            return loadDataWithRedirects(redirectUrl, redirects + 1, url, headers);
+
         } else {
-            if (statusCode == -1) {
-                throw new IOException("Unable to retrieve response code from HttpUrlConnection.");
-            }
-            throw new IOException("Request failed " + statusCode + ": " + urlConnection.getResponseMessage());
+
         }
     }
 ```
 
+可以看到在`loadDataWithRedirects`中通过httpUrlConnection来完成网络请求。成功之后就调用`getStreamForSuccessfulRequest`
 
+```java
+   private InputStream getStreamForSuccessfulRequest(HttpURLConnection urlConnection)
+            throws IOException {
+        if (TextUtils.isEmpty(urlConnection.getContentEncoding())) {
+            int contentLength = urlConnection.getContentLength();
+            stream = ContentLengthInputStream.obtain(urlConnection.getInputStream(), contentLength);
+        } else {
+            stream = urlConnection.getInputStream();
+        }
+        return stream;
+    }
+```
 
+将成功请求的io流返回而已。
 
+#### return ImageVideoWrapper
+
+一路返回到上面说的ImageVideoFetcher的`loadData`方法中，继续往下走
+
+```java
+		@Override
+        public ImageVideoWrapper loadData(Priority priority) throws Exception {
+            InputStream is = null;
+            is = streamFetcher.loadData(priority);
+            ParcelFileDescriptor fileDescriptor = null;
+            if (fileDescriptorFetcher != null) {
+				fileDescriptor = fileDescriptorFetcher.loadData(priority);
+            }
+            return new ImageVideoWrapper(is, fileDescriptor);
+        }
+```
+
+返回ImageVideoWrapper到DecodeJob中
+
+```java
+ private Resource<T> decodeSource() throws Exception {
+        Resource<T> decoded = null;
+        try {
+            final A data = fetcher.loadData(priority);
+            decoded = decodeFromSourceData(data);
+        } finally {
+            fetcher.cleanup();
+        }
+        return decoded;
+    }
+```
+
+再跟进到`decodeFromSourceData`
+
+===暂时烂尾===
 
 ```java
 //ImageViewTarget.java
