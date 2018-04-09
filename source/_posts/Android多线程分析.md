@@ -480,7 +480,7 @@ public class MyIntentService extends IntentService {
     }
 ```
 
-已启动就使用mServiceHandler发了个消息
+一启动就使用mServiceHandler发了个消息
 
 ```java
     private final class ServiceHandler extends Handler {
