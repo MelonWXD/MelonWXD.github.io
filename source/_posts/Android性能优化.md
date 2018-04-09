@@ -23,7 +23,7 @@ merge会自动优化多余的视图，多用于替换frameLayout或者当一个�
 
 viewstub常用来引入那些默认不会显示，只在特殊情况下显示的布局，如进度布局、网络失败显示的刷新布局、信息出错出现的提示布局等。
 
-##　其他
+## 其他
 
 - **用SurfaceView或TextureView代替普通View**
 
