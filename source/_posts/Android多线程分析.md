@@ -713,7 +713,7 @@ final void runWorker(Worker w) {
 
 ## 常见的4个线程池
 
-###　newCachedThreadPool
+### **newCachedThreadPool**
 
 ```java
     public static ExecutorService newCachedThreadPool() {
