@@ -1,10 +1,10 @@
 ---
-title: Android多线程学习  
-date: 2018-02-8 14:30:10
+title: Android和Java多线程学习  
+date: 2018-04-16 15:51:32
 tags: [多线程]  
 categories: Android
 ---
-Android中的多线程学习
+Android和Java中的多线程学习
 <!-- more -->  
 
 # 综述
@@ -765,8 +765,165 @@ public ScheduledThreadPoolExecutor(int corePoolSize) {
 
 核心线程=最大工作线程=1。创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序执行。
 
+# ExecutorCompletionService
+
+## Callable、Future和FutureTask
+
+通常做网络请求的时候，在Runnable中回调response来起到获取请求结果的效果。Callable就避免了这种尴尬的做法，因为他有返回值。
+
+通常与线程池一起使用，通过线程池的submit方法返回一个Future对象。
+
+```java
+<T> Future<T> submit(Callable<T> task);
+```
+
+正常的使用如下：
+
+```java
+		// 队列
+        BlockingQueue<Future<String>> futures = new LinkedBlockingQueue<>();
+        ExecutorService pool = Executors.newCachedThreadPool();
+
+        // 生产者
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                int index = i;
+                Future<String> submit = pool.submit(() -> "task:" + index + " done");
+                try {
+                    futures.put(submit);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        // 消费者
+        new Thread(() -> {
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (Future<String> future : futures) {
+                try {
+                    System.out.println(future.get());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+            pool.shutdown();
+        }).start();
+```
+
+获取结果可以直接使用Future的get方法，来阻塞获取也可以循环判断`future.isDone()`来获取。
+
+再来看一下FutureTask这个类：
+
+```java
+public class FutureTask<V> implements RunnableFuture<V> { ... }
+
+public interface RunnableFuture<V> extends Runnable, Future<V> {
+    void run();
+}
+```
+
+通过接口的多继承性来同时具备了Runnable和Future的特性。
+
+使用如下，与Future区别的具体使用场景还没搞懂。。
+
+```java
+ 		final FutureTask<String> futureTask = new FutureTask<>(() -> "task done");
+        final ExecutorService pool = Executors.newCachedThreadPool();
+
+        // 生产者
+        new Thread(() -> {
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            pool.submit(futureTask);
+        }).start();
+
+
+        // 消费者
+        new Thread(() -> {
+            while (true) {
+                try {
+                    System.out.println(futureTask.get());
+                    pool.shutdown();
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+```
+
+## ExecutorCompletionService
+
+todo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # 参考
 
 [JAVA线程池的使用](https://www.jianshu.com/p/ae67972d1156)
+
+[Callable、Future和FutureTask](http://www.cnblogs.com/dolphin0520/p/3949310.html)
