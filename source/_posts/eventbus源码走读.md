@@ -1,9 +1,7 @@
----
 title: EventBus 源码分析
 date: 2018-03-18 15:21:11
 tags: [事件总线]  
 categories: Android框架
----
 
 事件总线框架EventBus源码走读分析
 
@@ -71,7 +69,7 @@ public class MyEvent {
 
 # 源码分析
 
-## 注册
+## register
 
 ```java
     public void register(Object subscriber) {
@@ -111,6 +109,7 @@ private List<SubscriberMethod> findUsingInfo(Class<?> subscriberClass) {
         findState.initForSubscriber(subscriberClass);
         while (findState.clazz != null) {
             findState.subscriberInfo = getSubscriberInfo(findState);
+            //最简单的情况下info==null
             if (findState.subscriberInfo != null) {
                 SubscriberMethod[] array = findState.subscriberInfo.getSubscriberMethods();
                 for (SubscriberMethod subscriberMethod : array) {
@@ -119,6 +118,7 @@ private List<SubscriberMethod> findUsingInfo(Class<?> subscriberClass) {
                     }
                 }
             } else {
+                //所以还是会调用这个方法
                 findUsingReflectionInSingleClass(findState);
             }
             findState.moveToSuperclass();
@@ -127,9 +127,101 @@ private List<SubscriberMethod> findUsingInfo(Class<?> subscriberClass) {
     }
 ```
 
-最后在`findUsingInfo`中通过`findUsingReflectionInSingleClass(findState);`反射来获取类中被`Subscribe`修饰的方法。
+```java
+//在findUsingReflectionInSingleClass中就是通过了反射来获取的这个订阅类上所有的方法注解来判断 
+//并添加到findState.subscriberMethods中
+if (findState.checkAdd(method, eventType)) {
+    findState.subscriberMethods.add(
+        new SubscriberMethod(method, eventType, threadMode
+           ,subscribeAnnotation.priority(),subscribeAnnotation.sticky())   );
+}
 
-//todo
+//findState也是有订阅类来init的
+findState.initForSubscriber(subscriberClass);
+void initForSubscriber(Class<?> subscriberClass) {
+    this.subscriberClass = clazz = subscriberClass;
+    skipSuperClasses = false;
+    subscriberInfo = null;
+}
+```
+
+## post
+
+```java
+public void post(Object event) {
+    PostingThreadState postingState = currentPostingThreadState.get();
+    List<Object> eventQueue = postingState.eventQueue;
+    eventQueue.add(event);
+
+    if (!postingState.isPosting) {
+        postingState.isMainThread = isMainThread();
+        postingState.isPosting = true;
+        try {
+            while (!eventQueue.isEmpty()) {
+                postSingleEvent(eventQueue.remove(0), postingState);
+            }
+        } finally {
+            postingState.isPosting = false;
+            postingState.isMainThread = false;
+        }
+    }
+}
+private void postSingleEvent(Object event, PostingThreadState postingState) throws Error {
+    Class<?> eventClass = event.getClass();
+    boolean subscriptionFound = false;
+    if (eventInheritance) {
+ 			//默认false
+    } else {
+        subscriptionFound = postSingleEventForEventType(event, postingState, eventClass);
+    }
+    if (!subscriptionFound) {
+ 		//...
+    }
+}
+private boolean postSingleEventForEventType(/*...*/) {
+    CopyOnWriteArrayList<Subscription> subscriptions;
+    synchronized (this) {
+        //在订阅的时候会把 事件类型与对应的Subs添加到这个map中
+        //subscriptionsByEventType.put(eventType, subscriptions);
+        subscriptions = subscriptionsByEventType.get(eventClass);
+    }
+    if (subscriptions != null && !subscriptions.isEmpty()) {
+        for (Subscription subscription : subscriptions) {
+            //for循环  invoke每个注册登记的方法
+            postingState.event = event;
+            postingState.subscription = subscription;
+            boolean aborted = false;
+            try {
+                postToSubscription(subscription, event, postingState.isMainThread);
+                aborted = postingState.canceled;
+            } finally {
+                //...
+            }
+        }
+        return true;
+    }
+    return false;
+}
+//来到重头戏
+private void postToSubscription(/**/) {
+    switch (subscription.subscriberMethod.threadMode) {
+        case MAIN:
+            if (isMainThread) {
+                invokeSubscriber(subscription, event);
+            } else {
+                mainThreadPoster.enqueue(subscription, event);
+            }
+            break;
+    }
+}
+//反射调用  莫得感情 只分析简单的使用的话流程就这么简单
+void invokeSubscriber(Subscription subscription, Object event) {
+    try {
+        subscription.subscriberMethod.method.invoke(subscription.subscriber, event);
+    }  
+}
+
+```
 
 # 参考
 
