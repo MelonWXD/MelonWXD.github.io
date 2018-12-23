@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Dalvik,热更新," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Android热更新总结">
+<meta name="keywords" content="Dalvik,热更新">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android热更新总结">
+<meta property="og:url" content="http://yoursite.com/2018/03/16/热更新全解/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="Android热更新总结">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://owu391pls.bkt.clouddn.com/640.webp">
+<meta property="og:image" content="https://segmentfault.com/img/remote/1460000007189921?w=723&h=344">
+<meta property="og:image" content="http://img.blog.csdn.net/20170315001845944?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMjEyNDQzOA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-11-29T09:24:08.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android热更新总结">
+<meta name="twitter:description" content="Android热更新总结">
+<meta name="twitter:image" content="http://owu391pls.bkt.clouddn.com/640.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/16/热更新全解/"/>
+
+
+
+
+
+  <title>Android热更新总结 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/16/热更新全解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android热更新总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T11:04:17+08:00">
+                2018-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+	阅读次数:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,965 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android热更新总结</p>
+<a id="more"></a>  
+<h1 id="类加载方案"><a href="#类加载方案" class="headerlink" title="类加载方案"></a>类加载方案</h1><p>类加载方案，我更偏向于叫dex插队方案，实现原理基于ClassLoader，原理看<a href="https://melonwxd.github.io/2017/10/17/classloader1/#Android的ClassLoader" target="_blank" rel="noopener">Android中的ClassLoader</a>。使用这类的基本是腾讯系。</p>
+<p>大致流程如下</p>
+<ol>
+<li>应用刚开始启动的时候(App.onCreated)，连接服务器，检测是否有更新补丁patch.dex，如果有就下载下来。</li>
+<li>创建新的ClassLoader主动加载补丁patch.dex中的类，反射获取dexElements。</li>
+<li>通过反射将上面获取的dexElements插入到App应用当前的类加载的dexElements之前。</li>
+<li>这样当应用要调用出bug的模块的时候，会优先加载patch.dex中的类，从而实现bug修复。</li>
+</ol>
+<p>下图中Qzone.class就是要修复的类。</p>
+<p><img src="http://owu391pls.bkt.clouddn.com/640.webp" alt=""></p>
+<h2 id="Dalvik虚拟机的CLASS-ISPREVERIFIED"><a href="#Dalvik虚拟机的CLASS-ISPREVERIFIED" class="headerlink" title="Dalvik虚拟机的CLASS_ISPREVERIFIED"></a>Dalvik虚拟机的CLASS_ISPREVERIFIED</h2><p>在dvm虚拟机中，如果某个类<code>Clz1</code>被打上了<code>CLASS_ISPREVERIFIED</code>标志，就会进行dex校验，如果检验失败则抛出”unexpected DEX”异常。如果对于<code>Clz1</code>来说，被其引用到的类，都应该与<code>Clz1</code>在同一个dex文件中，就会打上<code>CLASS_ISPREVERIFIED</code>标签。</p>
+<p><a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Resolve.cpp#119" target="_blank" rel="noopener">http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Resolve.cpp#119</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">63</span> ClassObject* dvmResolveClass(<span class="keyword">const</span> ClassObject* referrer, u4 classIdx,</span><br><span class="line"><span class="number">64</span>    bool fromUnverifiedConstant)</span><br><span class="line"><span class="number">65</span>&#123;</span><br><span class="line"><span class="number">66</span>    DvmDex* pDvmDex = referrer-&gt;pDvmDex;</span><br><span class="line"><span class="number">67</span>    ClassObject* resClass;</span><br><span class="line"><span class="number">68</span>    <span class="keyword">const</span> <span class="keyword">char</span>* className;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这是查找缓存 是否已经加载过该class，下面讲手Q方案会用到，这里暂时忽略</span></span><br><span class="line"><span class="number">74</span>    resClass = dvmDexGetResolvedClass(pDvmDex, classIdx);</span><br><span class="line"><span class="number">75</span>    <span class="keyword">if</span> (resClass != NULL)</span><br><span class="line"><span class="number">76</span>        <span class="keyword">return</span> resClass;</span><br><span class="line">  </span><br><span class="line">  		<span class="comment">//在这里通过classIdx在dex文件中查找原先的bug类</span></span><br><span class="line"><span class="number">90</span>    className = dexStringByTypeIdx(pDvmDex-&gt;pDexFile, classIdx);</span><br><span class="line"><span class="number">91</span>    <span class="keyword">if</span> (className[<span class="number">0</span>] != <span class="string">'\0'</span> &amp;&amp; className[<span class="number">1</span>] == <span class="string">'\0'</span>) &#123;</span><br><span class="line"> </span><br><span class="line"><span class="number">93</span>        resClass = dvmFindPrimitiveClass(className[<span class="number">0</span>]);</span><br><span class="line"><span class="number">94</span>    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  </span><br><span class="line">  		<span class="comment">//在这里通过ClassLoader来查找bug类，根据修复原理，这个时候找到的bug类是插队进去的已经修复的类</span></span><br><span class="line"><span class="number">95</span>        resClass = dvmFindClassNoInit(className, referrer-&gt;classLoader);</span><br><span class="line"><span class="number">96</span>    &#125;</span><br><span class="line"><span class="number">97</span></span><br><span class="line"><span class="number">98</span>    <span class="keyword">if</span> (resClass != NULL) &#123;</span><br><span class="line">  			<span class="comment">//检测是否需要进行dex校验</span></span><br><span class="line"><span class="number">118</span>        <span class="keyword">if</span> (!fromUnverifiedConstant &amp;&amp;</span><br><span class="line"><span class="number">119</span>            IS_CLASS_FLAG_SET(referrer, CLASS_ISPREVERIFIED))</span><br><span class="line"><span class="number">120</span>        &#123;</span><br><span class="line"><span class="number">121</span>            ClassObject* resClassCheck = resClass;</span><br><span class="line"><span class="number">122</span>            <span class="keyword">if</span> (dvmIsArrayClass(resClassCheck))</span><br><span class="line"><span class="number">123</span>                resClassCheck = resClassCheck-&gt;elementClass;</span><br><span class="line">				<span class="comment">//dex校验 referrer-&gt;pDvmDex是class.dex  resClassCheck-&gt;pDvmDex是patch.dex 所以报错！</span></span><br><span class="line"><span class="number">125</span>            <span class="keyword">if</span> (referrer-&gt;pDvmDex != resClassCheck-&gt;pDvmDex &amp;&amp;</span><br><span class="line"><span class="number">126</span>                resClassCheck-&gt;classLoader != NULL)</span><br><span class="line"><span class="number">127</span>            &#123;</span><br><span class="line"><span class="number">128</span>                ALOGW(<span class="string">"Class resolved by unexpected DEX:"</span></span><br><span class="line"><span class="number">129</span>                     <span class="string">" %s(%p):%p ref [%s] %s(%p):%p"</span>,</span><br><span class="line"><span class="number">130</span>                    referrer-&gt;descriptor, referrer-&gt;classLoader,</span><br><span class="line"><span class="number">131</span>                    referrer-&gt;pDvmDex,</span><br><span class="line"><span class="number">132</span>                    resClass-&gt;descriptor, resClassCheck-&gt;descriptor,</span><br><span class="line"><span class="number">133</span>                    resClassCheck-&gt;classLoader, resClassCheck-&gt;pDvmDex);</span><br><span class="line"><span class="number">134</span>                ALOGW(<span class="string">"(%s had used a different %s during pre-verification)"</span>,</span><br><span class="line"><span class="number">135</span>                    referrer-&gt;descriptor, resClass-&gt;descriptor);</span><br><span class="line"><span class="number">136</span>                dvmThrowIllegalAccessError(</span><br><span class="line"><span class="number">137</span>                    <span class="string">"Class ref in pre-verified class resolved to unexpected "</span></span><br><span class="line"><span class="number">138</span>                    <span class="string">"implementation"</span>);</span><br><span class="line"><span class="number">139</span>                <span class="keyword">return</span> NULL;</span><br><span class="line"><span class="number">140</span>            &#125;</span><br><span class="line"><span class="number">141</span>        &#125;</span><br><span class="line">			<span class="comment">//如果加载class没问题 就把他放到缓存里去</span></span><br><span class="line"><span class="number">154</span>        dvmDexSetResolvedClass(pDvmDex, classIdx, resClass);</span><br><span class="line"><span class="number">155</span>    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="number">160</span>    &#125;</span><br><span class="line"><span class="number">161</span></span><br><span class="line"><span class="number">162</span>    <span class="keyword">return</span> resClass;</span><br><span class="line"><span class="number">163</span>&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>待解决：为什么multiDex没有出现问题？应该是从条件上直接避免了判断？具体还要查看dvm加载流程</strong></p>
+<p>判断是否要进行dex校验的代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">118</span>        <span class="keyword">if</span> (!fromUnverifiedConstant &amp;&amp;</span><br><span class="line"><span class="number">119</span>            IS_CLASS_FLAG_SET(referrer, CLASS_ISPREVERIFIED))</span><br></pre></td></tr></table></figure>
+<p>2个条件 一个是 <code>fromUnverifiedConstant</code>  一个是 <code>CLASS_ISPREVERIFIED</code> 标记。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">57</span> * <span class="string">"fromUnverifiedConstant"</span> should only be set <span class="keyword">if</span> <span class="keyword">this</span> call is the direct</span><br><span class="line"><span class="number">58</span> * result of executing a <span class="string">"const-class"</span> or <span class="string">"instance-of"</span> instruction, which</span><br><span class="line"><span class="number">59</span> * use <span class="class"><span class="keyword">class</span> <span class="title">constants</span> <span class="title">not</span> <span class="title">resolved</span> <span class="title">by</span> <span class="title">the</span> <span class="title">bytecode</span> <span class="title">verifier</span>.</span></span><br></pre></td></tr></table></figure>
+<p>fromUnverifiedConstant的注释说明如上，稍后会说明，下面主要来说一下<code>CLASS_ISPREVERIFIED</code></p>
+<p><a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/analysis/DexPrepare.cpp#1067" target="_blank" rel="noopener">http://androidxref.com/4.4.4_r1/xref/dalvik/vm/analysis/DexPrepare.cpp#1067</a></p>
+<p>而为类打上<code>CLASS_ISPREVERIFIED</code>标记的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1067</span>    <span class="keyword">if</span> (doVerify) &#123;</span><br><span class="line"><span class="number">1068</span>        <span class="keyword">if</span> (dvmVerifyClass(clazz)) &#123;</span><br><span class="line"><span class="number">1069</span>            <span class="comment">/*</span></span><br><span class="line"><span class="comment">1070             * Set the "is preverified" flag in the DexClassDef.  We</span></span><br><span class="line"><span class="comment">1071             * do it here, rather than in the ClassObject structure,</span></span><br><span class="line"><span class="comment">1072             * because the DexClassDef is part of the odex file.</span></span><br><span class="line"><span class="comment">1073             */</span></span><br><span class="line"><span class="number">1074</span>            <span class="keyword">assert</span>((clazz-&gt;accessFlags &amp; JAVA_FLAGS_MASK) ==</span><br><span class="line"><span class="number">1075</span>                pClassDef-&gt;accessFlags);</span><br><span class="line"><span class="number">1076</span>            ((DexClassDef*)pClassDef)-&gt;accessFlags |= CLASS_ISPREVERIFIED;</span><br><span class="line"><span class="number">1077</span>            verified = <span class="keyword">true</span>;</span><br><span class="line"><span class="number">1078</span>        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">1079</span>            <span class="comment">// <span class="doctag">TODO:</span> log when in verbose mode</span></span><br><span class="line"><span class="number">1080</span>            ALOGV(<span class="string">"DexOpt: '%s' failed verification"</span>, classDescriptor);</span><br><span class="line"><span class="number">1081</span>        &#125;</span><br><span class="line"><span class="number">1082</span>    &#125;</span><br></pre></td></tr></table></figure>
+<p><a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/analysis/DexVerify.cpp#40" target="_blank" rel="noopener">http://androidxref.com/4.4.4_r1/xref/dalvik/vm/analysis/DexVerify.cpp#40</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">40</span><span class="function">bool <span class="title">dvmVerifyClass</span><span class="params">(ClassObject* clazz)</span></span></span><br><span class="line"><span class="function">41</span>&#123;</span><br><span class="line"><span class="number">42</span>    <span class="keyword">int</span> i;</span><br><span class="line"><span class="number">43</span></span><br><span class="line"><span class="number">44</span>    <span class="keyword">if</span> (dvmIsClassVerified(clazz)) &#123;</span><br><span class="line"><span class="number">45</span>        ALOGD(<span class="string">"Ignoring duplicate verify attempt on %s"</span>, clazz-&gt;descriptor);</span><br><span class="line"><span class="number">46</span>        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="number">47</span>    &#125;</span><br><span class="line"><span class="number">48</span></span><br><span class="line"><span class="number">49</span>    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; clazz-&gt;directMethodCount; i++) &#123;</span><br><span class="line"><span class="number">50</span>        <span class="keyword">if</span> (!verifyMethod(&amp;clazz-&gt;directMethods[i])) &#123;</span><br><span class="line"><span class="number">51</span>            LOG_VFY(<span class="string">"Verifier rejected class %s"</span>, clazz-&gt;descriptor);</span><br><span class="line"><span class="number">52</span>            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"><span class="number">53</span>        &#125;</span><br><span class="line"><span class="number">54</span>    &#125;</span><br><span class="line"><span class="number">55</span>    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; clazz-&gt;virtualMethodCount; i++) &#123;</span><br><span class="line"><span class="number">56</span>        <span class="keyword">if</span> (!verifyMethod(&amp;clazz-&gt;virtualMethods[i])) &#123;</span><br><span class="line"><span class="number">57</span>            LOG_VFY(<span class="string">"Verifier rejected class %s"</span>, clazz-&gt;descriptor);</span><br><span class="line"><span class="number">58</span>            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"><span class="number">59</span>        &#125;</span><br><span class="line"><span class="number">60</span>    &#125;</span><br><span class="line"><span class="number">61</span></span><br><span class="line"><span class="number">62</span>    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="number">63</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>通过遍历<code>clazz-&gt;directMethods</code>和<code>clazz-&gt;virtualMethods</code>来验证。</p>
+<p>directMethods包含了以下方法：</p>
+<ul>
+<li>static方法    </li>
+<li>private方法</li>
+<li>构造函数</li>
+</ul>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>想要避免<code>CLASS_ISPREVERIFIED</code>就要从上述的三个条件中着手：</p>
+<ul>
+<li>让class不被打上<code>CLASS_ISPREVERIFIED</code>标志，就不会进行dex校验</li>
+<li>让fromUnverifiedConstant 为true，就不会进行dex校验</li>
+<li>让dex校验判断异常的语句<code>referrer-&gt;pDvmDex != resClassCheck-&gt;pDvmDex</code> 不成立</li>
+</ul>
+<p>下面将三个解决方案分别对应上述三点。</p>
+<h3 id="QQ空间"><a href="#QQ空间" class="headerlink" title="QQ空间"></a>QQ空间</h3><p>往所有类的构造函数里面插入了一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ClassVerifier.PREVENT_VERIFY) &#123;</span><br><span class="line">	System.out.println(AntilazyLoad.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>并将AntilazyLoad类打包成一个单独的hack.dex，这样就让classes.dex内的类都会引用一个在不相同dex中的AntilazyLoad类，这样就防止了类被打上<code>CLASS_ISPREVERIFIED</code>的标志了。</p>
+<p>但是这样做的缺点就是失去了dvm的优化效果了：verify+optimize</p>
+<h3 id="手机QQ"><a href="#手机QQ" class="headerlink" title="手机QQ"></a>手机QQ</h3><p>通过fromUnverifiedConstant来突破</p>
+<p><strong>方案一</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">118</span>        <span class="keyword">if</span> (!fromUnverifiedConstant &amp;&amp;</span><br><span class="line"><span class="number">119</span>            IS_CLASS_FLAG_SET(referrer, CLASS_ISPREVERIFIED))</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">57</span> * <span class="string">"fromUnverifiedConstant"</span> should only be set <span class="keyword">if</span> <span class="keyword">this</span> call is the direct</span><br><span class="line"><span class="number">58</span> * result of executing a <span class="string">"const-class"</span> or <span class="string">"instance-of"</span> instruction, which</span><br><span class="line"><span class="number">59</span> * use <span class="class"><span class="keyword">class</span> <span class="title">constants</span> <span class="title">not</span> <span class="title">resolved</span> <span class="title">by</span> <span class="title">the</span> <span class="title">bytecode</span> <span class="title">verifier</span>.</span></span><br></pre></td></tr></table></figure>
+<p>注释中的翻译大概是：只有通过”const-class” or “instance-of”指令直接调用的时候，fromUnverifiedConstant才为true。</p>
+<p>补丁安装后，预先以 const-class/instance-of 方式主动引用补丁类，这次引用会触发加载补丁类并将引用放入 dex 的已解析类缓存里，后续 app 实际业务逻辑引用到补丁类时，直接从已解析缓存里就能取到，这样很简单地就绕开了“unexpected DEX”异常。</p>
+<p>缺点：想要预先引用补丁类，意味着一开始就要知道出现bug的类的名称是哪个，这显然不现实。</p>
+<p><strong>方案二</strong></p>
+<p>在Native层主动调用dvmResolveClass方法，让传入的fromUnverifiedConstant为true</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javaClassObject* dvmResolveClass(<span class="keyword">const</span> ClassObject* referrer, u4 classIdx,bool fromUnverifiedConstant)</span><br></pre></td></tr></table></figure>
+<p>所需要的有：</p>
+<ul>
+<li>dvmResolveClass方法地址 </li>
+<li>参数 ClassObject* referrer 地址</li>
+<li>被引用类（补丁类） 的id classIdx</li>
+<li>fromUnverifiedConstant 直接手动置1或true即可</li>
+</ul>
+<p>dvmResolveClass的获取可以通过dlopen获取/system/lib/libdvm.so句柄，dlsym获取函数地址。</p>
+<p>referrer地址可以通过<code>dvmFindLoadedClass</code>来获取</p>
+<p><a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Class.cpp#4636" target="_blank" rel="noopener">http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Class.cpp#4636</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4636</span>ClassObject* dvmFindLoadedClass(<span class="keyword">const</span> <span class="keyword">char</span>* descriptor)</span><br><span class="line"><span class="number">4637</span>&#123;</span><br><span class="line"><span class="number">4638</span>    <span class="keyword">int</span> result;</span><br><span class="line"><span class="number">4639</span></span><br><span class="line"><span class="number">4640</span>    dvmHashTableLock(gDvm.loadedClasses);</span><br><span class="line"><span class="number">4641</span>    result = dvmHashForeach(gDvm.loadedClasses, findClassCallback,</span><br><span class="line"><span class="number">4642</span>            (<span class="keyword">void</span>*) descriptor);</span><br><span class="line"><span class="number">4643</span>    dvmHashTableUnlock(gDvm.loadedClasses);</span><br><span class="line"><span class="number">4644</span></span><br><span class="line"><span class="number">4645</span>    <span class="keyword">return</span> (ClassObject*) result;</span><br><span class="line"><span class="number">4646</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>dvmFindLoadedClass可以根据类的描述符来获取<strong>已加载</strong>的类，所以在补丁注入成功后，在每个 dex 里找一个固定的已经加载成功的引用类即可。对于主Dex，直接找Application即可，对于分Dex，手Q的分 dex 方案有这样的逻辑：每当一个分 dex 完成注入，主Dex都会尝试加载该分dex里的一个固定空类来验证分dex是否注入成功了。那么这个固定空类就可以作为patch的引用。</p>
+<p>至于补丁类的classIdx 通过<code>dexdump -h</code>即可获取：</p>
+<p><img src="https://segmentfault.com/img/remote/1460000007189921?w=723&amp;h=344" alt=""></p>
+<blockquote>
+<p>这个过程可以通过一个小程序自动进行：</p>
+<p><strong>输入：</strong> 原有 apk 的所有 dex、补丁包所有的类名<br><strong>输出：</strong> 补丁包每个类所在 dex 的编号以及 classIdx 的值</p>
+</blockquote>
+<h3 id="微信Tinker"><a href="#微信Tinker" class="headerlink" title="微信Tinker"></a>微信Tinker</h3><p>微信Tinker框架的原理是通过生成dex差量包的方式，与QQ空间超级补丁技术基本相同，区别在于不再将patch.dex增加到elements数组中，而是差量的方式给出patch.dex，然后将patch.dex与应用的classes.dex合并，然后整体替换掉旧的dex文件，以达到修复的目的。</p>
+<p><img src="http://img.blog.csdn.net/20170315001845944?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMjEyNDQzOA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<h1 id="底层替换方案"><a href="#底层替换方案" class="headerlink" title="底层替换方案"></a>底层替换方案</h1><p>原理：直接在native层进行方法的结构体信息对换，从而实现完美的方法新旧替换，从而实现热修复功能</p>
+<h2 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h2><h2 id="AndFix"><a href="#AndFix" class="headerlink" title="AndFix"></a>AndFix</h2><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://segmentfault.com/a/1190000007189905" target="_blank" rel="noopener">QFix探索之路—手Q热补丁轻量级方案</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dalvik/" rel="tag"># Dalvik</a>
+          
+            <a href="/tags/热更新/" rel="tag"># 热更新</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/15/Http缓存控制/" rel="next" title="HTTP的缓存控制">
+                <i class="fa fa-chevron-left"></i> HTTP的缓存控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/18/eventbus源码走读/" rel="prev" title="EventBus 源码分析">
+                EventBus 源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://chenkchen.github.io/" title="肥龙" target="_blank">肥龙</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#类加载方案"><span class="nav-number">1.</span> <span class="nav-text">类加载方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dalvik虚拟机的CLASS-ISPREVERIFIED"><span class="nav-number">1.1.</span> <span class="nav-text">Dalvik虚拟机的CLASS_ISPREVERIFIED</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方法"><span class="nav-number">1.2.</span> <span class="nav-text">解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QQ空间"><span class="nav-number">1.2.1.</span> <span class="nav-text">QQ空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手机QQ"><span class="nav-number">1.2.2.</span> <span class="nav-text">手机QQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微信Tinker"><span class="nav-number">1.2.3.</span> <span class="nav-text">微信Tinker</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#底层替换方案"><span class="nav-number">2.</span> <span class="nav-text">底层替换方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">2.1.</span> <span class="nav-text">todo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndFix"><span class="nav-number">2.2.</span> <span class="nav-text">AndFix</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

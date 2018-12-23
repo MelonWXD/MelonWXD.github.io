@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="音视频," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="对近期学习做一个总结，来滴Z爱2个多月，一篇文章都没写，心累。">
+<meta name="keywords" content="音视频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="音视频与FFmpeg学习汇总">
+<meta property="og:url" content="http://yoursite.com/2018/07/07/音视频与FFmpeg学习汇总/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="对近期学习做一个总结，来滴Z爱2个多月，一篇文章都没写，心累。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://owu391pls.bkt.clouddn.com/%E6%96%87%E4%BB%B6%E6%92%AD%E6%94%BE%E6%B5%81%E7%A8%8B2.jpg">
+<meta property="og:image" content="https://images2015.cnblogs.com/blog/536358/201703/536358-20170318083044510-544926603.jpg">
+<meta property="og:image" content="https://images2015.cnblogs.com/blog/536358/201703/536358-20170320140444158-1965908932.jpg">
+<meta property="og:image" content="http://p.blog.csdn.net/images/p_blog_csdn_net/wanggp_2007/EntryImages/20091120/slice.png">
+<meta property="og:updated_time" content="2018-11-29T09:24:08.949Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="音视频与FFmpeg学习汇总">
+<meta name="twitter:description" content="对近期学习做一个总结，来滴Z爱2个多月，一篇文章都没写，心累。">
+<meta name="twitter:image" content="http://owu391pls.bkt.clouddn.com/%E6%96%87%E4%BB%B6%E6%92%AD%E6%94%BE%E6%B5%81%E7%A8%8B2.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/07/音视频与FFmpeg学习汇总/"/>
+
+
+
+
+
+  <title>音视频与FFmpeg学习汇总 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/07/音视频与FFmpeg学习汇总/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">音视频与FFmpeg学习汇总</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-07T15:52:02+08:00">
+                2018-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+	阅读次数:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  993 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对近期学习做一个总结，来滴Z爱2个多月，一篇文章都没写，心累。</p>
+<a id="more"></a>  
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>先上一个音视频文件播放流程图，然后从视频播放的角度来逐点介绍整个流程：</p>
+<p><img src="http://owu391pls.bkt.clouddn.com/%E6%96%87%E4%BB%B6%E6%92%AD%E6%94%BE%E6%B5%81%E7%A8%8B2.jpg" alt=""></p>
+<h2 id="封装格式"><a href="#封装格式" class="headerlink" title="封装格式"></a>封装格式</h2><p>我们常见的<strong>音视频</strong>文件格式，诸如avi、mp4和rmvb都是封装格式。</p>
+<p>为什么需要封装格式，这不难理解，把音频和视频封装到一个文件，或者说一个容器中嘛。</p>
+<h2 id="经过编码的视频数据"><a href="#经过编码的视频数据" class="headerlink" title="经过编码的视频数据"></a>经过编码的视频数据</h2><p>常见的视频编码格式有 mpeg-4 、 h.264 等 具体可以见参考中的网址</p>
+<p>为什么要把视频数据进行编码？是为了提高网络传输效率。</p>
+<p>先来算一笔简单的账：</p>
+<p>视频我们都知道，是由一帧又一帧的图片连续显示组成的。假设有个帧率为20的1080*720分辨率的视频，1秒播放20张图片，每一帧图片用的是RGB565格式，即一个像素点占16bit。</p>
+<p>那么根据上面已知条件，可以计算出想要在线播放这段视频时需要的网速应该要 <code>20x1080x720x16/8 =31104000</code>，即29M/s，显然不现实，这还是往小了说。</p>
+<h2 id="原始视频数据"><a href="#原始视频数据" class="headerlink" title="原始视频数据"></a>原始视频数据</h2><p>解析上述的编码格式就得到视频原始数据，至于怎么解析的下面会另外介绍基于H.264的视频解码过程。</p>
+<p>原始的视频数据主要有yuv和rgb两种，YUV420，YUV422，RGB24等等，具体的下面也会另外介绍。</p>
+<p>现在我们拿到了每一帧的原始数据，输入播放器，播放器再去操作底层的一堆fb来显示每一帧，就达到播放视频的目的了。</p>
+<h1 id="表示颜色的几种格式"><a href="#表示颜色的几种格式" class="headerlink" title="表示颜色的几种格式"></a>表示颜色的几种格式</h1><h2 id="RGB"><a href="#RGB" class="headerlink" title="RGB"></a>RGB</h2><p>作为android开发最熟悉的就是rgb格式了，</p>
+<p>在RGB颜色空间中，任意色光F都可以用R、G、B三色不同分量的相加混合而成：F=r[R]+r[G]+r[B]</p>
+<p><img src="https://images2015.cnblogs.com/blog/536358/201703/536358-20170318083044510-544926603.jpg" alt=""></p>
+<h2 id="HSV"><a href="#HSV" class="headerlink" title="HSV"></a>HSV</h2><p>HSV是一种将RGB色彩空间中的点在倒圆锥体中的表示方法。HSV即色调(Hue)、饱和度(Saturation)、明度(Value)，又称HSB(B即Brightness)。</p>
+<p>色调H：一些基础颜色</p>
+<p>饱和度S：用过ps就很好理解这个了，我理解的话是色彩的鲜艳程度，S=0就是灰度化</p>
+<p>明度V：就是亮度了，看右图就很好理解了，V=0就是暗的一B，黑色，V=max，就是亮瞎狗眼，白色。</p>
+<p><img src="https://images2015.cnblogs.com/blog/536358/201703/536358-20170320140444158-1965908932.jpg" alt=""></p>
+<h2 id="YUV"><a href="#YUV" class="headerlink" title="YUV"></a>YUV</h2><p>YUV则是把颜色用一种更直接抽象的方式来表达，“Y”表示明亮度，“U”和“V” 表示的则是色度。Y是通过RGB信号特定部分叠加得到的，UV则用来反应颜色的色调和饱和度。分别用Cr和Cb来表示。其中，Cr反映了RGB输入信号红色部分与RGB信号亮度值之间的差异。而Cb反映的是RGB输入信号蓝色部分与RGB信号亮度值之间的差异。</p>
+<p>采用YUV色彩空间的重要性是它的亮度信号Y和色度信号U、V是分离的。如果只有Y信号分量而没有U、V分量，那么这样表示的图像就是黑白。</p>
+<h1 id="Todo"><a href="#Todo" class="headerlink" title="Todo"></a>Todo</h1><h1 id="H-264"><a href="#H-264" class="headerlink" title="H.264"></a>H.264</h1><p>如上面介绍的一样，h264是一种视频的编码格式，那么h264是如何编码的？</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/wanggp_2007/EntryImages/20091120/slice.png" alt=""></p>
+<h1 id="FFmpeg"><a href="#FFmpeg" class="headerlink" title="FFmpeg"></a>FFmpeg</h1><h1 id="openGL渲染过程"><a href="#openGL渲染过程" class="headerlink" title="openGL渲染过程"></a>openGL渲染过程</h1><p>大纲目录：</p>
+<p>SurfaceView GLSurfaceView SurfaceTexture</p>
+<ul>
+<li>常见着色器语言关键字:</li>
+</ul>
+<p>Attribute 对于每个顶点来说都不同的变量，如顶点坐标和顶点颜色</p>
+<p>Uniforms 对于每个顶点来说都一致的变量，如光源位置和采样器</p>
+<p>Varying 作为顶点着色器输出到片段着色器的变量</p>
+<ul>
+<li>关于纹理坐标设置的坑：纹理坐标左下角是(0,0) Android屏幕的左上角才是(0,0)，没做换算渲染出来的纹理会上下颠倒</li>
+</ul>
+<p>openGL</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/houxiaoni01/article/details/78812485/" target="_blank" rel="noopener">常见视频编码格式解析</a></p>
+<p><a href="https://www.cnblogs.com/justkong/p/6570914.html" target="_blank" rel="noopener">颜色空间模型</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/音视频/" rel="tag"># 音视频</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/16/多线程相关/" rel="next" title="Android和Java多线程学习">
+                <i class="fa fa-chevron-left"></i> Android和Java多线程学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://chenkchen.github.io/" title="肥龙" target="_blank">肥龙</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#封装格式"><span class="nav-number">1.1.</span> <span class="nav-text">封装格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经过编码的视频数据"><span class="nav-number">1.2.</span> <span class="nav-text">经过编码的视频数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原始视频数据"><span class="nav-number">1.3.</span> <span class="nav-text">原始视频数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#表示颜色的几种格式"><span class="nav-number">2.</span> <span class="nav-text">表示颜色的几种格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RGB"><span class="nav-number">2.1.</span> <span class="nav-text">RGB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HSV"><span class="nav-number">2.2.</span> <span class="nav-text">HSV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YUV"><span class="nav-number">2.3.</span> <span class="nav-text">YUV</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Todo"><span class="nav-number">3.</span> <span class="nav-text">Todo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H-264"><span class="nav-number">4.</span> <span class="nav-text">H.264</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FFmpeg"><span class="nav-number">5.</span> <span class="nav-text">FFmpeg</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#openGL渲染过程"><span class="nav-number">6.</span> <span class="nav-text">openGL渲染过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

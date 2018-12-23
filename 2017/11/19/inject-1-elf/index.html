@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="注入," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="32位ELF(可执行可链接文件)格式的分析">
+<meta name="keywords" content="注入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="注入之道(一) ELF格式分析">
+<meta property="og:url" content="http://yoursite.com/2017/11/19/inject-1-elf/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="32位ELF(可执行可链接文件)格式的分析">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.chinaunix.net/photo/94212_101201164532.jpg">
+<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511088380577&di=7d77512485a60706d6fd1ab9f949f7af&imgtype=0&src=http%3A%2F%2Fwww.yeolar.com%2Fmedia%2Fnote%2F2012%2F03%2F20%2Flinux-linking%2Ffig2.png">
+<meta property="og:image" content="http://images0.cnblogs.com/blog2015/763648/201506/302242024621822.png">
+<meta property="og:image" content="http://images0.cnblogs.com/blog2015/763648/201506/302242336658657.png">
+<meta property="og:image" content="http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-11-29T09:24:08.944Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="注入之道(一) ELF格式分析">
+<meta name="twitter:description" content="32位ELF(可执行可链接文件)格式的分析">
+<meta name="twitter:image" content="http://blog.chinaunix.net/photo/94212_101201164532.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/19/inject-1-elf/"/>
+
+
+
+
+
+  <title>注入之道(一) ELF格式分析 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/19/inject-1-elf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">注入之道(一) ELF格式分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-19T15:35:45+08:00">
+                2017-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+	阅读次数:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,620 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>32位ELF(可执行可链接文件)格式的分析<br><a id="more"></a></p>
+<h1 id="目标文件-Object-File"><a href="#目标文件-Object-File" class="headerlink" title="目标文件 Object File"></a>目标文件 Object File</h1><p>一个简单的c文件，经过预处理-编译-汇编-链接，四个耳熟能详的步骤后，就变成了一个可执行的目标文件。<br>目标文件有三种形式：</p>
+<ul>
+<li>可重定位文件（Relocatable file）：这是由汇编器汇编生成的.o文件，链接器会使用一个或多个的可重定位文件作为输入，生成一个可执行文件</li>
+<li>可执行文件（Executable file）：可以直接复制到内存中执行的文件</li>
+<li>可共享文件（Shared Object file）：也是Android中常说的so库。所谓的动态库文件，在运行时被动态的加载进内存，由动态链接器来负责链接so库和可执行文件的执行。</li>
+</ul>
+<p>这些目标文件都是按照特定的文件格式来组织的，比如Windows下是PE，Mac下是Mach-O，Linux/unix下就是ELF格式。<br>这里主要就是以Linux下的so文件格式ELF来做分析，因为在逆向APK中主要也是针对so库做注入。</p>
+<h1 id="EFL文件格式"><a href="#EFL文件格式" class="headerlink" title="EFL文件格式"></a>EFL文件格式</h1><p>先放2张图，可以直观的了解ELF文件格式<br><img src="http://blog.chinaunix.net/photo/94212_101201164532.jpg" alt=""><br><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511088380577&amp;di=7d77512485a60706d6fd1ab9f949f7af&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.yeolar.com%2Fmedia%2Fnote%2F2012%2F03%2F20%2Flinux-linking%2Ffig2.png" alt=""></p>
+<h2 id="结构综述"><a href="#结构综述" class="headerlink" title="结构综述"></a>结构综述</h2><ul>
+<li>ELF文件头 ： 对ELF文件整体结构的一个描述</li>
+<li>程序头部表 Program Header Table ：描述下面的段区Segment，告诉系统如何创建进程影像</li>
+<li>节区Section ：section从链接角度具体描述这个elf文件</li>
+<li>段区Segment ：segment是从运行角度来描述这个elf文件，segment包含多个section</li>
+<li>节区头部表 Section Header Table ：描述上面的各个节区Section的属性信息</li>
+</ul>
+<p><strong>为什么要区别节区和段区？</strong></p>
+<blockquote>
+<p>当ELF文件被加载到内存中后，系统会将多个具有相同权限（flag值）section合并一个segment。操作系统往往以页为基本单位来管理内存分配，一般页的大小为4096B，即4KB的大小。同时，内存的权限管理的粒度也是以页为单位，页内的内存是具有同样的权限等属性，并且操作系统对内存的管理往往追求高效和高利用率这样的目标。ELF文件在被映射时，是以系统的页长度为单位的，那么每个section在映射时的长度都是系统页长度的整数倍，如果section的长度不是其整数倍，则导致多余部分也将占用一个页。而我们从上面的例子中知道，一个ELF文件具有很多的section，那么会导致内存浪费严重。这样可以减少页面内部的碎片，节省了空间，显著提高内存利用率。</p>
+</blockquote>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>下面我就结合linux的命令<code>readelf</code>来分析Android的GUI系统中使用的<code>/system/lib/libsurfaceflinger.so</code>文件来逐一介绍EFL文件 节区头部表 与一些与重定位相关的节区。</p>
+<blockquote>
+<p>Android 4.4 32位所以结构体都是ELF32开头，64位的文件格式即为ELF64 </p>
+</blockquote>
+<h2 id="ELF文件头"><a href="#ELF文件头" class="headerlink" title="ELF文件头"></a>ELF文件头</h2><p>ELF文件头对应的结构体Elf32_Ehdr如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#define EI_NIDENT 16</span><br><span class="line">typedef struct &#123;</span><br><span class="line">       unsigned char e_ident[EI_NIDENT];</span><br><span class="line">       ELF32_Half e_type;</span><br><span class="line">       ELF32_Half e_machine;</span><br><span class="line">       ELF32_Word e_version;</span><br><span class="line">       ELF32__Addr e_entry;</span><br><span class="line">       ELF32_Off e_phoff;</span><br><span class="line">       ELF32_Off e_shoff;</span><br><span class="line">       ELF32_Word e_flags;</span><br><span class="line">       ELF32_Half e_ehsize;</span><br><span class="line">       ELF32_Half e_phentsize;</span><br><span class="line">       ELF32_Half e_phnum;</span><br><span class="line">       ELF32_Half e_shentsize;</span><br><span class="line">       ELF32_Half e_shnum;</span><br><span class="line">       ELF32_Half e_shstrndx;</span><br><span class="line">&#125;Elf32_Ehdr;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>readelf -h libsurfaceflinger.so</code>可以让系统来自动解析文件头hex值对应的实际意义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -h libsurfaceflinger.so </span><br><span class="line">ELF 头：</span><br><span class="line">  Magic：   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 </span><br><span class="line">  类别:                              ELF32</span><br><span class="line">  数据:                              2 补码，小端序 (little endian)</span><br><span class="line">  版本:                              1 (current)</span><br><span class="line">  OS/ABI:                            UNIX - System V</span><br><span class="line">  ABI 版本:                          0</span><br><span class="line">  类型:                              DYN (共享目标文件)</span><br><span class="line">  系统架构:                          ARM</span><br><span class="line">  版本:                              0x1</span><br><span class="line">  入口点地址：               0x0</span><br><span class="line">  程序头起点：          52 (bytes into file)</span><br><span class="line">  节区头起点:          201044 (bytes into file)</span><br><span class="line">  标志：             0x5000000, Version5 EABI</span><br><span class="line">  本头的大小：       52 (字节)</span><br><span class="line">  程序头大小：       32 (字节)</span><br><span class="line">  程序头表项数:         8</span><br><span class="line">  节头大小：         40 (字节)</span><br><span class="line">  节头数量：         24</span><br><span class="line">  字符串表索引节头： 23</span><br></pre></td></tr></table></figure></p>
+<h2 id="“节”头表"><a href="#“节”头表" class="headerlink" title="“节”头表"></a>“节”头表</h2><p>同样的，节区头部表的表项对应的结构体Elf32_Shdr如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">typedef struct elf32_shdr &#123; </span><br><span class="line">         Elf32_Word    sh_name;  </span><br><span class="line">         Elf32_Word    sh_type; </span><br><span class="line">         Elf32_Word    sh_flags; </span><br><span class="line">         Elf32_Addr    sh_addr;    //在内存中的虚地址</span><br><span class="line">         Elf32_Off     sh_offset;   //对应的Section在文件中的偏移</span><br><span class="line">         Elf32_Word    sh_size; </span><br><span class="line">         Elf32_Word    sh_link; </span><br><span class="line">         Elf32_Word    sh_info; </span><br><span class="line">         Elf32_Word    sh_addralign; </span><br><span class="line">         Elf32_Word    sh_entsize; </span><br><span class="line">       &#125; Elf32_Shdr;</span><br></pre></td></tr></table></figure></p>
+<p>可能说的有点绕，节区头部表本身就含有多个项，每个项对应着上面说的Section，一个是表，一个是项，一个节区头表，含有多个节区项的描述结构体，该结构体就是Elf32_Shdr。那么这个节区头表的位置我们是如何确定的呢，这是在ELF文件头中确定的，往上看可以找到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">节区头起点:          201044 (bytes into file)</span><br></pre></td></tr></table></figure></p>
+<p>这个是起始位置，结束位置一般就是文件末尾。201044对应的16进制值为0x31154，我们使用命令<code>readelf -S libsurfaceflinger.so</code>来解析节区头看看：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -S libsurfaceflinger.so </span><br><span class="line">共有 24 个节头，从偏移量 0x31154 开始：</span><br><span class="line"></span><br><span class="line">节头：</span><br><span class="line">  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al</span><br><span class="line">  [ 0]                   NULL            00000000 000000 000000 00      0   0  0</span><br><span class="line">  [ 1] .interp           PROGBITS        00000134 000134 000013 00   A  0   0  1</span><br><span class="line">  [ 2] .dynsym           DYNSYM          00000148 000148 0020a0 10   A  3   1  4</span><br><span class="line">  [ 3] .dynstr           STRTAB          000021e8 0021e8 00454c 00   A  0   0  1</span><br><span class="line">  [ 4] .hash             HASH            00006734 006734 001054 04   A  2   0  4</span><br><span class="line">  [ 5] .rel.dyn          REL             00007788 007788 0069f0 08   A  2   0  4</span><br><span class="line">  [ 6] .rel.plt          REL             0000e178 00e178 000f08 08   A  2   7  4</span><br><span class="line">  [ 7] .plt              PROGBITS        0000f080 00f080 0016a0 00  AX  0   0  4</span><br><span class="line">  [ 8] .text             PROGBITS        00010720 010720 015828 00  AX  0   0  8</span><br><span class="line">  [ 9] .ARM.exidx        ARM_EXIDX       00025f48 025f48 001958 08  AL  8   0  4</span><br><span class="line">  [10] .ARM.extab        PROGBITS        000278a0 0278a0 000390 00   A  0   0  4</span><br><span class="line">  [11] .rodata           PROGBITS        00027c30 027c30 002ca8 00   A  0   0  4</span><br><span class="line">  [12] .data.rel.ro.loca PROGBITS        0002c7d8 02b7d8 000108 00  WA  0   0  8</span><br><span class="line">  [13] .fini_array       FINI_ARRAY      0002c8e0 02b8e0 000004 00  WA  0   0  4</span><br><span class="line">  [14] .init_array       INIT_ARRAY      0002c8e4 02b8e4 000018 00  WA  0   0  4</span><br><span class="line">  [15] .data.rel.ro      PROGBITS        0002c900 02b900 004d80 00  WA  0   0  8</span><br><span class="line">  [16] .dynamic          DYNAMIC         00031680 030680 000150 08  WA  3   0  4</span><br><span class="line">  [17] .got              PROGBITS        000317d4 0307d4 00082c 00  WA  0   0  4</span><br><span class="line">  [18] .data             PROGBITS        00032000 031000 000009 00  WA  0   0  4</span><br><span class="line">  [19] .bss              NOBITS          0003200c 031009 000098 00  WA  0   0  4</span><br><span class="line">  [20] .comment          PROGBITS        00000000 031009 000010 01  MS  0   0  1</span><br><span class="line">  [21] .note.gnu.gold-ve NOTE            00000000 03101c 00001c 00      0   0  4</span><br><span class="line">  [22] .ARM.attributes   ARM_ATTRIBUTES  00000000 031038 00003a 00      0   0  1</span><br><span class="line">  [23] .shstrtab         STRTAB          00000000 031072 0000e0 00      0   0  1</span><br><span class="line">Key to Flags:</span><br><span class="line">  W (write), A (alloc), X (execute), M (merge), S (strings)</span><br><span class="line">  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)</span><br><span class="line">  O (extra OS processing required) o (OS specific), p (processor specific)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到打印出来的第一行信息和我们根据ELF文件头算出来的一样。<br>可以看到输出了很多个表项，每个表项的结构就是上述的Elf32_Shdr了，下面挑几个相关的来讲。  </p>
+<h3 id="符号表-dynsym"><a href="#符号表-dynsym" class="headerlink" title="符号表 .dynsym"></a>符号表 .dynsym</h3><p>符号表包含用来定位、重定位程序中符号定义和引用的信息，简单的理解就是符号表记录了该文件中的所有符号。所谓的符号就是经过修饰了的函数名或者变量名，不同的编译器有不同的修饰规则。例如符号_ZL15global_static_a，就是由global_static_a变量名经过修饰而来。<br>通过命令<code>readelf -s libsurfaceflinger.so</code>来查看.dynsym的Section内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -s libsurfaceflinger.so </span><br><span class="line"></span><br><span class="line">Symbol table &apos;.dynsym&apos; contains 522 entries:</span><br><span class="line">   Num:    Value  Size Type    Bind   Vis      Ndx Name</span><br><span class="line">     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND </span><br><span class="line">     1: 00000000     0 FUNC    GLOBAL DEFAULT  UND __cxa_finalize</span><br><span class="line">     2: 00000000     0 FUNC    GLOBAL DEFAULT  UND __cxa_atexit</span><br><span class="line">     3: 00000000     0 FUNC    GLOBAL DEFAULT  UND __aeabi_unwind_cpp_pr0</span><br><span class="line">     4: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZNK7android22ISurfaceCom</span><br><span class="line">     5: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZN7android10VectorImpl13</span><br><span class="line">     6: 00000000     0 FUNC    GLOBAL DEFAULT  UND _ZN7android16SortedVector</span><br><span class="line">	 ...</span><br><span class="line">     520: 00032009     0 NOTYPE  GLOBAL DEFAULT  ABS __bss_start</span><br><span class="line">     521: 000320a4     0 NOTYPE  GLOBAL DEFAULT  ABS _end</span><br></pre></td></tr></table></figure></p>
+<p>也可以通过<code>readelf -p [sectionIdx] libsurfaceflinger.so</code>来以string的方式查看指定序号的Section内容，值没有经过格式化，比如这里的.dynsym序号是2，那么<code>readelf -p 2 libsurfaceflinger.so</code>输出的内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 2 libsurfaceflinger.so </span><br><span class="line"></span><br><span class="line">String dump of section &apos;.dynsym&apos;:</span><br><span class="line">  [    40]  4</span><br><span class="line">  [    50]  s</span><br><span class="line">  [    b0]  .^A</span><br><span class="line">  [    c0]  \^A</span><br><span class="line">  [    d0]  c^A</span><br><span class="line">  [   120]  A^B</span><br><span class="line">  [   130]  G^B</span><br><span class="line">  [   140]  _^B</span><br><span class="line">  [   1b0]  2^C</span><br><span class="line">  [   1c0]  Z^C</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure></p>
+<p>跟上面分析节区表和节区表的表项一样，符号表的结构是节区表的表项，那符号表的表项结构体是怎么表示的呢，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;  </span><br><span class="line">     Elf32_Word st_name;      //符号表 表项的名称。</span><br><span class="line">     //如果该值非0，则表示符号名在字符串表(.dynstr)中的索引值(offset)，为0即符号表项没有名称。</span><br><span class="line">     Elf32_Addr st_value;       //符号的取值。依赖于具体的上下文，可能是一个绝对值、一个地址等等。</span><br><span class="line">     Elf32_Word st_size;         //符号的尺寸大小。例如一个数据对象的大小是对象中包含的字节数。</span><br><span class="line">     unsigned char st_info;    //符号的类型和绑定属性。</span><br><span class="line">     unsigned char st_other;   </span><br><span class="line">     Elf32_Half st_shndx;        //每个符号表项都以和其他节区的关系的方式给出定义。</span><br><span class="line">　　　　　　　　　　　　　//此成员给出相关的节区头部表索引。</span><br><span class="line">&#125; Elf32_Sym;</span><br></pre></td></tr></table></figure></p>
+<h3 id="字符串表-dynstr"><a href="#字符串表-dynstr" class="headerlink" title="字符串表 .dynstr"></a>字符串表 .dynstr</h3><p>根据上面说的 符号表结构体的st_name项，非0值表示该符号名在字符串表中的索引，那么自然而然的就要介绍一下字符串表了。<br>字符串表中包含若干以 null 结尾的字符串，这些字符串通常是 symbol 或 section 的名字。当 ELF 文件的其它部分需要引用字符串时，只需提供该字符串在字符串表中的位置索引即可。  </p>
+<p>下图为一个长度为25字节的字符串表示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242024621822.png" alt=""><br>字符串引用示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242336658657.png" alt="">  </p>
+<p>根据上面ELF文件头 字符串表的索引为3，通过<code>readelf -p 3 libsurfaceflinger.so</code>来打印一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 3 libsurfaceflinger.so </span><br><span class="line"></span><br><span class="line">String dump of section &apos;.dynstr&apos;:</span><br><span class="line">  [     1]  __cxa_finalize</span><br><span class="line">  [    10]  __cxa_atexit</span><br><span class="line">  [    1d]  __aeabi_unwind_cpp_pr0</span><br><span class="line">  ..</span><br><span class="line">  [  451a]  libc.so</span><br><span class="line">  [  4522]  libstdc++.so</span><br><span class="line">  [  452f]  libm.so</span><br><span class="line">  [  4537]  libsurfaceflinger.so</span><br></pre></td></tr></table></figure></p>
+<h3 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h3><p>在编译-汇编这2个操作中，编译器和汇编器为每个文件创建程序地址一般都是从0开始，但是实际加载时模块的基址肯定不是0，为了避免加载地址重叠，就引入了重定位这个东西。重定位就是为程序不同部分分配加载地址，调整程序中的数据和代码以反映所分配地址的过程。简单的言之，则是将程序中的各个部分映射到合理的地址上来。</p>
+<p><strong>.rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系</strong></p>
+<ul>
+<li><p>.rel.text：定位的地方在.text段内，以offset指定具体要定位位置。在链接时候由链接器完成。</p>
+</li>
+<li><p>.rel.dyn：重定位的地方在.got段内，主要是针对外部数据变量符号。不支持延迟重定位(Lazy)，通常是在so文件执行时就在.init段中进行重定位操作。</p>
+</li>
+<li><p>.rel.plt：重定位的地方在.got.plt段内, 主要是针对外部函数符号。一般是函数首次被调用时候重定位。</p>
+</li>
+<li><p>.plt：Procedure Linkage Table，过程链接表。所有对外部函数的调用都经过PLT再到GOT的一个调用过程。</p>
+</li>
+<li><p>.got：Global Offset Table，全局偏移表，存放着调用外部函数的实际地址（第一次存放的是PLT中的指令，PLT执行完之后会把计算得到的实际值再存到GOT中）。</p>
+</li>
+<li><p>.got.plt：ELF将GOT拆分成两个表 .got和.got.plt,前者用来保存全局变量引用的地址，后者用来保存函数引用的地址。</p>
+<blockquote>
+<p>Android ARM 下需要处理两个重定位表，plt_rel 和 rel，plt 指的是延迟绑定，但是 Android 目前并不对延迟绑定做特殊处理，直接与普通的重定位同时处理。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h3><p><a href="https://bbs.pediy.com/thread-221821.htm" target="_blank" rel="noopener">【ARM】安卓SO中GOT REL PLT 作用与关系</a></p>
+<h2 id="“程序”头表"><a href="#“程序”头表" class="headerlink" title="“程序”头表"></a>“程序”头表</h2><p>上面分析了这么多的Section区，但实际上so库加载到内存中，是按照执行视图来查找各个重定位表的，所以下面就来分析一下执行视图中必须存在的程序头表（Program Header Table）。<br>程序头表表项的结构体Elf32_phdr如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;  </span><br><span class="line">    Elf32_Word p_type;           //此数组元素描述的段的类型，或者如何解释此数组元素的信息。 </span><br><span class="line">    Elf32_Off  p_offset;           //此成员给出从文件头到该段第一个字节的偏移</span><br><span class="line">    Elf32_Addr p_vaddr;         //此成员给出段的第一个字节将被放到内存中的虚拟地址</span><br><span class="line">    Elf32_Addr p_paddr;        //此成员仅用于与物理地址相关的系统中。system V忽略所有应用程序的物理地址信息。</span><br><span class="line">    Elf32_Word p_filesz;         //此成员给出段在文件映像中所占的字节数。可以为0。</span><br><span class="line">    Elf32_Word p_memsz;     //此成员给出段在内存映像中占用的字节数。可以为0。</span><br><span class="line">    Elf32_Word p_flags;         //此成员给出与段相关的标志。</span><br><span class="line">    Elf32_Word p_align;        //此成员给出段在文件中和内存中如何对齐。</span><br><span class="line">&#125; Elf32_phdr;</span><br></pre></td></tr></table></figure></p>
+<p>这里的p_type就代表了当前Segment的类型，重点介绍2个：</p>
+<ul>
+<li>PT_LOAD：指定可装入段，通过 p_filesz 和 p_memsz 进行描述。只有类型为PT_LOAD的段才是需要装入的。当然在装入之前，需要确定装入的地址，只要考虑的就是页面对齐，还有该段的p_vaddr域的值。确定了装入地址后，就通过elf_map()建立用户空间虚拟地址空间与目标映像文件中某个连续区间之间的映射，其返回值就是实际映射的起始地址。</li>
+<li>PT_DYNAMIC：动态链接相关，如果目标文件参与动态链接，则其程序头表将包含一个类型为 PT_DYNAMIC 的元素。此段包含 .dynamic 节。</li>
+</ul>
+<h3 id="动态节-dynamic"><a href="#动态节-dynamic" class="headerlink" title="动态节.dynamic"></a>动态节.dynamic</h3><p>和我们重定位相关的动态节的结构体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">        Elf32_Sword d_tag;</span><br><span class="line">        union &#123;</span><br><span class="line">                Elf32_Word      d_val;</span><br><span class="line">                Elf32_Addr      d_ptr;</span><br><span class="line">        &#125; d_un;</span><br><span class="line">&#125; Elf32_Dyn;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>d_tag：表明该动态节类型，有DT_PLTGOT、DT_HASH、DT_STRTAB、DT_SYMTAB、DT_RELA等等</li>
+<li>d_un-&gt;d_val：根据tag表示的不同有不同的意思，多数情况下表示该节大小值</li>
+<li>d_un-&gt;d_ptr：表示该节的虚拟地址（文件的虚拟地址与实际执行过程中的虚拟地址不一定匹配）</li>
+</ul>
+<h2 id="ELF文件格式图例"><a href="#ELF文件格式图例" class="headerlink" title="ELF文件格式图例"></a>ELF文件格式图例</h2><p><img src="http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://bbs.pediy.com/thread-221821.htm" target="_blank" rel="noopener">【ARM】安卓SO中GOT REL PLT 作用与关系</a></p>
+<p><a href="http://blog.csdn.net/lifeshow/article/details/29597401" target="_blank" rel="noopener">EFL PLT GOT跳转关系</a><br><a href="https://www.cnblogs.com/leo0000/p/5604132.html" target="_blank" rel="noopener">ELF文件中的.plt .rel.dyn .rel.plt .got .got.plt的关系</a><br><a href="http://www.07net01.com/2016/05/1534423.html" target="_blank" rel="noopener">ELF文件格式解析</a><br><a href="https://stackoverflow.com/questions/11676472/what-is-the-difference-between-got-and-got-plt-section#comment16231745_11676472" target="_blank" rel="noopener">difference-between-got-and-got-plt</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/注入/" rel="tag"># 注入</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/16/and-util-color/" rel="next" title="Material Design 色表">
+                <i class="fa fa-chevron-left"></i> Material Design 色表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/25/baseactivity/" rel="prev" title="BaseActivity/BaseToolBarActivity">
+                BaseActivity/BaseToolBarActivity <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://chenkchen.github.io/" title="肥龙" target="_blank">肥龙</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目标文件-Object-File"><span class="nav-number">1.</span> <span class="nav-text">目标文件 Object File</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#EFL文件格式"><span class="nav-number">2.</span> <span class="nav-text">EFL文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构综述"><span class="nav-number">2.1.</span> <span class="nav-text">结构综述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析"><span class="nav-number">3.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件头"><span class="nav-number">3.1.</span> <span class="nav-text">ELF文件头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“节”头表"><span class="nav-number">3.2.</span> <span class="nav-text">“节”头表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号表-dynsym"><span class="nav-number">3.2.1.</span> <span class="nav-text">符号表 .dynsym</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串表-dynstr"><span class="nav-number">3.2.2.</span> <span class="nav-text">字符串表 .dynstr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重定位表"><span class="nav-number">3.2.3.</span> <span class="nav-text">重定位表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重定位"><span class="nav-number">3.2.4.</span> <span class="nav-text">重定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“程序”头表"><span class="nav-number">3.3.</span> <span class="nav-text">“程序”头表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态节-dynamic"><span class="nav-number">3.3.1.</span> <span class="nav-text">动态节.dynamic</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF文件格式图例"><span class="nav-number">3.4.</span> <span class="nav-text">ELF文件格式图例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

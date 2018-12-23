@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IPC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="基于Android 6.0，从源码角度来理解Binder机制">
+<meta name="keywords" content="IPC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析Android进程间通信（三）">
+<meta property="og:url" content="http://yoursite.com/2017/11/11/android-ipc3/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="基于Android 6.0，从源码角度来理解Binder机制">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909221454433">
+<meta property="og:image" content="http://img.blog.csdn.net/20150909225436079">
+<meta property="og:updated_time" content="2018-11-29T09:24:08.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅析Android进程间通信（三）">
+<meta name="twitter:description" content="基于Android 6.0，从源码角度来理解Binder机制">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150909221454433">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/11/android-ipc3/"/>
+
+
+
+
+
+  <title>浅析Android进程间通信（三） | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/11/android-ipc3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅析Android进程间通信（三）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-11T17:28:11+08:00">
+                2017-11-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+	阅读次数:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,691 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>基于Android 6.0，从源码角度来理解Binder机制<br><a id="more"></a></p>
+<h1 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h1><p>正如前面说的，进程间通信的本质就是进程A拿到了进程B中Binder的对象的代理，通过这个代理Binder来向进程B发送请求进行通信。而Android系统有各种各样的系统服务，除了上一节提到的系统电量PowerManagerService，还有网络相关的、输入法、音频视频、剪切板和USB等等，想都不用向，这些服务肯定是共同持有一个Binder的抽象类，再具体扩展的。</p>
+<h2 id="BnInterface和BpInterface"><a href="#BnInterface和BpInterface" class="headerlink" title="BnInterface和BpInterface"></a>BnInterface和BpInterface</h2><p>先介绍2个来自<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/IInterface.h#49" target="_blank" rel="noopener">IInterface.h</a>的重要接口BnInterface和BpInterface，分别对应<code>Binder实体</code>即响应方持有的Binder和<code>Binder代理</code>即调用方持有。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">49</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="number">50</span>  <span class="class"><span class="keyword">class</span> <span class="title">BnInterface</span> :</span> <span class="keyword">public</span> INTERFACE, <span class="keyword">public</span> BBinder</span><br><span class="line"><span class="number">51</span>  &#123;</span><br><span class="line"><span class="number">52</span>  <span class="keyword">public</span>:</span><br><span class="line"><span class="number">53</span>      <span class="keyword">virtual</span> sp&lt;IInterface&gt;      queryLocalInterface(<span class="keyword">const</span> String16&amp; _descriptor);</span><br><span class="line"><span class="number">54</span>      <span class="function"><span class="keyword">virtual</span> <span class="keyword">const</span> String16&amp;     <span class="title">getInterfaceDescriptor</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="number">55</span></span><br><span class="line"><span class="number">56</span>  <span class="keyword">protected</span>:</span><br><span class="line"><span class="number">57</span>      <span class="function"><span class="keyword">virtual</span> IBinder*            <span class="title">onAsBinder</span><span class="params">()</span></span>;</span><br><span class="line"><span class="number">58</span>  &#125;;</span><br><span class="line"><span class="number">59</span></span><br><span class="line"><span class="number">60</span>  <span class="comment">// ----------------------------------------------------------------------</span></span><br><span class="line"><span class="number">61</span></span><br><span class="line"><span class="number">62</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="number">63</span>  <span class="class"><span class="keyword">class</span> <span class="title">BpInterface</span> :</span> <span class="keyword">public</span> INTERFACE, <span class="keyword">public</span> BpRefBase</span><br><span class="line"><span class="number">64</span>  &#123;</span><br><span class="line"><span class="number">65</span>  <span class="keyword">public</span>:</span><br><span class="line"><span class="number">66</span>                                BpInterface(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; remote);</span><br><span class="line"><span class="number">67</span></span><br><span class="line"><span class="number">68</span>  <span class="keyword">protected</span>:</span><br><span class="line"><span class="number">69</span>      <span class="function"><span class="keyword">virtual</span> IBinder*            <span class="title">onAsBinder</span><span class="params">()</span></span>;</span><br><span class="line"><span class="number">70</span>  &#125;;</span><br></pre></td></tr></table></figure>
+<p>BnInterface和BpInterface又分别继承自<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/Binder.h" target="_blank" rel="noopener">Binder.h</a>中定义的2个类<code>BBinder</code>和<code>BpRefBase</code>（实际上是和BpRefBase中的mRemote对象BpBinder有关），BBinder和BpBinder都继承自<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/IBinder.h" target="_blank" rel="noopener">IBinder</a>。</p>
+<p>关系比较乱，上一个红茶大佬的图：</p>
+<p><img src="http://img.blog.csdn.net/20150909221454433" alt=""></p>
+<h2 id="BBinder"><a href="#BBinder" class="headerlink" title="BBinder"></a>BBinder</h2><p>在<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/Binder.cpp#73" target="_blank" rel="noopener">Binder.cpp</a>中对BBinder的各个方法都进行了实现，主要关注<code>transact</code>这个方法中调用的<code>onTransact</code>，<code>onTransact</code>是会被子类重写来实现自己的业务的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">97</span> <span class="keyword">status_t</span> BBinder::transact(</span><br><span class="line"><span class="number">98</span>    <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span><br><span class="line"><span class="number">99</span> &#123;</span><br><span class="line"><span class="number">100</span>    data.setDataPosition(<span class="number">0</span>);</span><br><span class="line"><span class="number">101</span></span><br><span class="line"><span class="number">102</span>    <span class="keyword">status_t</span> err = NO_ERROR;</span><br><span class="line"><span class="number">103</span>    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line"><span class="number">104</span>        <span class="keyword">case</span> PING_TRANSACTION:</span><br><span class="line"><span class="number">105</span>            reply-&gt;writeInt32(pingBinder());</span><br><span class="line"><span class="number">106</span>            <span class="keyword">break</span>;</span><br><span class="line"><span class="number">107</span>        <span class="keyword">default</span>:</span><br><span class="line"><span class="number">108</span>            err = onTransact(code, data, reply, flags);</span><br><span class="line"><span class="number">109</span>            <span class="keyword">break</span>;</span><br><span class="line"><span class="number">110</span>    &#125;</span><br><span class="line"><span class="number">111</span></span><br><span class="line"><span class="number">112</span>    <span class="keyword">if</span> (reply != <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">113</span>        reply-&gt;setDataPosition(<span class="number">0</span>);</span><br><span class="line"><span class="number">114</span>    &#125;</span><br><span class="line"><span class="number">115</span></span><br><span class="line"><span class="number">116</span>    <span class="keyword">return</span> err;</span><br><span class="line"><span class="number">117</span> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="BpBinder"><a href="#BpBinder" class="headerlink" title="BpBinder"></a>BpBinder</h2><p><a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/BpBinder.cpp#159" target="_blank" rel="noopener">BpBinder</a>的transact的内部实际调用的是<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/IPCThreadState.cpp#548" target="_blank" rel="noopener">IPCThreadState::transact</a>，再跟进就是<code>IPCThreadState::writeTransactionData</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">159</span> <span class="keyword">status_t</span> BpBinder::transact(</span><br><span class="line"><span class="number">160</span>    <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span><br><span class="line"><span class="number">161</span>&#123;</span><br><span class="line"><span class="number">162</span>    <span class="comment">// Once a binder has died, it will never come back to life.</span></span><br><span class="line"><span class="number">163</span>    <span class="keyword">if</span> (mAlive) &#123;</span><br><span class="line"><span class="number">164</span>        <span class="keyword">status_t</span> status = IPCThreadState::self()-&gt;transact(</span><br><span class="line"><span class="number">165</span>            mHandle, code, data, reply, flags);</span><br><span class="line"><span class="number">166</span>        <span class="keyword">if</span> (status == DEAD_OBJECT) mAlive = <span class="number">0</span>;</span><br><span class="line"><span class="number">167</span>        <span class="keyword">return</span> status;</span><br><span class="line"><span class="number">168</span>    &#125;</span><br><span class="line"><span class="number">169</span></span><br><span class="line"><span class="number">170</span>    <span class="keyword">return</span> DEAD_OBJECT;</span><br><span class="line"><span class="number">171</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h2><p>再介绍<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/IInterface.h" target="_blank" rel="noopener">IInterface.h</a>头文件下的几个重要的宏。</p>
+<h3 id="DECLARE-META-INTERFACE"><a href="#DECLARE-META-INTERFACE" class="headerlink" title="DECLARE_META_INTERFACE"></a>DECLARE_META_INTERFACE</h3><p>按字面意思直译的话就是<code>声明interface</code>，实际上下面的宏也确实是起到了声明的作用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">74</span><span class="meta">#<span class="meta-keyword">define</span> DECLARE_META_INTERFACE(INTERFACE)                               \</span></span><br><span class="line"><span class="number">75</span>    <span class="keyword">static</span> <span class="keyword">const</span> android::String16 descriptor;                          \</span><br><span class="line"><span class="number">76</span>    <span class="keyword">static</span> android::sp&lt;I##INTERFACE&gt; asInterface(                       \</span><br><span class="line"><span class="number">77</span>            <span class="keyword">const</span> android::sp&lt;android::IBinder&gt;&amp; obj);                  \</span><br><span class="line"><span class="number">78</span>    <span class="keyword">virtual</span> <span class="keyword">const</span> android::<span class="function">String16&amp; <span class="title">getInterfaceDescriptor</span><span class="params">()</span> <span class="keyword">const</span></span>;    \</span><br><span class="line"><span class="number">79</span>    I##INTERFACE();                                                     \</span><br><span class="line"><span class="number">80</span>    <span class="keyword">virtual</span> ~I##INTERFACE();</span><br></pre></td></tr></table></figure></p>
+<h3 id="IMPLEMENT-META-INTERFACE"><a href="#IMPLEMENT-META-INTERFACE" class="headerlink" title="IMPLEMENT_META_INTERFACE"></a>IMPLEMENT_META_INTERFACE</h3><p>对应上面的声明，这里就是<code>实现interface</code>了。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">83</span><span class="meta">#<span class="meta-keyword">define</span> IMPLEMENT_META_INTERFACE(INTERFACE, NAME)                       \</span></span><br><span class="line"><span class="number">84</span>    <span class="keyword">const</span> android::String16 I##INTERFACE::descriptor(NAME);             \</span><br><span class="line"><span class="number">85</span>    <span class="keyword">const</span> android::String16&amp;                                            \</span><br><span class="line"><span class="number">86</span>            I##INTERFACE::getInterfaceDescriptor() <span class="keyword">const</span> &#123;              \</span><br><span class="line"><span class="number">87</span>        <span class="keyword">return</span> I##INTERFACE::descriptor;                                \</span><br><span class="line"><span class="number">88</span>    &#125;                                                                   \</span><br><span class="line"><span class="number">89</span>    android::sp&lt;I##INTERFACE&gt; I##INTERFACE::asInterface(                \</span><br><span class="line"><span class="number">90</span>            <span class="keyword">const</span> android::sp&lt;android::IBinder&gt;&amp; obj)                   \</span><br><span class="line"><span class="number">91</span>    &#123;                                                                   \</span><br><span class="line"><span class="number">92</span>        android::sp&lt;I##INTERFACE&gt; intr;                                 \</span><br><span class="line"><span class="number">93</span>        <span class="keyword">if</span> (obj != <span class="literal">NULL</span>) &#123;                                              \</span><br><span class="line"><span class="number">94</span>            intr = <span class="keyword">static_cast</span>&lt;I##INTERFACE*&gt;(                          \</span><br><span class="line"><span class="number">95</span>                obj-&gt;queryLocalInterface(                               \</span><br><span class="line"><span class="number">96</span>                        I##INTERFACE::descriptor).get());               \</span><br><span class="line"><span class="number">97</span>            <span class="keyword">if</span> (intr == <span class="literal">NULL</span>) &#123;                                         \</span><br><span class="line"><span class="number">98</span>                intr = <span class="keyword">new</span> Bp##INTERFACE(obj);                          \</span><br><span class="line"><span class="number">99</span>            &#125;                                                           \</span><br><span class="line"><span class="number">100</span>        &#125;                                                               \</span><br><span class="line"><span class="number">101</span>        <span class="keyword">return</span> intr;                                                    \</span><br><span class="line"><span class="number">102</span>    &#125;                                                                   \</span><br><span class="line"><span class="number">103</span>    I##INTERFACE::I##INTERFACE() &#123; &#125;                                    \</span><br><span class="line"><span class="number">104</span>    I##INTERFACE::~I##INTERFACE() &#123; &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><p>下面就以Camera服务来实际理一遍Bn和Bp是如何工作的。</p>
+<p>在<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/Camera.cpp" target="_blank" rel="noopener">Camera.cpp</a>中各个方法内部实际调用<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/ICamera.cpp" target="_blank" rel="noopener">ICamera.cpp</a>来实现</p>
+<p><a href="http://androidxref.com/6.0.1_r10/xref/frameworks/av/include/camera/ICamera.h" target="_blank" rel="noopener">BnCamera</a>在<code>ICamera.h</code>中定义了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">118</span>class BnCamera: <span class="keyword">public</span> BnInterface&lt;ICamera&gt;</span><br><span class="line"><span class="number">119</span>&#123;</span><br><span class="line"><span class="number">120</span><span class="keyword">public</span>:</span><br><span class="line"><span class="number">121</span>    <span class="function">virtual status_t    <span class="title">onTransact</span><span class="params">( uint32_t code,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">122</span>                                    <span class="keyword">const</span> Parcel&amp; data,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">123</span>                                    Parcel* reply,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">124</span>                                    uint32_t flags = <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="number">125</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>而<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/av/camera/ICamera.cpp#54" target="_blank" rel="noopener">BpCamera</a>是ICamera.cpp中定义的类</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">54</span> <span class="class"><span class="keyword">class</span> <span class="title">BpCamera</span>:</span> <span class="keyword">public</span> BpInterface&lt;ICamera&gt;</span><br><span class="line"><span class="number">55</span> &#123;</span><br><span class="line"><span class="number">56</span> <span class="keyword">public</span>:</span><br><span class="line"><span class="number">57</span>    BpCamera(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; impl)</span><br><span class="line"><span class="number">58</span>        : BpInterface&lt;ICamera&gt;(impl)</span><br><span class="line"><span class="number">59</span>    &#123;</span><br><span class="line"><span class="number">60</span>    &#125;</span><br><span class="line">	...</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>其他进程请求Camera服务的时候，就需要通过BpCamera来了。下面从BpCamera中一次实际的请求<code>takePicture</code>切入分析：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">206</span>    <span class="comment">// take a picture - returns an IMemory (ref-counted mmap)</span></span><br><span class="line"><span class="number">207</span>    <span class="function">status_t <span class="title">takePicture</span><span class="params">(<span class="keyword">int</span> msgType)</span></span></span><br><span class="line"><span class="function">208    </span>&#123;</span><br><span class="line"><span class="number">209</span>        ALOGV(<span class="string">"takePicture: 0x%x"</span>, msgType);</span><br><span class="line"><span class="number">210</span>        Parcel data, reply;</span><br><span class="line"><span class="number">211</span>        data.writeInterfaceToken(ICamera::getInterfaceDescriptor());</span><br><span class="line"><span class="number">212</span>        data.writeInt32(msgType);</span><br><span class="line"><span class="number">213</span>        remote()-&gt;transact(TAKE_PICTURE, data, &amp;reply);</span><br><span class="line"><span class="number">214</span>        status_t ret = reply.readInt32();</span><br><span class="line"><span class="number">215</span>        <span class="keyword">return</span> ret;</span><br><span class="line"><span class="number">216</span>    &#125;</span><br><span class="line">  ...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">373</span>        <span class="keyword">case</span> TAKE_PICTURE: &#123;</span><br><span class="line"><span class="number">374</span>            ALOGV(<span class="string">"TAKE_PICTURE"</span>);</span><br><span class="line"><span class="number">375</span>            CHECK_INTERFACE(ICamera, data, reply);</span><br><span class="line"><span class="number">376</span>            <span class="keyword">int</span> msgType = data.readInt32();</span><br><span class="line"><span class="number">377</span>            reply-&gt;writeInt32(takePicture(msgType));</span><br><span class="line"><span class="number">378</span>            <span class="keyword">return</span> NO_ERROR;</span><br><span class="line"><span class="number">379</span>        &#125; <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<p>通过请求码<code>TAKE_PICTURE</code>来最后调用到<code>(takePicture(msgType));</code></p>
+<p>BpCamera继承BpInterface，是代理Binder。<code>takePicture</code>这个方法中data根据一些传输协议来写入数据，通过<code>remote</code>来transact，同时还有<code>reply</code>作为响应。</p>
+<h1 id="ServiceManager"><a href="#ServiceManager" class="headerlink" title="ServiceManager"></a>ServiceManager</h1><h2 id="通过0号Binder来获取SM的代理"><a href="#通过0号Binder来获取SM的代理" class="headerlink" title="通过0号Binder来获取SM的代理"></a>通过0号Binder来获取SM的代理</h2><h3 id="JAVA层"><a href="#JAVA层" class="headerlink" title="JAVA层"></a>JAVA层</h3><p>在<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/base/core/java/android/os/ServiceManager.java" target="_blank" rel="noopener">ServiceManager.java</a>中通过<code>ServiceManagerNative</code>来获取ServiceManager</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">33</span>    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> IServiceManager <span class="title">getIServiceManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="number">34</span>        <span class="keyword">if</span> (sServiceManager != <span class="keyword">null</span>) &#123;</span><br><span class="line"><span class="number">35</span>            <span class="keyword">return</span> sServiceManager;</span><br><span class="line"><span class="number">36</span>        &#125;</span><br><span class="line"><span class="number">37</span></span><br><span class="line"><span class="number">38</span>        <span class="comment">// Find the service manager</span></span><br><span class="line"><span class="number">39</span>        sServiceManager = ServiceManagerNative.asInterface(BinderInternal.getContextObject());</span><br><span class="line"><span class="number">40</span>        <span class="keyword">return</span> sServiceManager;</span><br><span class="line"><span class="number">41</span>    &#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>ServiceManagerNative</code>中，返回<code>IServiceManager</code>的实现类<code>ServiceManagerProxy</code>实例，来获取0号Binder</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IServiceManager <span class="title">asInterface</span><span class="params">(IBinder obj)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (obj == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       IServiceManager in =</span><br><span class="line">           (IServiceManager)obj.queryLocalInterface(descriptor);</span><br><span class="line">       <span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> in;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> ServiceManagerProxy(obj);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">ServiceManagerProxy</span><span class="params">(IBinder remote)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	mRemote = remote;<span class="comment">//</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>引用红茶话Binder中2句话</p>
+<blockquote>
+<p>1） ServiceManagerProxy就是IServiceManager代理接口；</p>
+<p>2） ServiceManagerNative显得很鸡肋；</p>
+</blockquote>
+<h3 id="C层"><a href="#C层" class="headerlink" title="C层"></a>C层</h3><p>在<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/IServiceManager.cpp#33" target="_blank" rel="noopener">IServiceManager.cpp</a>中line40提供了获取0号Binder的方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">33</span>sp&lt;IServiceManager&gt; defaultServiceManager()</span><br><span class="line"><span class="number">34</span>&#123;</span><br><span class="line"><span class="number">35</span>    <span class="keyword">if</span> (gDefaultServiceManager != <span class="literal">NULL</span>) <span class="keyword">return</span> gDefaultServiceManager;</span><br><span class="line"><span class="number">36</span></span><br><span class="line"><span class="number">37</span>    &#123;</span><br><span class="line"><span class="number">38</span>        AutoMutex _l(gDefaultServiceManagerLock);</span><br><span class="line"><span class="number">39</span>        <span class="keyword">while</span> (gDefaultServiceManager == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">40</span>            gDefaultServiceManager = interface_cast&lt;IServiceManager&gt;(</span><br><span class="line"><span class="number">41</span>                ProcessState::self()-&gt;getContextObject(<span class="literal">NULL</span>));</span><br><span class="line"><span class="number">42</span>            <span class="keyword">if</span> (gDefaultServiceManager == <span class="literal">NULL</span>)</span><br><span class="line"><span class="number">43</span>                sleep(<span class="number">1</span>);</span><br><span class="line"><span class="number">44</span>        &#125;</span><br><span class="line"><span class="number">45</span>    &#125;</span><br><span class="line"><span class="number">46</span></span><br><span class="line"><span class="number">47</span>    <span class="keyword">return</span> gDefaultServiceManager;</span><br><span class="line"><span class="number">48</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>再进入到<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/ProcessState.cpp#85" target="_blank" rel="noopener">ProcessState</a>中查看相关代码，<code>getContextObject</code>中调用<code>getStrongProxyForHandle(0)</code>方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">85</span>sp&lt;IBinder&gt; ProcessState::getContextObject(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; <span class="comment">/*caller*/</span>)</span><br><span class="line"><span class="number">86</span>&#123;</span><br><span class="line"><span class="number">87</span>    <span class="keyword">return</span> getStrongProxyForHandle(<span class="number">0</span>);</span><br><span class="line"><span class="number">88</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">179</span>sp&lt;IBinder&gt; ProcessState::getStrongProxyForHandle(<span class="keyword">int32_t</span> handle)</span><br><span class="line"><span class="number">180</span>&#123;</span><br><span class="line"><span class="number">181</span>    sp&lt;IBinder&gt; result;</span><br><span class="line"><span class="number">182</span></span><br><span class="line"><span class="number">183</span>    AutoMutex _l(mLock);</span><br><span class="line"><span class="number">184</span></span><br><span class="line"><span class="number">185</span>    handle_entry* e = lookupHandleLocked(handle);</span><br><span class="line"><span class="number">186</span></span><br><span class="line"><span class="number">187</span>    <span class="keyword">if</span> (e != <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">191</span>        IBinder* b = e-&gt;binder;</span><br><span class="line"><span class="number">192</span>        <span class="keyword">if</span> (b == <span class="literal">NULL</span> || !e-&gt;refs-&gt;attemptIncWeak(<span class="keyword">this</span>)) &#123;</span><br><span class="line"><span class="number">193</span>            <span class="keyword">if</span> (handle == <span class="number">0</span>) &#123;</span><br><span class="line"><span class="number">212</span></span><br><span class="line"><span class="number">213</span>                Parcel data;</span><br><span class="line"><span class="number">214</span>                <span class="keyword">status_t</span> status = IPCThreadState::self()-&gt;transact(</span><br><span class="line"><span class="number">215</span>                        <span class="number">0</span>, IBinder::PING_TRANSACTION, data, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line"><span class="number">216</span>                <span class="keyword">if</span> (status == DEAD_OBJECT)</span><br><span class="line"><span class="number">217</span>                   <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">218</span>            &#125;</span><br><span class="line"><span class="number">220</span>            b = <span class="keyword">new</span> BpBinder(handle);</span><br><span class="line"><span class="number">221</span>            e-&gt;binder = b;</span><br><span class="line"><span class="number">222</span>            <span class="keyword">if</span> (b) e-&gt;refs = b-&gt;getWeakRefs();</span><br><span class="line"><span class="number">223</span>            result = b;</span><br><span class="line"><span class="number">224</span>        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">225</span>            <span class="comment">// This little bit of nastyness is to allow us to add a primary</span></span><br><span class="line"><span class="number">226</span>            <span class="comment">// reference to the remote proxy when this team doesn't have one</span></span><br><span class="line"><span class="number">227</span>            <span class="comment">// but another team is sending the handle to us.</span></span><br><span class="line"><span class="number">228</span>            result.force_set(b);</span><br><span class="line"><span class="number">229</span>            e-&gt;refs-&gt;decWeak(<span class="keyword">this</span>);</span><br><span class="line"><span class="number">230</span>        &#125;</span><br><span class="line"><span class="number">231</span>    &#125;</span><br><span class="line"><span class="number">232</span></span><br><span class="line"><span class="number">233</span>    <span class="keyword">return</span> result;</span><br><span class="line"><span class="number">234</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>getContextObject(NULL)实际上相当于返回了一个 new BpBinder(0)</p>
+<p>再来看看模板方法<code>interface_cast</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="keyword">inline</span> sp&lt;INTERFACE&gt; interface_cast(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; obj)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> INTERFACE::asInterface(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上是调用IServiceManager的asInterface方法</p>
+<p><img src="http://img.blog.csdn.net/20150909225436079" alt=""></p>
+<h2 id="通过SM代理来向SM注册其他系统服务"><a href="#通过SM代理来向SM注册其他系统服务" class="headerlink" title="通过SM代理来向SM注册其他系统服务"></a>通过SM代理来向SM注册其他系统服务</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">power = <span class="keyword">new</span> PowerManagerService();</span><br><span class="line">ServiceManager.addService(Context.POWER_SERVICE, power);</span><br></pre></td></tr></table></figure>
+<p>SystemServer向SM注册PowerManagerService</p>
+<h2 id="通过SM代理向SM获得其他系统服务"><a href="#通过SM代理向SM获得其他系统服务" class="headerlink" title="通过SM代理向SM获得其他系统服务"></a>通过SM代理向SM获得其他系统服务</h2><p><code>IServiceManager</code>的实现类<code>ServiceManagerProxy</code>实例中提供了<code>add</code>、<code>get</code>等方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> IBinder <span class="title">getService</span><span class="params">(String name)</span> <span class="keyword">throws</span> RemoteException </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Parcel data = Parcel.obtain();</span><br><span class="line">    Parcel reply = Parcel.obtain();</span><br><span class="line">    data.writeInterfaceToken(IServiceManager.descriptor);</span><br><span class="line">    data.writeString(name);</span><br><span class="line">    </span><br><span class="line">    mRemote.transact(GET_SERVICE_TRANSACTION, data, reply, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    IBinder binder = reply.readStrongBinder();</span><br><span class="line">    reply.recycle();</span><br><span class="line">    data.recycle();</span><br><span class="line">    <span class="keyword">return</span> binder;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://blog.csdn.net/codefly/article/details/17058607" target="_blank" rel="noopener">红茶话Binder-1</a></p>
+<p><a href="http://blog.csdn.net/sinat_34396176/article/details/51480936" target="_blank" rel="noopener">Android系统服务</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPC/" rel="tag"># IPC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/04/android-opengl1/" rel="next" title="Android OpenGL的简单使用">
+                <i class="fa fa-chevron-left"></i> Android OpenGL的简单使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/13/Fragment杂记/" rel="prev" title="Fragment 杂记">
+                Fragment 杂记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://chenkchen.github.io/" title="肥龙" target="_blank">肥龙</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Binder"><span class="nav-number">1.</span> <span class="nav-text">Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BnInterface和BpInterface"><span class="nav-number">1.1.</span> <span class="nav-text">BnInterface和BpInterface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BBinder"><span class="nav-number">1.2.</span> <span class="nav-text">BBinder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BpBinder"><span class="nav-number">1.3.</span> <span class="nav-text">BpBinder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宏"><span class="nav-number">1.4.</span> <span class="nav-text">宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DECLARE-META-INTERFACE"><span class="nav-number">1.4.1.</span> <span class="nav-text">DECLARE_META_INTERFACE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IMPLEMENT-META-INTERFACE"><span class="nav-number">1.4.2.</span> <span class="nav-text">IMPLEMENT_META_INTERFACE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例分析"><span class="nav-number">1.5.</span> <span class="nav-text">实例分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ServiceManager"><span class="nav-number">2.</span> <span class="nav-text">ServiceManager</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过0号Binder来获取SM的代理"><span class="nav-number">2.1.</span> <span class="nav-text">通过0号Binder来获取SM的代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JAVA层"><span class="nav-number">2.1.1.</span> <span class="nav-text">JAVA层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C层"><span class="nav-number">2.1.2.</span> <span class="nav-text">C层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过SM代理来向SM注册其他系统服务"><span class="nav-number">2.2.</span> <span class="nav-text">通过SM代理来向SM注册其他系统服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过SM代理向SM获得其他系统服务"><span class="nav-number">2.3.</span> <span class="nav-text">通过SM代理向SM获得其他系统服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

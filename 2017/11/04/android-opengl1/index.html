@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenGL," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Android OpenGL的Demo">
+<meta name="keywords" content="OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android OpenGL的简单使用">
+<meta property="og:url" content="http://yoursite.com/2017/11/04/android-opengl1/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="Android OpenGL的Demo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.my.csdn.net/uploads/201303/11/1363016714_1787.jpg">
+<meta property="og:updated_time" content="2018-11-29T09:24:08.942Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android OpenGL的简单使用">
+<meta name="twitter:description" content="Android OpenGL的Demo">
+<meta name="twitter:image" content="http://img.my.csdn.net/uploads/201303/11/1363016714_1787.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/04/android-opengl1/"/>
+
+
+
+
+
+  <title>Android OpenGL的简单使用 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/04/android-opengl1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android OpenGL的简单使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-04T14:43:19+08:00">
+                2017-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+	阅读次数:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,929 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android OpenGL的Demo<br><a id="more"></a></p>
+<h1 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h1><p>最近在弄framework层的注入，又是学习Android系统的启动流程，IPC，还有Android的整个GUI渲染机制，看源码看了一礼拜，眼睛疼，擦。。总感觉没有成功的打通整个环节，从Android系统的启动，到执行开机通话这个环节，又得研究游戏Apk是怎么调用OpenGL的渲染，为什么不走eglSwapBuffer这个方法，我hook了又不调，烦得很哎。。还是找个简单的来做一做，先研究在Android应用上面openGL的使用吧哎。。想到这一个礼拜来一直沉迷源码，赶紧停下来写写java，我就顺手把OpenGL在安卓的应用这一块理一理吧。。唉。。 </p>
+<h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><p>先简略的说一下SurfaceFlinger，这就是一个系统服务，负责系统底层GUI这一块的管理，后面我会详细的把这一块理一理。<br>通常来说，我们一个Activity(或者说一个Window)都在SurfaceFlinger中，对应这一个Layer（见下图），像一般我们在Activity的布局中，需要显示Button啊、TextView这种的，都是往这个对应的Layer填充数据，然后由SurfaceFlinger来对各种各样的Layer进行合成渲染，最后控制底层显示在屏幕上。然后像Button这种的控件的绘制，都是在UI主线程中进行的，如果需要频繁的刷新界面，比如直播啊拍照的摄像头预览，那肯定就比较耗时嘛，耗时你主线程就没办法对用户的输入进行响应，容易ANR，所以就有了SurfaceView这个东西，他在SurfaceFlinger中单独对应一个Layer(LayerBuffer)，通过子线程来对它进行更新。<br><img src="http://img.my.csdn.net/uploads/201303/11/1363016714_1787.jpg" alt=""><br>SurfaceView继承View，有两个子类GLSurfaceView和VideoView </p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>创建一个自定义的MySurfaceView，继承自SurfaceView，并实现两个接口SurfaceHolder.CallBack和Runnable(都是为了方便，如果代码复杂的应该要分别实现MySurfaceHolder已经DrawingThread来分别对应周期控制与子线程绘制)。<br>SurfaceHolder.CallBack的三个方法分别对应着SurfaceView的三个生命周期<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface Callback &#123;</span><br><span class="line">    void surfaceCreated(SurfaceHolder var1);</span><br><span class="line"></span><br><span class="line">    void surfaceChanged(SurfaceHolder var1, int var2, int var3, int var4);</span><br><span class="line"></span><br><span class="line">    void surfaceDestroyed(SurfaceHolder var1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由此我们可以猜测这个Holder可能是Surface的主要控制类，看看这个类的部分方法，不难知道SurfaceHolder控制着SurfaceView的大小，格式，可以监控或者改变SurfaceView。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void setFixedSize(int var1, int var2);</span><br><span class="line"></span><br><span class="line">void setSizeFromLayout();</span><br><span class="line"></span><br><span class="line">void setFormat(int var1);</span><br><span class="line"></span><br><span class="line">void setKeepScreenOn(boolean var1);</span><br><span class="line"></span><br><span class="line">Canvas lockCanvas();</span><br><span class="line"></span><br><span class="line">Canvas lockCanvas(Rect var1);</span><br><span class="line"></span><br><span class="line">default Canvas lockHardwareCanvas() &#123;</span><br><span class="line">    throw new RuntimeException(&quot;Stub!&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void unlockCanvasAndPost(Canvas var1);</span><br><span class="line"></span><br><span class="line">Rect getSurfaceFrame();</span><br><span class="line"></span><br><span class="line">Surface getSurface();</span><br></pre></td></tr></table></figure></p>
+<p>需要绘制的话，还需要一个画布类Canvas，在对应的生命周期中开始绘制并且提交，Holder也提供了相应的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mCanvas = mHolder.lockCanvas(); //lock</span><br><span class="line">mHolder.unlockCanvasAndPost(mCanvas);//unLock Post</span><br></pre></td></tr></table></figure></p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySurfaceView</span> <span class="keyword">extends</span> <span class="title">SurfaceView</span> <span class="keyword">implements</span> <span class="title">SurfaceHolder</span>.<span class="title">Callback</span>,<span class="title">Runnable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    SurfaceHolder mHolder ;</span><br><span class="line">    <span class="comment">// 画布</span></span><br><span class="line">    <span class="keyword">private</span> Canvas mCanvas;</span><br><span class="line">    <span class="comment">// 子线程标志位</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isDrawing;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MySurfaceView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mHolder = getHolder();<span class="comment">//得到SurfaceHolder对象</span></span><br><span class="line">        mHolder.addCallback(<span class="keyword">this</span>);<span class="comment">//注册SurfaceHolder</span></span><br><span class="line">        setFocusable(<span class="keyword">true</span>);</span><br><span class="line">        setFocusableInTouchMode(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">this</span>.setKeepScreenOn(<span class="keyword">true</span>);<span class="comment">//保持屏幕长亮</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">surfaceCreated</span><span class="params">(SurfaceHolder holder)</span> </span>&#123;<span class="comment">//创建</span></span><br><span class="line">        isDrawing = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">this</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">surfaceChanged</span><span class="params">(SurfaceHolder holder, <span class="keyword">int</span> format, <span class="keyword">int</span> width, <span class="keyword">int</span> height)</span> </span>&#123;<span class="comment">//改变</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">surfaceDestroyed</span><span class="params">(SurfaceHolder holder)</span> </span>&#123;<span class="comment">//销毁</span></span><br><span class="line">        isDrawing = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (isDrawing)&#123;</span><br><span class="line">            drawing();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawing</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            mCanvas = mHolder.lockCanvas();</span><br><span class="line">            <span class="comment">//这里进行内容的绘制</span></span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (mCanvas != <span class="keyword">null</span>)&#123;</span><br><span class="line">                mHolder.unlockCanvasAndPost(mCanvas);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="GLSurfaceView-和-Renderer"><a href="#GLSurfaceView-和-Renderer" class="headerlink" title="GLSurfaceView 和 Renderer"></a>GLSurfaceView 和 Renderer</h1><p>SurfaceView的子类，功能和SurfaceView相似。我们可以创建一个GLSurfaceView类的实例，实现GLSurfaceView.Renderer接口添加自定义渲染。GLSurfaceView没什么好说的，主要还是他的这个渲染器接口Renderer<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface Renderer &#123;</span><br><span class="line">    void onSurfaceCreated(GL10 var1, EGLConfig var2);</span><br><span class="line"></span><br><span class="line">    void onSurfaceChanged(GL10 var1, int var2, int var3);</span><br><span class="line"></span><br><span class="line">    void onDrawFrame(GL10 var1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个接口有3个方法  </p>
+<ul>
+<li>onSurfaceCreated() surface被创建或者重新创建的时候调用。当线程开始渲染时或者EGL Context丢失时也会调用(EGL是Android系统对OpenGL的上层封装扩展，EGL Context通常在系统屏幕黑掉的时候丢失)。</li>
+<li>onSurfaceChanged()- 如果View的几和形状发生变化了就调用</li>
+<li>onDrawFrame()- 绘制当前的帧，每次View被重绘时被调用。</li>
+</ul>
+<h2 id="完整代码-1"><a href="#完整代码-1" class="headerlink" title="完整代码"></a>完整代码</h2><p>根据以上3个方法的介绍，基本可以确定是onSurfaceCreated里面做一些配置任务，官网也推荐我们在这个方法里创建一些资源等。然后在onDrawFrame里面实现每一帧的绘制任务。<br>具体的位置就是要参考openGL的API了，先写上吧，以后有需要再进一步学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SunnyGLRender  implements GLSurfaceView.Renderer &#123;</span><br><span class="line"></span><br><span class="line">    public float mAngle;</span><br><span class="line">    float one = 0.5f;</span><br><span class="line">    private FloatBuffer triggerBuffer2 = MainActivity.BufferUtil.floatToBuffer(new float []&#123;</span><br><span class="line">            0,one,0, //上顶点</span><br><span class="line">            -one,-one,0, //左下点</span><br><span class="line">            one,-one,0,&#125;); //右下点</span><br><span class="line">    private FloatBuffer triggerBuffer1 = MainActivity.BufferUtil.floatToBuffer(new float []&#123;</span><br><span class="line">            0,one,0, //上顶点</span><br><span class="line">            -one,-one,0, //左下点</span><br><span class="line">            one,-one,0,&#125;); //右下点</span><br><span class="line">    private float[] mTriangleArray = &#123;</span><br><span class="line">            // X, Y, Z 这是一个等边三角形</span><br><span class="line">            -0.5f, -0.25f, 0,</span><br><span class="line">            0.5f, -0.25f, 0,</span><br><span class="line">            0.0f, 0.559016994f, 0 &#125;;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onSurfaceCreated(GL10 gl, EGLConfig config) &#123;</span><br><span class="line"></span><br><span class="line">        //GLES30:为OpenGL ES2.0版本,相应的</span><br><span class="line">        //GLES30:OpenGL ES3.0</span><br><span class="line">        Log.e(&quot;zcxgl&quot;,&quot;onSurfaceCreated&quot;);</span><br><span class="line"></span><br><span class="line">        //黑色背景</span><br><span class="line">        gl.glClearColor(0.6f, 0f, 0.5f, 0.5f);</span><br><span class="line">        //gl.glClear(GL10.GL_COLOR_BUFFER_BIT);</span><br><span class="line">        // 启用顶点数组（否则glDrawArrays不起作用）</span><br><span class="line">        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onSurfaceChanged(GL10 gl, int width, int height) &#123;</span><br><span class="line">        //mProgram = GLES30.glCreateProgram();</span><br><span class="line">        //Log.e(&quot;zcxgl&quot;, &quot;Could not link program: mProgram = &quot;+mProgram);</span><br><span class="line">//        Log.e(&quot;zcxgl&quot;,&quot;onSurfaceChanged&quot;);</span><br><span class="line">        float ratio = (float) width / height;</span><br><span class="line">        Log.e(&quot;zcxgl&quot;,&quot;onSurfaceChanged:&quot;+ratio+&quot;,&quot;+width+&quot;,&quot;+height);</span><br><span class="line"></span><br><span class="line">        gl.glMatrixMode(GL10.GL_PROJECTION); // 设置当前矩阵为投影矩阵</span><br><span class="line">        gl.glLoadIdentity(); // 重置矩阵为初始值</span><br><span class="line">        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7); // 根据长宽比设置投影矩阵</span><br><span class="line">//        gl.glFrustumf(-ratio, ratio, -1, 1, 5, 6);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    private FloatBuffer colorBuffer2 = MainActivity.BufferUtil.floatToBuffer(new float[]&#123;</span><br><span class="line">            one,0,0,one,</span><br><span class="line">            0,one,0,one,</span><br><span class="line">            0,0,one,one,</span><br><span class="line">    &#125;);</span><br><span class="line">    @Override</span><br><span class="line">    public void onDrawFrame(GL10 gl) &#123;</span><br><span class="line">        // Redraw background color</span><br><span class="line">        Log.d(&quot;zcxgl&quot;,&quot;onDrawFramew&quot;);</span><br><span class="line">        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);</span><br><span class="line">        gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);</span><br><span class="line"></span><br><span class="line">        /************ 启用MODELVIEW模式，并使用GLU.gluLookAt()来设置视点 ***************/</span><br><span class="line">        // 设置当前矩阵为模型视图模式</span><br><span class="line">        gl.glMatrixMode(GL10.GL_MODELVIEW);</span><br><span class="line">        gl.glLoadIdentity(); // reset the matrix to its default state</span><br><span class="line">        // 设置视点</span><br><span class="line">        GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);</span><br><span class="line">        /*****************************************/</span><br><span class="line"></span><br><span class="line">        long time = SystemClock.uptimeMillis() % 4000L;</span><br><span class="line">        mAngle = 0.090f * ((int)time);</span><br><span class="line">        // 重置当前的模型观察矩阵</span><br><span class="line">        gl.glLoadIdentity();</span><br><span class="line">        // 移动绘图原点的坐标与上面的语句连用就相当于设置新的绘图远点坐标，</span><br><span class="line">        //gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);//后面的1-10是指图像的1-10层，</span><br><span class="line">        // 图像所处层次越大，在屏幕上显示就越小。默认为（0，0，1),</span><br><span class="line">        // 左移 1.5 单位，并移入屏幕 6.0。</span><br><span class="line">        gl.glTranslatef(0f, 0.0f, -5.0f);</span><br><span class="line"></span><br><span class="line">        gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);</span><br><span class="line">        //启用平滑着色</span><br><span class="line">        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);//</span><br><span class="line">        //gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);//可以直接设置绘图的单调颜色</span><br><span class="line">        // 设置三角形点</span><br><span class="line">        // gl.glVertexPointer(3, GL10.GL_FIXED, 0, triggerBuffer);</span><br><span class="line">        gl.glVertexPointer(3,GL10.GL_FLOAT,0,triggerBuffer2);</span><br><span class="line">        //设置平滑着色的颜色矩阵</span><br><span class="line">        gl.glColorPointer(4,GL10.GL_FLOAT,0,colorBuffer2);//都是一维矩阵，因此第一个参数就是表示一个颜色的长度表示</span><br><span class="line">        //绘制</span><br><span class="line">        gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 3);</span><br><span class="line">        // 关闭颜色平滑着色设置</span><br><span class="line">        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);</span><br><span class="line">        //gl.glFinish();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在MainActivity中直接调用setRenderer即可<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mGLSurfaceView = (GLSurfaceView) findViewById(R.id.glsv_main);</span><br><span class="line">mGLSurfaceView.setRenderer(<span class="keyword">new</span> SunnyGLRender());</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://developer.android.com/reference/android/opengl/GLSurfaceView.Renderer.html" target="_blank" rel="noopener">GLSurfaceView.Renderer</a><br><a href="http://www.jianshu.com/p/15060fc9ef18" target="_blank" rel="noopener">SurfaceView入门学习</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01/rxjava-4/" rel="next" title="RxJava (四)">
+                <i class="fa fa-chevron-left"></i> RxJava (四)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/11/android-ipc3/" rel="prev" title="浅析Android进程间通信（三）">
+                浅析Android进程间通信（三） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://chenkchen.github.io/" title="肥龙" target="_blank">肥龙</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#写在前面的话"><span class="nav-number">1.</span> <span class="nav-text">写在前面的话</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SurfaceView"><span class="nav-number">2.</span> <span class="nav-text">SurfaceView</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">2.1.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">2.1.1.</span> <span class="nav-text">完整代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GLSurfaceView-和-Renderer"><span class="nav-number">3.</span> <span class="nav-text">GLSurfaceView 和 Renderer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#完整代码-1"><span class="nav-number">3.1.</span> <span class="nav-text">完整代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
