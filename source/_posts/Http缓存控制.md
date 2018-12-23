@@ -28,7 +28,7 @@ Cache-Control与Expires的作用一致，但Cache-Control的选择更多，设�
 
 下面挑两个常见的指令来讲一下：
 
-- no-cache:【请求】表示客户端强制缓存服务器向源服务器重新获取资源。【响应】表示源服务器禁止缓存服务器对资源进行缓存。
+- no-cache:【请求】表示客户端强制缓存服务器向源服务器重新获取资源。【响应】表示源服务器不建议缓存服务器对资源进行缓存，实际上还是会缓存。
 - max-age:【请求】在max-age指定时间内获取的是缓存服务器的缓存。当max-age为0的时候缓存服务器通常要将请求转发给源。【响应】表示缓存在max-age指定时间内不需要再像源服务器请求资源。（若于Expires同时存在，HTTP/1.1 中忽略Expires，HTTP/1.0中忽略max-age）
 
 ## Last-Modified/If-Modified-Since
