@@ -3,8 +3,8 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: L's Blog
-subtitle:
+title: Lewis Unchained
+subtitle: Life is tough, but I am tougher
 description:
 author: Lewis 
 language: zh-Hans
@@ -16,6 +16,13 @@ url: http://yoursite.com
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
+
+# Site settings
+# 网站综合内容设置：
+SEOTitle: Lewis Homemade Blog
+email: "d3hkOTUyMjhAMTYzLmNvbQ=="
+#description: "冬瓜的博客"
+keyword: ""
 
 # Directory
 source_dir: source
@@ -75,6 +82,8 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: next
+#theme: again
+#theme: aircloud
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -88,3 +97,7 @@ sitemap:
 baidusitemap: 
   path: baidusitemap.xml
  
+# 搜索数据文件路径设置，不建议改动：
+search:
+  path: search.json
+  field: post
