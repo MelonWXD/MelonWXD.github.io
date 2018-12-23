@@ -1,8 +1,9 @@
+---
 title: EventBus 源码分析
 date: 2018-03-18 15:21:11
 tags: [事件总线]  
 categories: Android框架
-
+---
 事件总线框架EventBus源码走读分析
 
 <!-- more -->  
