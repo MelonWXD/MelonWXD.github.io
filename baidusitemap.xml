@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://yoursite.com/2019/05/15/%E9%9F%B3%E8%A7%86%E9%A2%91%E4%B8%8EFFmpeg%E5%AD%A6%E4%B9%A0%E6%B1%87%E6%80%BB/</loc>
+    <lastmod>2019-05-15T07:39:46.184Z</lastmod>
+    <data>
+        <display>
+        <title>音视频中的基础概念</title>
+        <pubTime>2019-05-15T07:37:04.000Z</pubTime>
+        
+        <tag>音视频</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/18/eventbus%E6%BA%90%E7%A0%81%E8%B5%B0%E8%AF%BB/</loc>
     <lastmod>2018-12-23T08:04:20.446Z</lastmod>
     <data>
@@ -75,14 +95,16 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/07/07/%E9%9F%B3%E8%A7%86%E9%A2%91%E4%B8%8EFFmpeg%E5%AD%A6%E4%B9%A0%E6%B1%87%E6%80%BB/</loc>
-    <lastmod>2018-11-29T09:24:08.949Z</lastmod>
+    <loc>http://yoursite.com/2018/03/16/%E7%83%AD%E6%9B%B4%E6%96%B0%E5%85%A8%E8%A7%A3/</loc>
+    <lastmod>2018-11-29T09:24:08.948Z</lastmod>
     <data>
         <display>
-        <title>音视频与FFmpeg学习汇总</title>
-        <pubTime>2018-07-07T07:52:02.000Z</pubTime>
+        <title>Android热更新总结</title>
+        <pubTime>2018-03-16T03:04:17.000Z</pubTime>
         
-        <tag>音视频</tag>
+        <tag>Dalvik</tag>
+         
+        <tag>热更新</tag>
          
          
            
@@ -115,28 +137,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/16/%E7%83%AD%E6%9B%B4%E6%96%B0%E5%85%A8%E8%A7%A3/</loc>
-    <lastmod>2018-11-29T09:24:08.948Z</lastmod>
-    <data>
-        <display>
-        <title>Android热更新总结</title>
-        <pubTime>2018-03-16T03:04:17.000Z</pubTime>
-        
-        <tag>Dalvik</tag>
-         
-        <tag>热更新</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/04/10/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2018-11-29T09:24:08.948Z</lastmod>
     <data>
@@ -157,12 +157,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
+    <loc>http://yoursite.com/2017/11/01/rxjava-4/</loc>
     <lastmod>2018-11-29T09:24:08.947Z</lastmod>
     <data>
         <display>
-        <title>RxJava (五)</title>
-        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
+        <title>RxJava (四)</title>
+        <pubTime>2017-11-01T11:21:30.000Z</pubTime>
         
         <tag>RxJava</tag>
          
@@ -197,12 +197,32 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/01/rxjava-4/</loc>
+    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
     <lastmod>2018-11-29T09:24:08.947Z</lastmod>
     <data>
         <display>
-        <title>RxJava (四)</title>
-        <pubTime>2017-11-01T11:21:30.000Z</pubTime>
+        <title>RxJava (五)</title>
+        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
+        
+        <tag>RxJava</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
+    <lastmod>2018-11-29T09:24:08.946Z</lastmod>
+    <data>
+        <display>
+        <title>RxJava (二)</title>
+        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
         
         <tag>RxJava</tag>
          
@@ -239,19 +259,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
+    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
     <lastmod>2018-11-29T09:24:08.946Z</lastmod>
     <data>
         <display>
-        <title>RxJava (二)</title>
-        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
+        <title>Kotlin空指针安全</title>
+        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
         
-        <tag>RxJava</tag>
+        <tag>Kotlin语法</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
           
         </display>
     </data>
@@ -279,52 +299,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
-    <lastmod>2018-11-29T09:24:08.946Z</lastmod>
-    <data>
-        <display>
-        <title>Kotlin空指针安全</title>
-        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
-        
-        <tag>Kotlin语法</tag>
-         
-         
-           
-             
-              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/01/06/inject-4-demo/</loc>
     <lastmod>2018-11-29T09:24:08.945Z</lastmod>
     <data>
         <display>
         <title>注入之道(四) 实例</title>
         <pubTime>2018-01-06T08:07:16.000Z</pubTime>
-        
-        <tag>注入</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android逆向安全" url="http://yoursite.com/categories/Android%E9%80%86%E5%90%91%E5%AE%89%E5%85%A8/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/12/01/inject-3-hook/</loc>
-    <lastmod>2018-11-29T09:24:08.945Z</lastmod>
-    <data>
-        <display>
-        <title>注入之道(三) Inject和Hook</title>
-        <pubTime>2017-12-01T02:04:40.000Z</pubTime>
         
         <tag>注入</tag>
          
@@ -372,6 +352,26 @@
            
              
               <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/12/01/inject-3-hook/</loc>
+    <lastmod>2018-11-29T09:24:08.945Z</lastmod>
+    <data>
+        <display>
+        <title>注入之道(三) Inject和Hook</title>
+        <pubTime>2017-12-01T02:04:40.000Z</pubTime>
+        
+        <tag>注入</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android逆向安全" url="http://yoursite.com/categories/Android%E9%80%86%E5%90%91%E5%AE%89%E5%85%A8/"/>
           
         </display>
     </data>
@@ -503,16 +503,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/17/classloader1/</loc>
+    <loc>http://yoursite.com/2017/10/17/classloader2/</loc>
     <lastmod>2018-11-29T09:24:08.942Z</lastmod>
     <data>
         <display>
-        <title>ClassLoader的分析与使用</title>
-        <pubTime>2017-10-17T03:53:31.000Z</pubTime>
+        <title>ClassLoader 相关面试题</title>
+        <pubTime>2017-10-17T09:43:11.000Z</pubTime>
         
         <tag>ClassLoader</tag>
-         
-        <tag>JVM</tag>
          
          
            
@@ -525,14 +523,16 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/17/classloader2/</loc>
+    <loc>http://yoursite.com/2017/10/17/classloader1/</loc>
     <lastmod>2018-11-29T09:24:08.942Z</lastmod>
     <data>
         <display>
-        <title>ClassLoader 相关面试题</title>
-        <pubTime>2017-10-17T09:43:11.000Z</pubTime>
+        <title>ClassLoader的分析与使用</title>
+        <pubTime>2017-10-17T03:53:31.000Z</pubTime>
         
         <tag>ClassLoader</tag>
+         
+        <tag>JVM</tag>
          
          
            
@@ -585,12 +585,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/11/android-ipc3/</loc>
+    <loc>http://yoursite.com/2017/10/28/android-ipc2/</loc>
     <lastmod>2018-11-29T09:24:08.941Z</lastmod>
     <data>
         <display>
-        <title>浅析Android进程间通信（三）</title>
-        <pubTime>2017-11-11T09:28:11.000Z</pubTime>
+        <title>浅析Android进程间通信（二）</title>
+        <pubTime>2017-10-28T07:10:03.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -605,12 +605,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/28/android-ipc2/</loc>
+    <loc>http://yoursite.com/2017/11/11/android-ipc3/</loc>
     <lastmod>2018-11-29T09:24:08.941Z</lastmod>
     <data>
         <display>
-        <title>浅析Android进程间通信（二）</title>
-        <pubTime>2017-10-28T07:10:03.000Z</pubTime>
+        <title>浅析Android进程间通信（三）</title>
+        <pubTime>2017-11-11T09:28:11.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -645,26 +645,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/15/and-util-shap/</loc>
-    <lastmod>2018-11-29T09:24:08.940Z</lastmod>
-    <data>
-        <display>
-        <title>SharedPreference工具类</title>
-        <pubTime>2017-11-15T12:28:45.000Z</pubTime>
-        
-        <tag>SharedPreference</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2017/10/24/and-util-dialog/</loc>
     <lastmod>2018-11-29T09:24:08.940Z</lastmod>
     <data>
@@ -685,19 +665,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/02/22/Okhttp%E5%92%8CRetrofit/</loc>
-    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
+    <loc>http://yoursite.com/2017/11/15/and-util-shap/</loc>
+    <lastmod>2018-11-29T09:24:08.940Z</lastmod>
     <data>
         <display>
-        <title>Retrofit与OkHttp学习</title>
-        <pubTime>2018-02-22T06:15:50.000Z</pubTime>
+        <title>SharedPreference工具类</title>
+        <pubTime>2017-11-15T12:28:45.000Z</pubTime>
         
-        <tag>网络编程</tag>
+        <tag>SharedPreference</tag>
          
          
            
              
-              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -713,26 +693,6 @@
         <pubTime>2017-11-16T11:51:44.000Z</pubTime>
         
         <tag>Material Design</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/11/15/and-util-app/</loc>
-    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
-    <data>
-        <display>
-        <title>App相关全局管理类</title>
-        <pubTime>2017-11-15T12:30:45.000Z</pubTime>
-        
-        <tag>Application</tag>
          
          
            
@@ -765,21 +725,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/23/MIUIWeather/</loc>
-    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <loc>http://yoursite.com/2018/02/22/Okhttp%E5%92%8CRetrofit/</loc>
+    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
     <data>
         <display>
-        <title>天气预报折线图</title>
-        <pubTime>2017-09-23T07:34:58.000Z</pubTime>
+        <title>Retrofit与OkHttp学习</title>
+        <pubTime>2018-02-22T06:15:50.000Z</pubTime>
         
-        <tag>自定义View</tag>
-         
-        <tag>Geather</tag>
+        <tag>网络编程</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
           
         </display>
     </data>
@@ -787,19 +745,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/07/LeakCanary%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <loc>http://yoursite.com/2017/11/15/and-util-app/</loc>
+    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
     <data>
         <display>
-        <title>LeakCanary 源码分析</title>
-        <pubTime>2018-03-07T05:38:12.000Z</pubTime>
+        <title>App相关全局管理类</title>
+        <pubTime>2017-11-15T12:30:45.000Z</pubTime>
         
-        <tag>性能优化</tag>
+        <tag>Application</tag>
          
          
            
              
-              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -862,6 +820,48 @@
            
              
               <breadCrumb title="Java" url="http://yoursite.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/09/23/MIUIWeather/</loc>
+    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <data>
+        <display>
+        <title>天气预报折线图</title>
+        <pubTime>2017-09-23T07:34:58.000Z</pubTime>
+        
+        <tag>自定义View</tag>
+         
+        <tag>Geather</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/07/LeakCanary%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <data>
+        <display>
+        <title>LeakCanary 源码分析</title>
+        <pubTime>2018-03-07T05:38:12.000Z</pubTime>
+        
+        <tag>性能优化</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
           
         </display>
     </data>
