@@ -5,7 +5,11 @@ tags: [音视频]
 categories: Android
 ---
 
+音视频学习笔记第一篇~
+
 <!-- more -->  
+
+
 
 # 格式
 
@@ -21,7 +25,7 @@ categories: Android
 
 ![](https://github.com/MelonWXD/BlogPicStorage/blob/master/rgb%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B.jpeg?raw=true)
 
-###HSV
+### HSV
 
 HSV是一种将RGB色彩空间中的点在倒圆锥体中的表示方法。HSV即色调(Hue)、饱和度(Saturation)、明度(Value)，又称HSB(B即Brightness)。
 
