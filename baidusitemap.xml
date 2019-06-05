@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>http://yoursite.com/2019/06/05/gradle-1/</loc>
+    <lastmod>2019-06-05T09:31:02.459Z</lastmod>
+    <data>
+        <display>
+        <title>Gradle构建学习</title>
+        <pubTime>2019-06-05T02:40:22.000Z</pubTime>
+        
+        <tag>Gradle</tag>
+         
+        <tag>Android构建</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2019/05/15/%E9%9F%B3%E8%A7%86%E9%A2%91%E4%B8%8EFFmpeg%E5%AD%A6%E4%B9%A0%E6%B1%87%E6%80%BB/</loc>
     <lastmod>2019-05-20T09:20:02.903Z</lastmod>
     <data>
@@ -95,6 +117,26 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/04/16/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3/</loc>
+    <lastmod>2018-11-29T09:24:08.948Z</lastmod>
+    <data>
+        <display>
+        <title>Android和Java多线程学习</title>
+        <pubTime>2018-04-16T07:51:32.000Z</pubTime>
+        
+        <tag>多线程</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2018/03/16/%E7%83%AD%E6%9B%B4%E6%96%B0%E5%85%A8%E8%A7%A3/</loc>
     <lastmod>2018-11-29T09:24:08.948Z</lastmod>
     <data>
@@ -117,14 +159,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/04/16/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3/</loc>
+    <loc>http://yoursite.com/2018/04/10/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2018-11-29T09:24:08.948Z</lastmod>
     <data>
         <display>
-        <title>Android和Java多线程学习</title>
-        <pubTime>2018-04-16T07:51:32.000Z</pubTime>
+        <title>常见数据结构分析</title>
+        <pubTime>2018-04-10T08:25:44.000Z</pubTime>
         
-        <tag>多线程</tag>
+        <tag>数据结构</tag>
          
          
            
@@ -137,14 +179,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/04/10/%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2018-11-29T09:24:08.948Z</lastmod>
+    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
+    <lastmod>2018-11-29T09:24:08.947Z</lastmod>
     <data>
         <display>
-        <title>常见数据结构分析</title>
-        <pubTime>2018-04-10T08:25:44.000Z</pubTime>
+        <title>RxJava (五)</title>
+        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
         
-        <tag>数据结构</tag>
+        <tag>RxJava</tag>
          
          
            
@@ -197,39 +239,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
-    <lastmod>2018-11-29T09:24:08.947Z</lastmod>
-    <data>
-        <display>
-        <title>RxJava (五)</title>
-        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
-        
-        <tag>RxJava</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
+    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
     <lastmod>2018-11-29T09:24:08.946Z</lastmod>
     <data>
         <display>
-        <title>RxJava (二)</title>
-        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
+        <title>Kotlin空指针安全</title>
+        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
         
-        <tag>RxJava</tag>
+        <tag>Kotlin语法</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
           
         </display>
     </data>
@@ -259,19 +281,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
+    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
     <lastmod>2018-11-29T09:24:08.946Z</lastmod>
     <data>
         <display>
-        <title>Kotlin空指针安全</title>
-        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
+        <title>RxJava (二)</title>
+        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
         
-        <tag>Kotlin语法</tag>
+        <tag>RxJava</tag>
          
          
            
              
-              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -339,26 +361,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/27/kotlin-dp-factory/</loc>
-    <lastmod>2018-11-29T09:24:08.945Z</lastmod>
-    <data>
-        <display>
-        <title>Kotlin 设计模式—工厂模式</title>
-        <pubTime>2017-09-27T12:38:32.000Z</pubTime>
-        
-        <tag>设计模式</tag>
-         
-         
-           
-             
-              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2017/12/01/inject-3-hook/</loc>
     <lastmod>2018-11-29T09:24:08.945Z</lastmod>
     <data>
@@ -372,6 +374,26 @@
            
              
               <breadCrumb title="Android逆向安全" url="http://yoursite.com/categories/Android%E9%80%86%E5%90%91%E5%AE%89%E5%85%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/09/27/kotlin-dp-factory/</loc>
+    <lastmod>2018-11-29T09:24:08.945Z</lastmod>
+    <data>
+        <display>
+        <title>Kotlin 设计模式—工厂模式</title>
+        <pubTime>2017-09-27T12:38:32.000Z</pubTime>
+        
+        <tag>设计模式</tag>
+         
+         
+           
+             
+              <breadCrumb title="Kotlin" url="http://yoursite.com/categories/Kotlin/"/>
           
         </display>
     </data>
@@ -483,19 +505,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/25/baseactivity/</loc>
+    <loc>http://yoursite.com/2017/11/04/android-opengl1/</loc>
     <lastmod>2018-11-29T09:24:08.942Z</lastmod>
     <data>
         <display>
-        <title>BaseActivity/BaseToolBarActivity</title>
-        <pubTime>2017-11-25T08:05:57.000Z</pubTime>
+        <title>Android OpenGL的简单使用</title>
+        <pubTime>2017-11-04T06:43:19.000Z</pubTime>
         
-        <tag>Base</tag>
+        <tag>OpenGL</tag>
          
          
            
              
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -516,6 +538,26 @@
            
              
               <breadCrumb title="虚拟机" url="http://yoursite.com/categories/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/11/25/baseactivity/</loc>
+    <lastmod>2018-11-29T09:24:08.942Z</lastmod>
+    <data>
+        <display>
+        <title>BaseActivity/BaseToolBarActivity</title>
+        <pubTime>2017-11-25T08:05:57.000Z</pubTime>
+        
+        <tag>Base</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -545,52 +587,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/04/android-opengl1/</loc>
-    <lastmod>2018-11-29T09:24:08.942Z</lastmod>
-    <data>
-        <display>
-        <title>Android OpenGL的简单使用</title>
-        <pubTime>2017-11-04T06:43:19.000Z</pubTime>
-        
-        <tag>OpenGL</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/02/23/android-ipc4/</loc>
     <lastmod>2018-11-29T09:24:08.941Z</lastmod>
     <data>
         <display>
         <title>浅析Android进程间通信（四）</title>
         <pubTime>2018-02-23T02:13:28.000Z</pubTime>
-        
-        <tag>IPC</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/10/28/android-ipc2/</loc>
-    <lastmod>2018-11-29T09:24:08.941Z</lastmod>
-    <data>
-        <display>
-        <title>浅析Android进程间通信（二）</title>
-        <pubTime>2017-10-28T07:10:03.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -625,12 +627,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/19/android-ipc/</loc>
-    <lastmod>2018-11-29T09:24:08.940Z</lastmod>
+    <loc>http://yoursite.com/2017/10/28/android-ipc2/</loc>
+    <lastmod>2018-11-29T09:24:08.941Z</lastmod>
     <data>
         <display>
-        <title>浅析Android进程间通信（一）</title>
-        <pubTime>2017-10-19T12:35:38.000Z</pubTime>
+        <title>浅析Android进程间通信（二）</title>
+        <pubTime>2017-10-28T07:10:03.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -645,19 +647,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/24/and-util-dialog/</loc>
+    <loc>http://yoursite.com/2017/10/19/android-ipc/</loc>
     <lastmod>2018-11-29T09:24:08.940Z</lastmod>
     <data>
         <display>
-        <title>Android Dialog 帮助类</title>
-        <pubTime>2017-10-24T14:08:45.000Z</pubTime>
+        <title>浅析Android进程间通信（一）</title>
+        <pubTime>2017-10-19T12:35:38.000Z</pubTime>
         
-        <tag>Dialog</tag>
+        <tag>IPC</tag>
          
          
            
              
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -685,39 +687,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/16/and-util-color/</loc>
-    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
+    <loc>http://yoursite.com/2017/10/24/and-util-dialog/</loc>
+    <lastmod>2018-11-29T09:24:08.940Z</lastmod>
     <data>
         <display>
-        <title>Material Design 色表</title>
-        <pubTime>2017-11-16T11:51:44.000Z</pubTime>
+        <title>Android Dialog 帮助类</title>
+        <pubTime>2017-10-24T14:08:45.000Z</pubTime>
         
-        <tag>Material Design</tag>
+        <tag>Dialog</tag>
          
          
            
              
               <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/28/RxJava%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
-    <data>
-        <display>
-        <title>RxJava</title>
-        <pubTime>2018-03-28T02:17:06.000Z</pubTime>
-        
-        <tag>RxJava</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -745,6 +727,26 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/11/16/and-util-color/</loc>
+    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
+    <data>
+        <display>
+        <title>Material Design 色表</title>
+        <pubTime>2017-11-16T11:51:44.000Z</pubTime>
+        
+        <tag>Material Design</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/11/15/and-util-app/</loc>
     <lastmod>2018-11-29T09:24:08.939Z</lastmod>
     <data>
@@ -765,61 +767,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/24/JVM%E8%A7%84%E8%8C%83C2/</loc>
-    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <loc>http://yoursite.com/2018/03/28/RxJava%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2018-11-29T09:24:08.939Z</lastmod>
     <data>
         <display>
-        <title>JVM Specification Chapter2</title>
-        <pubTime>2017-09-24T12:18:29.000Z</pubTime>
+        <title>RxJava</title>
+        <pubTime>2018-03-28T02:17:06.000Z</pubTime>
         
-        <tag>JVM Specification</tag>
-         
-        <tag>翻译</tag>
+        <tag>RxJava</tag>
          
          
            
              
-              <breadCrumb title="虚拟机" url="http://yoursite.com/categories/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/12/30/IO%E5%A4%8D%E7%94%A8/</loc>
-    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
-    <data>
-        <display>
-        <title>Unix I/O多路复用</title>
-        <pubTime>2017-12-30T07:46:49.000Z</pubTime>
-        
-        <tag>并发</tag>
-         
-         
-           
-             
-              <breadCrumb title="CSAPP" url="http://yoursite.com/categories/CSAPP/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/03/03/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发编程</title>
-        <pubTime>2018-03-03T05:46:17.000Z</pubTime>
-        
-        <tag>并发编程</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://yoursite.com/categories/Java/"/>
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -869,19 +829,61 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/14/Android%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
-    <lastmod>2018-11-29T09:24:08.937Z</lastmod>
+    <loc>http://yoursite.com/2017/12/30/IO%E5%A4%8D%E7%94%A8/</loc>
+    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
     <data>
         <display>
-        <title>Android性能优化</title>
-        <pubTime>2018-03-14T03:24:55.000Z</pubTime>
+        <title>Unix I/O多路复用</title>
+        <pubTime>2017-12-30T07:46:49.000Z</pubTime>
         
-        <tag>性能优化</tag>
+        <tag>并发</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+              <breadCrumb title="CSAPP" url="http://yoursite.com/categories/CSAPP/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/09/24/JVM%E8%A7%84%E8%8C%83C2/</loc>
+    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <data>
+        <display>
+        <title>JVM Specification Chapter2</title>
+        <pubTime>2017-09-24T12:18:29.000Z</pubTime>
+        
+        <tag>JVM Specification</tag>
+         
+        <tag>翻译</tag>
+         
+         
+           
+             
+              <breadCrumb title="虚拟机" url="http://yoursite.com/categories/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/03/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2018-11-29T09:24:08.938Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发编程</title>
+        <pubTime>2018-03-03T05:46:17.000Z</pubTime>
+        
+        <tag>并发编程</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://yoursite.com/categories/Java/"/>
           
         </display>
     </data>
@@ -937,6 +939,26 @@
         <pubTime>2017-11-13T13:10:52.000Z</pubTime>
         
         <tag>Fragment</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/14/Android%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
+    <lastmod>2018-11-29T09:24:08.937Z</lastmod>
+    <data>
+        <display>
+        <title>Android性能优化</title>
+        <pubTime>2018-03-14T03:24:55.000Z</pubTime>
+        
+        <tag>性能优化</tag>
          
          
            
