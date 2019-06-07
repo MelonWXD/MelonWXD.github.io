@@ -78,8 +78,8 @@ menu_icons:
 
 # Schemes
 #scheme: Muse
-# scheme: Mist
-scheme: Pisces
+ scheme: Mist
+# scheme: Pisces
 #scheme: Gemini
 
 
@@ -114,7 +114,7 @@ links_title: Fellows
 links:
   蛋硬 : https://dawning7670.github.io/
   阿有阝: http://eovie.cn
-  肥龙 : https://chenkchen.github.io/
+#  肥龙 : https://chenkchen.github.io/
 #links_layout: block
 #links_layout: inline
 #links:
