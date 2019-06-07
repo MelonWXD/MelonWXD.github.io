@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="RxJava," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="RxJava 操作符">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava (三)">
+<meta property="og:url" content="http://yoursite.com/2017/10/15/rxjava-3/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="RxJava 操作符">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://reactivex.io/documentation/operators/images/flatMap.c.png">
+<meta property="og:image" content="http://reactivex.io/documentation/operators/images/Buffer.png">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9150e4e5ly1fjkl5d4d1tj204g04fglo.jpg">
+<meta property="og:updated_time" content="2019-05-14T09:35:57.949Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava (三)">
+<meta name="twitter:description" content="RxJava 操作符">
+<meta name="twitter:image" content="http://reactivex.io/documentation/operators/images/flatMap.c.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/15/rxjava-3/"/>
+
+
+
+
+
+  <title>RxJava (三) | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/15/rxjava-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava (三)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-15T14:35:43+08:00">
+                2017-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  963 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RxJava 操作符<br><a id="more"></a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>一下根据操作符的类型进行说明，不会将每个类别下的都讲一遍，具体请查阅<a href="http://reactivex.io/documentation/operators.html" target="_blank" rel="noopener">官方文档</a><br><a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">中文文档</a></p>
+<h2 id="创建Observable的操作符"><a href="#创建Observable的操作符" class="headerlink" title="创建Observable的操作符"></a>创建Observable的操作符</h2><h3 id="create"><a href="#create" class="headerlink" title="create"></a>create</h3><p>最基本的创建被观察者的方式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Observable&lt;String&gt; observable =Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;String&gt; emitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                emitter.onNext(<span class="string">"Event1"</span>);</span><br><span class="line">                emitter.onNext(<span class="string">"Event2"</span>);</span><br><span class="line">                emitter.onNext(<span class="string">"Event3"</span>);</span><br><span class="line">                emitter.onComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">```  </span><br><span class="line">### just</span><br><span class="line">将对象或者对象集合转换成被观察者，并将值发送出去。可以看到下面代码中，Consumer的accept方法参数是List类型的。</span><br><span class="line">```java</span><br><span class="line">        List&lt;Integer&gt; integers = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        integers.add(<span class="number">1</span>);</span><br><span class="line">        integers.add(<span class="number">2</span>);</span><br><span class="line">        integers.add(<span class="number">3</span>);</span><br><span class="line">        </span><br><span class="line">        Observable.just(integers)</span><br><span class="line">                .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .observeOn(Schedulers.newThread())</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Consumer&lt;List&lt;Integer&gt;&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(List&lt;Integer&gt; integers)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="from"><a href="#from" class="headerlink" title="from"></a>from</h3><p>作用跟just差不多，唯一区别就是他是将可迭代的数据结构中的对象一个个发送的，惨Consumer的accept的数据类型就知道跟just的区别了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Observable.fromIterable(integers)</span><br><span class="line">        .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">        .observeOn(Schedulers.newThread())</span><br><span class="line">        .subscribe(<span class="keyword">new</span> Consumer&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">				</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="转化Observable类型的操作符"><a href="#转化Observable类型的操作符" class="headerlink" title="转化Observable类型的操作符"></a>转化Observable类型的操作符</h2><h3 id="FlatMap"><a href="#FlatMap" class="headerlink" title="FlatMap"></a>FlatMap</h3><p>将Observable发送的数据经过转换再发送给观察者<br><img src="http://reactivex.io/documentation/operators/images/flatMap.c.png" alt=""><br>与之差不多的是 ConcatMap，看上图可以知道FlatMap是无序的（绿色球和蓝色球在观察者中串在一起了），而ConcatMap是有序的，就保证了绿色四边形全都是在蓝色四边形之前收到的。<br>例子使用瓜乐天气里，场景如下，先get获取当前ip地址，再拿到ip地址去请求获取城市的编码id，然后对id进行处理。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getWeatherByIp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     mNetClient.getCurCityIP()</span><br><span class="line">             .subscribeOn(Schedulers.io())</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .concatMap(<span class="keyword">new</span> Function&lt;Response&lt;ResponseBody&gt;, ObservableSource&lt;ResponseBody&gt;&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> ObservableSource&lt;ResponseBody&gt; <span class="title">apply</span><span class="params">(Response&lt;ResponseBody&gt; response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                     JsonObject jo = Utils.string2Json(response.body().string());</span><br><span class="line">                     String ipAddr = jo.get(<span class="string">"data"</span>).getAsString();</span><br><span class="line">                     <span class="keyword">return</span> mNetClient.getCityID(ipAddr);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;)</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .subscribe(<span class="keyword">new</span> Consumer&lt;ResponseBody&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(ResponseBody responseBody)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                     JsonObject jo = <span class="keyword">new</span> JsonParser().parse(responseBody.string()).getAsJsonObject();</span><br><span class="line">                     JsonArray ja = jo.getAsJsonArray(<span class="string">"results"</span>);</span><br><span class="line">                     String cityID = ja.get(<span class="number">0</span>).getAsJsonObject().get(<span class="string">"id"</span>).getAsString();</span><br><span class="line">                     LogUtil.I(<span class="string">"id="</span> + cityID);</span><br><span class="line"></span><br><span class="line">                     getCityWeatherByID(cityID);</span><br><span class="line">                     getHourlyByID(cityID);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br><span class="line">     </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在concatMap中通过new Function把getCurCityIP返回的结果，处理得到ipAddr，然后返回mNetClient.getCityID(ipAddr)，这也是个Observable对象（结合retrofit），然后在观察者根据getCityID的ResponseBody获得城市id，再进一步做其他请求。</p>
+<h3 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h3><p>使用groupBy来制定分组规则，对数据源进行分组，这样观察者就可以通过自动生成的GroupedObservable的getKey方法来获得分组key，从而实现对分组数据的获取。<br>上一个网上找的例子<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Observable.range(<span class="number">1</span>, <span class="number">8</span>).groupBy(<span class="keyword">new</span> Func1&lt;Integer, String&gt;() &#123;  </span><br><span class="line">            <span class="meta">@Override</span>  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;  </span><br><span class="line">                <span class="keyword">return</span> (integer % <span class="number">2</span> == <span class="number">0</span>) ? <span class="string">"偶数组"</span> : <span class="string">"奇数组"</span>;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;).subscribe(<span class="keyword">new</span> Action1&lt;GroupedObservable&lt;String, Integer&gt;&gt;() &#123;  </span><br><span class="line">            <span class="meta">@Override</span>  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(<span class="keyword">final</span> GroupedObservable&lt;String, Integer&gt; stringIntegerGroupedObservable)</span> </span>&#123;  </span><br><span class="line">                System.out.println(<span class="string">"group name:"</span> + stringIntegerGroupedObservable.getKey());  </span><br><span class="line">                <span class="keyword">if</span> (stringIntegerGroupedObservable.getKey().equalsIgnoreCase(<span class="string">"奇数组"</span>))  </span><br><span class="line">                    stringIntegerGroupedObservable.subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;  </span><br><span class="line">                        <span class="meta">@Override</span>  </span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;  </span><br><span class="line">                            System.out.println(stringIntegerGroupedObservable.getKey() + <span class="string">"'member: "</span> + integer);  </span><br><span class="line">                        &#125;  </span><br><span class="line">                    &#125;);  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p>gourpBy操作符将数据源进行分组，生成多个GroupedObservable，一旦有观察者开始订阅，每个GroupedObservable都会开始缓存，如果你只对其中一个分组的数据进行处理，就像例子中那样，对欧数组没有进行处理，那么可能造成内存泄漏。所以如果不需要该组数据，也要接收并处理掉。（官方文档上写的是take(0)，就是只接收前0个，那这样我只要奇数组不就不行了）</p>
+<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p>定期的将Observable要发送的数据放在一起同时发送给观察者，而不是一个个发送。<br><img src="http://reactivex.io/documentation/operators/images/Buffer.png" alt=""></p>
+<h2 id="不写了-健身去"><a href="#不写了-健身去" class="headerlink" title="不写了 健身去"></a>不写了 健身去</h2><p>写一半找例子的时候发现居然有人<a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">翻译</a>和<a href="https://www.jianshu.com/p/7b1f57bd1489" target="_blank" rel="noopener">总结</a>了<br>这么火的技术，肯定早就有人翻译了..<br><img src="http://ww2.sinaimg.cn/large/9150e4e5ly1fjkl5d4d1tj204g04fglo.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/13/rxjava-2/" rel="next" title="RxJava (二)">
+                <i class="fa fa-chevron-left"></i> RxJava (二)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/17/classloader1/" rel="prev" title="ClassLoader的分析与使用">
+                ClassLoader的分析与使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Observable的操作符"><span class="nav-number">2.</span> <span class="nav-text">创建Observable的操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#create"><span class="nav-number">2.1.</span> <span class="nav-text">create</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#from"><span class="nav-number">2.2.</span> <span class="nav-text">from</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转化Observable类型的操作符"><span class="nav-number">3.</span> <span class="nav-text">转化Observable类型的操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FlatMap"><span class="nav-number">3.1.</span> <span class="nav-text">FlatMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupBy"><span class="nav-number">3.2.</span> <span class="nav-text">groupBy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意事项"><span class="nav-number">3.2.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer"><span class="nav-number">3.3.</span> <span class="nav-text">buffer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不写了-健身去"><span class="nav-number">4.</span> <span class="nav-text">不写了 健身去</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

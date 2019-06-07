@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Dalvik," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="分析Dalvik加载dex文件流程">
+<meta name="keywords" content="Dalvik">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dalvik加载dex文件分析">
+<meta property="og:url" content="http://yoursite.com/2018/04/02/dalvik加载class分析/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="分析Dalvik加载dex文件流程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20160215152236880?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2019-05-14T09:35:57.945Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dalvik加载dex文件分析">
+<meta name="twitter:description" content="分析Dalvik加载dex文件流程">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160215152236880?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/02/dalvik加载class分析/"/>
+
+
+
+
+
+  <title>Dalvik加载dex文件分析 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/02/dalvik加载class分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dalvik加载dex文件分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-02T21:08:02+08:00">
+                2018-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/虚拟机/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟机</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,784 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>分析Dalvik加载dex文件流程<br><a id="more"></a>  </p>
+<h1 id="dex文件格式"><a href="#dex文件格式" class="headerlink" title=".dex文件格式"></a>.dex文件格式</h1><p>文件格式这个我觉得很死啊，就跟之前<a href="https://melonwxd.github.io/2017/11/19/inject-1-elf/" target="_blank" rel="noopener">分析ELF文件格式</a>一样，按照每个结构体对应的值来找，很无脑但是也很容易出错，我先贴个非虫的图吧，后续有机会再补充。</p>
+<p>非虫大佬的神图:</p>
+<p><img src="http://img.blog.csdn.net/20160215152236880?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<h1 id="从app-process到AndroidRuntime"><a href="#从app-process到AndroidRuntime" class="headerlink" title="从app_process到AndroidRuntime"></a>从app_process到AndroidRuntime</h1><p>一切又要从zygote进程启动开始说起，结合之前的<a href="https://melonwxd.github.io/2017/12/08/Android启动流程/" target="_blank" rel="noopener">分析</a>，在init.rc中解析zygote的时候，zygote64.rc的内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server</span><br><span class="line"><span class="number">2</span>    <span class="class"><span class="keyword">class</span> <span class="title">main</span>    //声明<span class="title">service</span>所属<span class="title">class</span>的名字</span></span><br><span class="line"><span class="class">3    <span class="title">socket</span> <span class="title">zygote</span> <span class="title">stream</span> 660 <span class="title">root</span> <span class="title">system</span></span></span><br><span class="line"><span class="class">4    <span class="title">onrestart</span> <span class="title">write</span> /<span class="title">sys</span>/<span class="title">android_power</span>/<span class="title">request_state</span> <span class="title">wake</span></span></span><br><span class="line"><span class="class">5    <span class="title">onrestart</span> <span class="title">write</span> /<span class="title">sys</span>/<span class="title">power</span>/<span class="title">state</span> <span class="title">on</span></span></span><br><span class="line"><span class="class">6    <span class="title">onrestart</span> <span class="title">restart</span> <span class="title">media</span></span></span><br><span class="line"><span class="class">7    <span class="title">onrestart</span> <span class="title">restart</span> <span class="title">netd</span></span></span><br><span class="line"><span class="class">8    <span class="title">writepid</span> /<span class="title">dev</span>/<span class="title">cpuset</span>/<span class="title">foreground</span>/<span class="title">tasks</span></span></span><br></pre></td></tr></table></figure>
+<p>可以知道zygote要执行的程序是<code>system/bin/app_process64</code>，他的源码位置在<a href="http://androidxref.com/4.4.4_r1/xref/frameworks/base/cmds/app_process/app_main.cpp" target="_blank" rel="noopener">app_main.cpp</a>，截取部分跟dvm相关的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">138</span><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* <span class="keyword">const</span> argv[])</span></span></span><br><span class="line"><span class="function">139</span>&#123;</span><br><span class="line">  </span><br><span class="line"><span class="number">177</span>    AppRuntime runtime;</span><br><span class="line"></span><br><span class="line"><span class="number">187</span>    <span class="keyword">int</span> i = runtime.addVmArguments(argc, argv);</span><br><span class="line"></span><br><span class="line"><span class="number">222</span>    <span class="keyword">if</span> (zygote) &#123;</span><br><span class="line"><span class="number">223</span>        runtime.start(<span class="string">"com.android.internal.os.ZygoteInit"</span>,</span><br><span class="line"><span class="number">224</span>                startSystemServer ? <span class="string">"start-system-server"</span> : <span class="string">""</span>);</span><br><span class="line"><span class="number">238</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>当执行app_main.cpp的<code>main</code>函数为zygote进程的时候就会调用AppRuntime的start方法。</p>
+<p>AppRuntime这个类如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">32</span>class AppRuntime : <span class="keyword">public</span> AndroidRuntime</span><br><span class="line"><span class="number">33</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">56</span></span><br><span class="line"><span class="number">57</span>    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onVmCreated</span><span class="params">(JNIEnv* env)</span></span></span><br><span class="line"><span class="function">58    </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">84</span>    &#125;</span><br><span class="line"><span class="number">85</span></span><br><span class="line"><span class="number">86</span>    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onStarted</span><span class="params">()</span></span></span><br><span class="line"><span class="function">87    </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">96</span>    &#125;</span><br><span class="line"><span class="number">97</span></span><br><span class="line"><span class="number">98</span>    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onZygoteInit</span><span class="params">()</span></span></span><br><span class="line"><span class="function">99    </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">106</span>    &#125;</span><br><span class="line"><span class="number">107</span></span><br><span class="line"><span class="number">108</span>    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onExit</span><span class="params">(<span class="keyword">int</span> code)</span></span></span><br><span class="line"><span class="function">109    </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">116</span>    &#125;</span><br><span class="line"></span><br><span class="line"><span class="number">124</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>继承自<a href="http://androidxref.com/4.4.4_r1/xref/frameworks/base/core/jni/AndroidRuntime.cpp" target="_blank" rel="noopener">AndroidRuntime</a>，跟进父类的start方法瞅瞅</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">797</span><span class="comment">/*</span></span><br><span class="line"><span class="comment">798 * Start the Android runtime.  This involves starting the virtual machine</span></span><br><span class="line"><span class="comment">799 * and calling the "static void main(String[] args)" method in the class</span></span><br><span class="line"><span class="comment">800 * named by "className".</span></span><br><span class="line"><span class="comment">      ↑↑↑↑↑注释自己看 说的很简洁↑↑↑↑↑</span></span><br><span class="line"><span class="comment">804 */</span></span><br><span class="line"><span class="number">805</span><span class="keyword">void</span> AndroidRuntime::start(<span class="keyword">const</span> <span class="keyword">char</span>* className, <span class="keyword">const</span> <span class="keyword">char</span>* options)</span><br><span class="line"><span class="number">806</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">834</span>    <span class="comment">/* start the virtual machine */</span></span><br><span class="line"><span class="number">835</span>    JniInvocation jni_invocation;</span><br><span class="line"><span class="number">836</span>    jni_invocation.Init(<span class="literal">NULL</span>);</span><br><span class="line">  </span><br><span class="line"><span class="number">837</span>    JNIEnv* env;</span><br><span class="line"><span class="number">838</span>    <span class="keyword">if</span> (startVm(&amp;mJavaVM, &amp;env) != <span class="number">0</span>) &#123;</span><br><span class="line"><span class="number">839</span>        <span class="keyword">return</span>;</span><br><span class="line"><span class="number">840</span>    &#125;</span><br><span class="line"><span class="number">841</span>    onVmCreated(env);</span><br><span class="line"><span class="number">842</span></span><br><span class="line"><span class="number">875</span>    <span class="keyword">char</span>* slashClassName = toSlashClassName(className);</span><br><span class="line"><span class="number">876</span>    jclass startClass = env-&gt;FindClass(slashClassName);</span><br><span class="line"><span class="number">877</span>    <span class="keyword">if</span> (startClass == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">878</span>        ALOGE(<span class="string">"JavaVM unable to locate class '%s'\n"</span>, slashClassName);</span><br><span class="line"><span class="number">879</span>        <span class="comment">/* keep going */</span></span><br><span class="line"><span class="number">880</span>    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">881</span>        jmethodID startMeth = env-&gt;GetStaticMethodID(startClass, <span class="string">"main"</span>,</span><br><span class="line"><span class="number">882</span>            <span class="string">"([Ljava/lang/String;)V"</span>);</span><br><span class="line">			...</span><br><span class="line">	   &#125;</span><br><span class="line"><span class="number">902</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="JniInvocation-加载libdvm-so"><a href="#JniInvocation-加载libdvm-so" class="headerlink" title="JniInvocation:加载libdvm.so"></a>JniInvocation:加载libdvm.so</h2><p><a href="http://androidxref.com/4.4.4_r1/xref/libnativehelper/JniInvocation.cpp" target="_blank" rel="noopener">JniInvocation.cpp</a>中的Init方法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4</span> <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span>* kLibraryFallback = <span class="string">"libdvm.so"</span>;</span><br><span class="line"></span><br><span class="line"><span class="number">56</span> <span class="keyword">bool</span> JniInvocation::Init(<span class="keyword">const</span> <span class="keyword">char</span>* library) &#123;</span><br><span class="line"><span class="number">57</span> <span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_ANDROID_OS</span></span><br><span class="line"><span class="number">58</span>  <span class="keyword">char</span> default_library[PROPERTY_VALUE_MAX];</span><br><span class="line"><span class="number">59</span>  property_get(kLibrarySystemProperty, default_library, kLibraryFallback);</span><br><span class="line"><span class="number">60</span> <span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="number">61</span>  <span class="keyword">const</span> <span class="keyword">char</span>* default_library = kLibraryFallback;</span><br><span class="line"><span class="number">62</span> <span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="number">63</span>  <span class="keyword">if</span> (library == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">64</span>    library = default_library;</span><br><span class="line"><span class="number">65</span>  &#125;</span><br><span class="line">  </span><br><span class="line"><span class="number">67</span>  handle_ = dlopen(library, RTLD_NOW);</span><br><span class="line">  </span><br><span class="line"><span class="number">88</span>  <span class="keyword">if</span> (!FindSymbol(<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>**&gt;(&amp;JNI_GetDefaultJavaVMInitArgs_),</span><br><span class="line"><span class="number">89</span>                  <span class="string">"JNI_GetDefaultJavaVMInitArgs"</span>)) &#123;</span><br><span class="line"><span class="number">90</span>    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"><span class="number">91</span>  &#125;</span><br><span class="line"><span class="number">92</span>  <span class="keyword">if</span> (!FindSymbol(<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>**&gt;(&amp;JNI_CreateJavaVM_),</span><br><span class="line"><span class="number">93</span>                  <span class="string">"JNI_CreateJavaVM"</span>)) &#123;</span><br><span class="line"><span class="number">94</span>    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"><span class="number">95</span>  &#125;</span><br><span class="line"><span class="number">96</span>  <span class="keyword">if</span> (!FindSymbol(<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>**&gt;(&amp;JNI_GetCreatedJavaVMs_),</span><br><span class="line"><span class="number">97</span>                  <span class="string">"JNI_GetCreatedJavaVMs"</span>)) &#123;</span><br><span class="line"><span class="number">98</span>    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"><span class="number">99</span>  &#125;</span><br><span class="line"><span class="number">100</span>  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"><span class="number">101</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>粗略看下即可，针对5.0之前的系统，通过line67的<code>dlopen</code>来加载<code>&quot;libdvm.so&quot;</code>，同时还查找了三个函数，记着阿，下面要用。</p>
+<p>##startVm:启动虚拟机</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">435</span><span class="keyword">int</span> AndroidRuntime::startVm(JavaVM** pJavaVM, JNIEnv** pEnv)</span><br><span class="line"><span class="number">436</span>&#123;</span><br><span class="line"><span class="number">437</span>    <span class="keyword">int</span> result = <span class="number">-1</span>;</span><br><span class="line"><span class="number">438</span>    JavaVMInitArgs initArgs;</span><br><span class="line"><span class="number">439</span>    JavaVMOption opt;</span><br><span class="line">      <span class="comment">//属性定义与配置一大堆</span></span><br><span class="line"></span><br><span class="line"><span class="number">767</span>    <span class="comment">/*</span></span><br><span class="line"><span class="comment">768     * Initialize the VM.</span></span><br><span class="line"><span class="comment">769     *</span></span><br><span class="line"><span class="comment">770     * The JavaVM* is essentially per-process, and the JNIEnv* is per-thread.</span></span><br><span class="line"><span class="comment">771     * If this call succeeds, the VM is ready, and we can start issuing</span></span><br><span class="line"><span class="comment">772     * JNI calls.</span></span><br><span class="line"><span class="comment">773     */</span></span><br><span class="line"><span class="number">774</span>    <span class="keyword">if</span> (JNI_CreateJavaVM(pJavaVM, pEnv, &amp;initArgs) &lt; <span class="number">0</span>) &#123;</span><br><span class="line"><span class="number">775</span>        ALOGE(<span class="string">"JNI_CreateJavaVM failed\n"</span>);</span><br><span class="line"><span class="number">776</span>        <span class="keyword">goto</span> bail;</span><br><span class="line"><span class="number">777</span>    &#125;</span><br><span class="line"><span class="number">778</span></span><br><span class="line"><span class="number">779</span>    result = <span class="number">0</span>;</span><br><span class="line"><span class="number">780</span></span><br><span class="line"><span class="number">781</span> bail:</span><br><span class="line"><span class="number">782</span>    <span class="built_in">free</span>(stackTraceFile);</span><br><span class="line"><span class="number">783</span>    <span class="keyword">return</span> result;</span><br><span class="line"><span class="number">784</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>最核心的方法：<a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/Jni.cpp" target="_blank" rel="noopener">JNI_CreateJavaVM</a>，肯定是要略过不讲的，等以后另开一篇，反正这里虚拟机就启动了。</p>
+<h2 id="JniEnv加载"><a href="#JniEnv加载" class="headerlink" title="JniEnv加载"></a>JniEnv加载</h2><p>在<code>startVm</code>方法返回之后，就拿到了虚拟机的JNI接口<code>JNIEnv* env;</code>，就可以通过下面的FindClass和GetStaticMethodID来加载参数classname 值为<code>com.android.internal.os.ZygoteInit</code>以及其main函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">876</span>    jclass startClass = env-&gt;FindClass(slashClassName);</span><br><span class="line">  </span><br><span class="line"><span class="number">881</span>        jmethodID startMeth = env-&gt;GetStaticMethodID(startClass, <span class="string">"main"</span>,</span><br><span class="line"><span class="number">882</span>            <span class="string">"([Ljava/lang/String;)V"</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="类的加载"><a href="#类的加载" class="headerlink" title="类的加载"></a>类的加载</h1><p><strong>todo: 上面的Jni调用到类的加载，这个过程我暂时还没梳理清楚</strong></p>
+<p>但这并不妨碍我分析下面2个函数 -m-</p>
+<p>Jvm对new操作符对应的OP_NEW_INSTANCE处理如下，地址在<a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/mterp/out/InterpC-portable.cpp" target="_blank" rel="noopener">/dalvik/vm/mterp/out/InterpC-portable.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1649</span><span class="comment">/* File: c/OP_NEW_INSTANCE.cpp */</span></span><br><span class="line"><span class="number">1650</span>HANDLE_OPCODE(OP_NEW_INSTANCE <span class="comment">/*vAA, class@BBBB*/</span>)</span><br><span class="line"><span class="number">1651</span>    &#123;</span><br><span class="line"><span class="number">1652</span>        ClassObject* clazz;</span><br><span class="line"><span class="number">1653</span>        Object* newObj;</span><br><span class="line"><span class="number">1654</span></span><br><span class="line"><span class="number">1655</span>        EXPORT_PC();</span><br><span class="line"><span class="number">1656</span></span><br><span class="line"><span class="number">1657</span>        vdst = INST_AA(inst);</span><br><span class="line"><span class="number">1658</span>        ref = FETCH(<span class="number">1</span>);</span><br><span class="line"><span class="number">1659</span>        ILOGV(<span class="string">"|new-instance v%d,class@0x%04x"</span>, vdst, ref);</span><br><span class="line"><span class="number">1660</span>        clazz = dvmDexGetResolvedClass(methodClassDex, ref);</span><br><span class="line"><span class="number">1661</span>        <span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">1662</span>            clazz = dvmResolveClass(curMethod-&gt;clazz, ref, <span class="literal">false</span>);</span><br><span class="line"><span class="number">1665</span>        &#125;</span><br><span class="line"><span class="number">1667</span>        <span class="keyword">if</span> (!dvmIsClassInitialized(clazz) &amp;&amp; !dvmInitClass(clazz))</span><br><span class="line"><span class="number">1668</span>            GOTO_exceptionThrown();</span><br><span class="line"><span class="number">1691</span>        newObj = dvmAllocObject(clazz, ALLOC_DONT_TRACK);</span><br><span class="line"></span><br><span class="line"><span class="number">1694</span>        SET_REGISTER(vdst, (u4) newObj);</span><br><span class="line"><span class="number">1695</span>    &#125;</span><br><span class="line"><span class="number">1696</span>    FINISH(<span class="number">2</span>);</span><br><span class="line"><span class="number">1697</span>OP_END</span><br></pre></td></tr></table></figure>
+<h2 id="dvmResolveClass"><a href="#dvmResolveClass" class="headerlink" title="dvmResolveClass"></a>dvmResolveClass</h2><p>定义在<a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Resolve.cpp#63" target="_blank" rel="noopener">/dalvik/vm/oo/Resolve.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">63</span><span class="function">ClassObject* <span class="title">dvmResolveClass</span><span class="params">(<span class="keyword">const</span> ClassObject* referrer, u4 classIdx,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">64</span>    <span class="keyword">bool</span> fromUnverifiedConstant)</span></span></span><br><span class="line"><span class="function">65</span>&#123;</span><br><span class="line"><span class="number">66</span>    DvmDex* pDvmDex = referrer-&gt;pDvmDex;</span><br><span class="line"><span class="number">67</span>    ClassObject* resClass;</span><br><span class="line"><span class="number">68</span>    <span class="keyword">const</span> <span class="keyword">char</span>* className;</span><br><span class="line"><span class="number">69</span></span><br><span class="line"><span class="comment">// 先查看是否要加载的类已经被解析过了</span></span><br><span class="line"><span class="number">74</span>    resClass = dvmDexGetResolvedClass(pDvmDex, classIdx);</span><br><span class="line"><span class="number">75</span>    <span class="keyword">if</span> (resClass != <span class="literal">NULL</span>)</span><br><span class="line"><span class="number">76</span>        <span class="keyword">return</span> resClass;</span><br><span class="line"><span class="comment">//没有的话就 就解析dex文件 </span></span><br><span class="line"><span class="number">90</span>    className = dexStringByTypeIdx(pDvmDex-&gt;pDexFile, classIdx);</span><br><span class="line">  <span class="comment">//判断是不是原始类型  primitive type</span></span><br><span class="line"><span class="number">91</span>    <span class="keyword">if</span> (className[<span class="number">0</span>] != <span class="string">'\0'</span> &amp;&amp; className[<span class="number">1</span>] == <span class="string">'\0'</span>) &#123;</span><br><span class="line"><span class="number">92</span>        <span class="comment">/* primitive type */</span>   </span><br><span class="line"><span class="number">93</span>        resClass = dvmFindPrimitiveClass(className[<span class="number">0</span>]);</span><br><span class="line"><span class="number">94</span>    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 不是原始类型就调用dvmFindClassNoInit</span></span><br><span class="line"><span class="number">95</span>        resClass = dvmFindClassNoInit(className, referrer-&gt;classLoader);</span><br><span class="line"><span class="number">96</span>    &#125;</span><br><span class="line"><span class="number">97</span></span><br><span class="line"><span class="number">98</span>    <span class="keyword">if</span> (resClass != <span class="literal">NULL</span>) &#123;</span><br><span class="line">  <span class="comment">//这里就是我在热更新总结的文章里说道的，dvm的检查代码</span></span><br><span class="line">  <span class="comment">//https://melonwxd.github.io/2018/03/16/%E7%83%AD%E6%9B%B4%E6%96%B0%E5%85%A8%E8%A7%A3/</span></span><br><span class="line"><span class="number">141</span>        &#125;</span><br><span class="line">		<span class="comment">//解析完该类  缓存起来 下次就直接通过line74的函数返回了</span></span><br><span class="line"><span class="number">154</span>        dvmDexSetResolvedClass(pDvmDex, classIdx, resClass);</span><br><span class="line"><span class="number">155</span>    &#125; </span><br><span class="line"></span><br><span class="line"><span class="number">162</span>    <span class="keyword">return</span> resClass;</span><br><span class="line"><span class="number">163</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>总体流程已经注释好了，主要跟进<a href="http://androidxref.com/4.4.4_r1/xref/dalvik/vm/oo/Class.cpp#1285" target="_blank" rel="noopener">dvmFindClassNoInit</a>函数中进一步了解流程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1285</span><span class="function">ClassObject* <span class="title">dvmFindClassNoInit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* descriptor,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">1286</span>        Object* loader)</span></span></span><br><span class="line"><span class="function">1287</span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">1293</span>    <span class="keyword">if</span> (*descriptor == <span class="string">'['</span>) &#123;</span><br><span class="line"><span class="number">1294</span>        <span class="comment">/*</span></span><br><span class="line"><span class="comment">1295         * Array class.  Find in table, generate if not found.</span></span><br><span class="line"><span class="comment">1296         */</span></span><br><span class="line"><span class="number">1297</span>        <span class="keyword">return</span> dvmFindArrayClass(descriptor, loader);</span><br><span class="line"><span class="number">1298</span>    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">1299</span>        <span class="comment">/*</span></span><br><span class="line"><span class="comment">1300         * Regular class.  Find in table, load if not found.</span></span><br><span class="line"><span class="comment">1301         */</span></span><br><span class="line"><span class="number">1302</span>        <span class="keyword">if</span> (loader != <span class="literal">NULL</span>) &#123;</span><br><span class="line">  				<span class="comment">//通常的类都是走这个函数，应该都有classloader</span></span><br><span class="line"><span class="number">1303</span>            <span class="keyword">return</span> findClassFromLoaderNoInit(descriptor, loader);</span><br><span class="line"><span class="number">1304</span>        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  				<span class="comment">//根据类名来看应该是系统类走这个方法 如 java.lang包下的？ 没有深究</span></span><br><span class="line"><span class="number">1305</span>            <span class="keyword">return</span> dvmFindSystemClassNoInit(descriptor);</span><br><span class="line"><span class="number">1306</span>        &#125;</span><br><span class="line"><span class="number">1307</span>    &#125;</span><br><span class="line"><span class="number">1308</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进函数 findClassFromLoaderNoInit</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1316</span> <span class="function"><span class="keyword">static</span> ClassObject* <span class="title">findClassFromLoaderNoInit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* descriptor,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="number">1317</span>    Object* loader)</span></span></span><br><span class="line"><span class="function">1318 </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">1322</span>    Thread* self = dvmThreadSelf();</span><br><span class="line"><span class="number">1323</span></span><br><span class="line"></span><br><span class="line"><span class="number">1344</span>    <span class="keyword">char</span>* dotName = <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">1345</span>    StringObject* nameObj = <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">1346</span></span><br><span class="line"><span class="number">1347</span>    <span class="comment">/* 转换符号 convert "Landroid/debug/Stuff;" to "android.debug.Stuff" */</span></span><br><span class="line"><span class="number">1348</span>    dotName = dvmDescriptorToDot(descriptor);</span><br><span class="line"></span><br><span class="line"><span class="number">1353</span>    nameObj = dvmCreateStringFromCstr(dotName);</span><br><span class="line"></span><br><span class="line"><span class="number">1359</span>    dvmMethodTraceClassPrepBegin();</span><br><span class="line"><span class="number">1360</span></span><br><span class="line"><span class="number">1361</span>    <span class="comment">/*</span></span><br><span class="line"><span class="comment">1362     * Invoke loadClass().  This will probably result in a couple of</span></span><br><span class="line"><span class="comment">1363     * exceptions being thrown, because the ClassLoader.loadClass()</span></span><br><span class="line"><span class="comment">1364     * implementation eventually calls VMClassLoader.loadClass to see if</span></span><br><span class="line"><span class="comment">1365     * the bootstrap class loader can find it before doing its own load.</span></span><br><span class="line"><span class="comment">1366     */</span></span><br><span class="line"></span><br><span class="line"><span class="number">1368</span>    &#123;</span><br><span class="line"><span class="number">1369</span>        <span class="keyword">const</span> Method* loadClass =</span><br><span class="line"><span class="number">1370</span>            loader-&gt;clazz-&gt;vtable[gDvm.voffJavaLangClassLoader_loadClass];</span><br><span class="line"><span class="number">1371</span>        JValue result;</span><br><span class="line"><span class="number">1372</span>        dvmCallMethod(self, loadClass, loader, &amp;result, nameObj);</span><br><span class="line"><span class="number">1373</span>        clazz = (ClassObject*) result.l;</span><br><span class="line"><span class="number">1374</span></span><br><span class="line"><span class="number">1375</span>        dvmMethodTraceClassPrepEnd();</span><br><span class="line"><span class="number">1376</span>        Object* excep = dvmGetException(self);</span><br><span class="line"><span class="number">1377</span>        <span class="keyword">if</span> (excep != <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">1382</span>            dvmAddTrackedAlloc(excep, self);</span><br><span class="line"><span class="number">1383</span>            dvmClearException(self);</span><br><span class="line"><span class="number">1384</span>            dvmThrowChainedNoClassDefFoundError(descriptor, excep);</span><br><span class="line"><span class="number">1385</span>            dvmReleaseTrackedAlloc(excep, self);</span><br><span class="line"><span class="number">1386</span>            clazz = <span class="literal">NULL</span>;</span><br><span class="line"><span class="number">1387</span>            <span class="keyword">goto</span> bail;</span><br><span class="line"><span class="number">1388</span>        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">1389</span>            ALOGW(<span class="string">"ClassLoader returned NULL w/o exception pending"</span>);</span><br><span class="line"><span class="number">1390</span>            dvmThrowNullPointerException(<span class="string">"ClassLoader returned null"</span>);</span><br><span class="line"><span class="number">1391</span>            <span class="keyword">goto</span> bail;</span><br><span class="line"><span class="number">1392</span>        &#125;</span><br><span class="line"><span class="number">1393</span>    &#125;</span><br><span class="line"><span class="number">1394</span></span><br><span class="line"><span class="number">1395</span>    <span class="comment">/* not adding clazz to tracked-alloc list, because it's a ClassObject */</span></span><br><span class="line"><span class="number">1396</span></span><br><span class="line"><span class="number">1397</span>    dvmAddInitiatingLoader(clazz, loader);</span><br><span class="line"></span><br><span class="line"><span class="number">1402</span> bail:</span><br><span class="line"><span class="number">1403</span>    dvmReleaseTrackedAlloc((Object*)nameObj, <span class="literal">NULL</span>);</span><br><span class="line"><span class="number">1404</span>    <span class="built_in">free</span>(dotName);</span><br><span class="line"><span class="number">1405</span>    <span class="keyword">return</span> clazz;</span><br><span class="line"><span class="number">1406</span> &#125;</span><br><span class="line"><span class="number">1407</span></span><br></pre></td></tr></table></figure>
+<h2 id="dvmInitClass"><a href="#dvmInitClass" class="headerlink" title="dvmInitClass"></a>dvmInitClass</h2><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.infoq.com/cn/articles/android-in-depth-dalvik" target="_blank" rel="noopener">深入理解Android（二）：Java虚拟机Dalvik</a></p>
+<p><a href="https://blog.csdn.net/luoshengyang/article/details/41688319" target="_blank" rel="noopener">老罗的分析</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dalvik/" rel="tag"># Dalvik</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/28/Glide源码学习/" rel="next" title="Glide源码学习">
+                <i class="fa fa-chevron-left"></i> Glide源码学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/常见数据结构/" rel="prev" title="常见数据结构分析">
+                常见数据结构分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dex文件格式"><span class="nav-number">1.</span> <span class="nav-text">.dex文件格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从app-process到AndroidRuntime"><span class="nav-number">2.</span> <span class="nav-text">从app_process到AndroidRuntime</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JniInvocation-加载libdvm-so"><span class="nav-number">2.1.</span> <span class="nav-text">JniInvocation:加载libdvm.so</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JniEnv加载"><span class="nav-number">2.2.</span> <span class="nav-text">JniEnv加载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类的加载"><span class="nav-number">3.</span> <span class="nav-text">类的加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dvmResolveClass"><span class="nav-number">3.1.</span> <span class="nav-text">dvmResolveClass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dvmInitClass"><span class="nav-number">3.2.</span> <span class="nav-text">dvmInitClass</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

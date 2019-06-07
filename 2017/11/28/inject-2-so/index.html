@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="注入," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="乱贴源码系列：结合Android6.0源码linker.cpp来学习一下so库的加载流程">
+<meta name="keywords" content="注入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="注入之道(二) so文件加载流程">
+<meta property="og:url" content="http://yoursite.com/2017/11/28/inject-2-so/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="乱贴源码系列：结合Android6.0源码linker.cpp来学习一下so库的加载流程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-14T09:35:57.947Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="注入之道(二) so文件加载流程">
+<meta name="twitter:description" content="乱贴源码系列：结合Android6.0源码linker.cpp来学习一下so库的加载流程">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/28/inject-2-so/"/>
+
+
+
+
+
+  <title>注入之道(二) so文件加载流程 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/28/inject-2-so/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">注入之道(二) so文件加载流程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-28T20:08:47+08:00">
+                2017-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,824 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>乱贴源码系列：结合Android6.0源码<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp" target="_blank" rel="noopener">linker.cpp</a>来学习一下so库的加载流程<br><a id="more"></a></p>
+<h1 id="so的加载和链接"><a href="#so的加载和链接" class="headerlink" title="so的加载和链接"></a>so的加载和链接</h1><h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><h3 id="System-load"><a href="#System-load" class="headerlink" title="System.load"></a>System.load</h3><p>通常我们要在代码中使用so库的话，都要在静态块手动的去载入so库，形如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static &#123;</span><br><span class="line">    System.loadLibrary(&quot;native-lib&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟进代码，会一直走到<code>java.lang.Runtime</code>包下的native方法<br><code>nativeLoad</code>,再到源码中的<a href="http://androidxref.com/6.0.1_r10/xref/art/runtime/native/java_lang_Runtime.cc#70" target="_blank" rel="noopener">java_lang_Runtime.cc</a>中的<code>Runtime_nativeLoad</code>,然后跳转到<a href="http://androidxref.com/6.0.1_r10/xref/art/runtime/java_vm_ext.cc#596" target="_blank" rel="noopener">java_vm_ext.cc</a>的<code>LoadNativeLibrary</code>，在line645调用了dlopen:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">643  Locks::mutator_lock_-&gt;AssertNotHeld(self);</span><br><span class="line">644  const char* path_str = path.empty() ? nullptr : path.c_str();</span><br><span class="line">645  void* handle = dlopen(path_str, RTLD_NOW);</span><br></pre></td></tr></table></figure></p>
+<p>看到dlopen基本就是跳转到linker下执行了，<code>dlopen</code>是linker目录下的<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/dlfcn.cpp" target="_blank" rel="noopener">dlfcn.cpp</a>的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">70	static void* dlopen_ext(const char* filename, int flags, const android_dlextinfo* extinfo) &#123;</span><br><span class="line">71	  ScopedPthreadMutexLocker locker(&amp;g_dl_mutex);</span><br><span class="line">72	  soinfo* result = do_dlopen(filename, flags, extinfo);</span><br><span class="line">73	  if (result == nullptr) &#123;</span><br><span class="line">74  	  __bionic_format_dlerror(&quot;dlopen failed&quot;, linker_get_error_buffer());</span><br><span class="line">75 	   return nullptr;</span><br><span class="line">76 	 &#125;</span><br><span class="line">77 	 return result;</span><br><span class="line">78	 &#125;</span><br><span class="line">79</span><br><span class="line">80	void* android_dlopen_ext(const char* filename, int flags, const android_dlextinfo* extinfo) &#123;</span><br><span class="line">81	  return dlopen_ext(filename, flags, extinfo);</span><br><span class="line">82	&#125;</span><br><span class="line">83</span><br><span class="line">84	void* dlopen(const char* filename, int flags) &#123;</span><br><span class="line">85	  return dlopen_ext(filename, flags, nullptr);</span><br><span class="line">86	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>自下往上，最后调用到<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#1676" target="_blank" rel="noopener">linker.cpp</a>的<code>do_dlopen</code>。</p>
+<h3 id="do-dlopen"><a href="#do-dlopen" class="headerlink" title="do_dlopen"></a>do_dlopen</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	  ...</span><br><span class="line">1694  ProtectedDataGuard guard;</span><br><span class="line">1695  soinfo* si = find_library(name, flags, extinfo);</span><br><span class="line">1696  if (si != nullptr) &#123;</span><br><span class="line">1697    si-&gt;call_constructors();</span><br><span class="line">1698  &#125;</span><br><span class="line">1699  return si;</span><br></pre></td></tr></table></figure>
+<p>前面做了一堆非空值的判断，然后调用了一个<code>ProtectedDataGuard</code>类的<code>protect_data</code>方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">791class ProtectedDataGuard &#123;</span><br><span class="line">792 public:</span><br><span class="line">793  ProtectedDataGuard() &#123;</span><br><span class="line">794    if (ref_count_++ == 0) &#123;</span><br><span class="line">795      protect_data(PROT_READ | PROT_WRITE);</span><br><span class="line">796    &#125;</span><br><span class="line">797  &#125;</span><br><span class="line">798</span><br><span class="line">799  ~ProtectedDataGuard() &#123;</span><br><span class="line">800    if (ref_count_ == 0) &#123; // overflow</span><br><span class="line">801      __libc_fatal(&quot;Too many nested calls to dlopen()&quot;);</span><br><span class="line">802    &#125;</span><br><span class="line">803</span><br><span class="line">804    if (--ref_count_ == 0) &#123;</span><br><span class="line">805      protect_data(PROT_READ);</span><br><span class="line">806    &#125;</span><br><span class="line">807  &#125;</span><br><span class="line">808 private:</span><br><span class="line">809  void protect_data(int protection) &#123;</span><br><span class="line">810    g_soinfo_allocator.protect_all(protection);</span><br><span class="line">811    g_soinfo_links_allocator.protect_all(protection);</span><br><span class="line">812  &#125;</span><br><span class="line">813</span><br><span class="line">814  static size_t ref_count_;</span><br><span class="line">815&#125;;</span><br><span class="line">816</span><br></pre></td></tr></table></figure></p>
+<p>最后通过<code>LinkerTypeAllocator</code>调用到<code>LinkerBlockAllocator</code>的<code>protect_all</code>，实际上调的是系统函数<code>mprotect</code>来修改页的读写属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">89void LinkerBlockAllocator::protect_all(int prot) &#123;</span><br><span class="line">90  for (LinkerBlockAllocatorPage* page = page_list_; page != nullptr; page = page-&gt;next) &#123;</span><br><span class="line">91    if (mprotect(page, PAGE_SIZE, prot) == -1) &#123;</span><br><span class="line">92      abort();</span><br><span class="line">93    &#125;</span><br><span class="line">94  &#125;</span><br><span class="line">95&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ok，回归正文，刚才<code>do_dlopen</code>最主要一行代码，通过find_library就完成了so的加载，返回一个结构体soinfo，然后调用这个soinfo的call_constructors()方法，即so库的构造函数，来完成so的加载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1695  soinfo* si = find_library(name, flags, extinfo);</span><br><span class="line">1696  if (si != nullptr) &#123;</span><br><span class="line">1697    si-&gt;call_constructors();</span><br><span class="line">1698  &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="soinfo"><a href="#soinfo" class="headerlink" title="soinfo"></a>soinfo</h3><p>在进入find_library之前先介绍一下表示一个so库的信息的结构体<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.h#172" target="_blank" rel="noopener">soinfo</a><br>我很想把代码都贴上来，但是那样凑字数意图太明显，我还是贴个简单版的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">struct soinfo&#123;</span><br><span class="line">    char old_name_[SOINFO_NAME_LEN];</span><br><span class="line">    const ElfW(Phdr)* phdr;</span><br><span class="line">    size_t phnum;</span><br><span class="line">    ElfW(Addr) entry;</span><br><span class="line">    ElfW(Addr) base;</span><br><span class="line">    size_t size;</span><br><span class="line">    ElfW(Dyn)* dynamic;</span><br><span class="line"></span><br><span class="line">    //以下与.hash表有关</span><br><span class="line">    unsigned nbucket;</span><br><span class="line">    unsigned nchain;</span><br><span class="line">    unsigned *bucket;</span><br><span class="line">    unsigned *chain;</span><br><span class="line">    </span><br><span class="line">    //以下与.gnu_hash表有关</span><br><span class="line">    size_t gnu_nbucket_;</span><br><span class="line">    uint32_t* gnu_bucket_;</span><br><span class="line">    uint32_t* gnu_chain_;</span><br><span class="line">    uint32_t gnu_maskwords_;</span><br><span class="line">    uint32_t gnu_shift2_;</span><br><span class="line">    ElfW(Addr)* gnu_bloom_filter_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>phdr</code>在之前的ELF文件格式执行视图中已经介绍过了，就是程序头表，dynamic就是动态节区，特别注意有2个hash表相关的，这个放到后续我们hook的时候会再细说，主要是有个印象，知道符号查找不一定是根据hash表来，还有个gnuhash。</p>
+<h3 id="find-library"><a href="#find-library" class="headerlink" title="find_library"></a>find_library</h3><p>内部调用<code>find_libraries</code>-&gt;<code>find_library_internal</code>-&gt;<code>load_library</code>-&gt;<code>load_library</code>，做一系加载，预链接，已加载判断等，在6个参数的<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#1252" target="_blank" rel="noopener">load_library</a>中开始通过ElfReader这个类来读取so文件信息并赋值到soinfo中来实现so文件加载到内存中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1303  // Read the ELF header and load the segments.</span><br><span class="line">1304  ElfReader elf_reader(realpath.c_str(), fd, file_offset, file_stat.st_size);</span><br><span class="line">1305  if (!elf_reader.Load(extinfo)) &#123;</span><br><span class="line">1306    return nullptr;</span><br><span class="line">1307  &#125;</span><br><span class="line">1308</span><br><span class="line">1309  soinfo* si = soinfo_alloc(realpath.c_str(), &amp;file_stat, file_offset, rtld_flags);</span><br><span class="line">1310  if (si == nullptr) &#123;</span><br><span class="line">1311    return nullptr;</span><br><span class="line">1312  &#125;</span><br><span class="line">1313  si-&gt;base = elf_reader.load_start();</span><br><span class="line">1314  si-&gt;size = elf_reader.load_size();</span><br><span class="line">1315  si-&gt;load_bias = elf_reader.load_bias();</span><br><span class="line">1316  si-&gt;phnum = elf_reader.phdr_count();</span><br><span class="line">1317  si-&gt;phdr = elf_reader.loaded_phdr();</span><br></pre></td></tr></table></figure></p>
+<h2 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h2><h3 id="ElfReader"><a href="#ElfReader" class="headerlink" title="ElfReader"></a>ElfReader</h3><p>ElfReader的定义在<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker_phdr.cpp#136" target="_blank" rel="noopener">linker_phdr</a>中，就是通过解析so库的执行视图，来读取so文件的各种信息，因为后续介绍的hook的时候也是根据这里的思路来进行的。</p>
+<h3 id="Load"><a href="#Load" class="headerlink" title="Load"></a>Load</h3><p>根据上面的<code>load_library</code>代码，可以看到先执行了ElfReader的Load方法，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">149bool ElfReader::Load(const android_dlextinfo* extinfo) &#123;</span><br><span class="line">150  return ReadElfHeader() &amp;&amp;</span><br><span class="line">151         VerifyElfHeader() &amp;&amp;</span><br><span class="line">152         ReadProgramHeader() &amp;&amp;</span><br><span class="line">153         ReserveAddressSpace(extinfo) &amp;&amp;</span><br><span class="line">154         LoadSegments() &amp;&amp;</span><br><span class="line">155         FindPhdr();</span><br><span class="line">156&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很完美，读取头文件-验证-读取程序头-分配内存空间-加载段区-查找程序头表项。<br>每个步骤在参考中的<strong>Linker与So加壳技术</strong>都有说明，规则都很死，读取文件信息，找偏移，读取正确位置即可，我这里只强调一下分配空间这个步骤。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">307bool ElfReader::ReserveAddressSpace(const android_dlextinfo* extinfo) &#123;</span><br><span class="line">308  ElfW(Addr) min_vaddr;</span><br><span class="line">309  load_size_ = phdr_table_get_load_size(phdr_table_, phdr_num_, &amp;min_vaddr);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">315  uint8_t* addr = reinterpret_cast&lt;uint8_t*&gt;(min_vaddr);</span><br><span class="line">316  void* start;</span><br><span class="line"></span><br><span class="line">341  int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS;</span><br><span class="line">342  start = mmap(mmap_hint, load_size_, PROT_NONE, mmap_flags, -1, 0);</span><br><span class="line"></span><br><span class="line">351  load_start_ = start;</span><br><span class="line">352  load_bias_ = reinterpret_cast&lt;uint8_t*&gt;(start) - addr;</span><br><span class="line">353  return true;</span><br><span class="line">354&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这段代码先是计算了so库在内存中需要的空间，然后调用系统函数<code>mmap</code>来映射。<br>在line352有个变量<code>load_bias_</code>，他的值是start-addr，这个addr的值是<code>min_vaddr</code>，这是so库在加载的时候指定的加载基址，通常来说这个值为0，对，通常来说。<br>在Android4.4及其之前的版本，load<em>bias</em>=load_start，但是在Anroid6.0（5.0没有机子测试）之后，min_vaddr不为0，所以load<em>bias</em>要做一个修正：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load_bias_ = reinterpret_cast&lt;uint8_t*&gt;(start) - addr;</span><br></pre></td></tr></table></figure></p>
+<p>在linker的line3339也可以看到，可以计算load_bias<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">3329/* Compute the load-bias of an existing executable. This shall only</span><br><span class="line">3330 * be used to compute the load bias of an executable or shared library</span><br><span class="line">3331 * that was loaded by the kernel itself.</span><br><span class="line">3332 *</span><br><span class="line">3333 * Input:</span><br><span class="line">3334 *    elf    -&gt; address of ELF header, assumed to be at the start of the file.</span><br><span class="line">3335 * Return:</span><br><span class="line">3336 *    load bias, i.e. add the value of any p_vaddr in the file to get</span><br><span class="line">3337 *    the corresponding address in memory.</span><br><span class="line">3338 */</span><br><span class="line">3339static ElfW(Addr) get_elf_exec_load_bias(const ElfW(Ehdr)* elf) &#123;</span><br><span class="line">3340  ElfW(Addr) offset = elf-&gt;e_phoff;</span><br><span class="line">3341  const ElfW(Phdr)* phdr_table =</span><br><span class="line">3342      reinterpret_cast&lt;const ElfW(Phdr)*&gt;(reinterpret_cast&lt;uintptr_t&gt;(elf) + offset);</span><br><span class="line">3343  const ElfW(Phdr)* phdr_end = phdr_table + elf-&gt;e_phnum;</span><br><span class="line">3344</span><br><span class="line">3345  for (const ElfW(Phdr)* phdr = phdr_table; phdr &lt; phdr_end; phdr++) &#123;</span><br><span class="line">3346    if (phdr-&gt;p_type == PT_LOAD) &#123;</span><br><span class="line">3347      return reinterpret_cast&lt;ElfW(Addr)&gt;(elf) + phdr-&gt;p_offset - phdr-&gt;p_vaddr;</span><br><span class="line">3348    &#125;</span><br><span class="line">3349  &#125;</span><br><span class="line">3350  return 0;</span><br><span class="line">3351&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个在后续的hook也是参考上述方法来得到实际的地址。</p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>在加载完毕之后，在line1319来执行预链接<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#2499" target="_blank" rel="noopener">perlink_image</a>方法来链接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2499bool soinfo::prelink_image() &#123;</span><br><span class="line">2500  /* Extract dynamic section */</span><br><span class="line">2501  ElfW(Word) dynamic_flags = 0;</span><br><span class="line">2502  phdr_table_get_dynamic_section(phdr, phnum, load_bias, &amp;dynamic, &amp;dynamic_flags);</span><br><span class="line"></span><br><span class="line">2527  // Extract useful information from dynamic section.</span><br><span class="line">2528  // Note that: &quot;Except for the DT_NULL element at the end of the array,</span><br><span class="line">2529  // and the relative order of DT_NEEDED elements, entries may appear in any order.&quot;</span><br><span class="line">2530  //</span><br><span class="line">2531  // source: http://www.sco.com/developers/gabi/1998-04-29/ch5.dynamic.html</span><br><span class="line">2533  for (ElfW(Dyn)* d = dynamic; d-&gt;d_tag != DT_NULL; ++d) &#123;</span><br><span class="line">		...	</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="定位动态节区"><a href="#定位动态节区" class="headerlink" title="定位动态节区"></a>定位动态节区</h3><p>通过<a href="http://androidxref.com/6.0.1_r10/xref/ndk/sources/android/crazy_linker/src/linker_phdr.cpp#380" target="_blank" rel="noopener">phdr_table_get_dynamic_section</a>来找到type为<code>PT_DYNAMIC</code>的动态节区。</p>
+<p>然后再遍历解析，获取重定位相关的各种信息（DT_SYMTAB DT_HASH等）。</p>
+<h3 id="遍历动态节区"><a href="#遍历动态节区" class="headerlink" title="遍历动态节区"></a>遍历动态节区</h3><p>找到动态节区之后，遍历来根据节区的结构体成员d_tag，确定需要用到的各种参数，各种节区，别如DT_PLTRELSZ就是与重定位有关的，DT_HASH DT_GNU_HASH就是和符号表索引相关的，DT_INIT就是初始化相关的节。</p>
+<h3 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h3><p>在prelink_image之后，回到<code>find_libraries</code>函数中，line1527调用了<a href="http://androidxref.com/6.0.1_r10/xref/ndk/sources/android/crazy_linker/src/linker_phdr.cpp#2924" target="_blank" rel="noopener">linke_image</a>方法,内部调用<a href="http://androidxref.com/6.0.1_r10/xref/bionic/linker/linker.cpp#1840" target="_blank" rel="noopener">relocate</a>函数  </p>
+<p>解析完信息之后，就要遍历重定位表，来重定位每个符号的实际地址。<br>占坑，放在（三）中和hook原理一起讲解。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://blog.csdn.net/tencent_bugly/article/details/52668772" target="_blank" rel="noopener">Android Linker 与 SO 加壳技术</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/注入/" rel="tag"># 注入</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/25/baseactivity/" rel="next" title="BaseActivity/BaseToolBarActivity">
+                <i class="fa fa-chevron-left"></i> BaseActivity/BaseToolBarActivity
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/01/inject-3-hook/" rel="prev" title="注入之道(三) Inject和Hook">
+                注入之道(三) Inject和Hook <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#so的加载和链接"><span class="nav-number">1.</span> <span class="nav-text">so的加载和链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体流程"><span class="nav-number">1.1.</span> <span class="nav-text">整体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#System-load"><span class="nav-number">1.1.1.</span> <span class="nav-text">System.load</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#do-dlopen"><span class="nav-number">1.1.2.</span> <span class="nav-text">do_dlopen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#soinfo"><span class="nav-number">1.1.3.</span> <span class="nav-text">soinfo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-library"><span class="nav-number">1.1.4.</span> <span class="nav-text">find_library</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载"><span class="nav-number">1.2.</span> <span class="nav-text">加载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ElfReader"><span class="nav-number">1.2.1.</span> <span class="nav-text">ElfReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load"><span class="nav-number">1.2.2.</span> <span class="nav-text">Load</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接"><span class="nav-number">1.3.</span> <span class="nav-text">链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定位动态节区"><span class="nav-number">1.3.1.</span> <span class="nav-text">定位动态节区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历动态节区"><span class="nav-number">1.3.2.</span> <span class="nav-text">遍历动态节区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重定位"><span class="nav-number">1.3.3.</span> <span class="nav-text">重定位</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

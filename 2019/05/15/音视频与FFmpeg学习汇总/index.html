@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="音视频," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="音视频学习笔记第一篇~">
+<meta name="keywords" content="音视频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="音视频中的基础概念">
+<meta property="og:url" content="http://yoursite.com/2019/05/15/音视频与FFmpeg学习汇总/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="音视频学习笔记第一篇~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/rgb%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B.jpeg?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/hsv颜色模型.jpeg?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/yuv%E9%A2%9C%E8%89%B2%E6%A0%BC%E5%BC%8F1.png?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/yuv%E9%A2%9C%E8%89%B2%E6%A0%BC%E5%BC%8F2.png?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F.png?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/MP4%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F.jpg?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/mediacodec.png?raw=true">
+<meta property="og:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/%E9%9F%B3%E8%A7%86%E9%A2%91%E5%AD%A6%E4%B9%A0-%E5%BD%95%E5%88%B6-%E6%92%AD%E6%94%BE.jpg?raw=true">
+<meta property="og:updated_time" content="2019-05-21T06:04:17.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="音视频中的基础概念">
+<meta name="twitter:description" content="音视频学习笔记第一篇~">
+<meta name="twitter:image" content="https://github.com/MelonWXD/BlogPicStorage/blob/master/rgb%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B.jpeg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/15/音视频与FFmpeg学习汇总/"/>
+
+
+
+
+
+  <title>音视频中的基础概念 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/音视频与FFmpeg学习汇总/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">音视频中的基础概念</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T15:37:04+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,608 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>音视频学习笔记第一篇~</p>
+<a id="more"></a>  
+<h1 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h1><h2 id="颜色（像素）格式"><a href="#颜色（像素）格式" class="headerlink" title="颜色（像素）格式"></a>颜色（像素）格式</h2><p>详见参考</p>
+<h3 id="RGB"><a href="#RGB" class="headerlink" title="RGB"></a>RGB</h3><p>作为android开发最熟悉的就是rgb格式了，</p>
+<p>在RGB颜色空间中，任意色光F都可以用R、G、B三色不同分量的相加混合而成：F=r[R]+r[G]+r[B]</p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/rgb%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B.jpeg?raw=true" alt=""></p>
+<h3 id="HSV"><a href="#HSV" class="headerlink" title="HSV"></a>HSV</h3><p>HSV是一种将RGB色彩空间中的点在倒圆锥体中的表示方法。HSV即色调(Hue)、饱和度(Saturation)、明度(Value)，又称HSB(B即Brightness)。</p>
+<p>色调H：一些基础颜色</p>
+<p>饱和度S：用过ps就很好理解这个了，我理解的话是色彩的鲜艳程度，S=0就是灰度化</p>
+<p>明度V：就是亮度了，看右图就很好理解了，V=0就是暗的一B，黑色，V=max，就是亮瞎狗眼，白色。</p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/hsv颜色模型.jpeg?raw=true" alt=""></p>
+<h3 id="YUV"><a href="#YUV" class="headerlink" title="YUV"></a>YUV</h3><p>YUV则是把颜色用一种更直接抽象的方式来表达，“Y”表示明亮度，“U”和“V” 表示的则是色度。Y是通过RGB信号特定部分<strong>叠加</strong>得到的，UV则用来反应颜色的<strong>色调</strong>和<strong>饱和度</strong>。分别用Cr和Cb来表示。其中，Cr反映了RGB输入信号红色部分与RGB信号亮度值之间的差异。而Cb反映的是RGB输入信号蓝色部分与RGB信号亮度值之间的差异。</p>
+<p>采用YUV色彩空间的重要性是它的亮度信号Y和色度信号U、V是分离的。如果只有Y信号分量而没有U、V分量，那么这样表示的图像就是黑白。黑白电视只利用Y分量，也解决了黑白电视和彩色电视的兼容问题。</p>
+<p>有公式可以转换为RGB，上述的<code>NV21</code>算是它的子集了。</p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/yuv%E9%A2%9C%E8%89%B2%E6%A0%BC%E5%BC%8F1.png?raw=true" alt=""></p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/yuv%E9%A2%9C%E8%89%B2%E6%A0%BC%E5%BC%8F2.png?raw=true" alt=""></p>
+<h2 id="视频的编码格式"><a href="#视频的编码格式" class="headerlink" title="视频的编码格式"></a>视频的编码格式</h2><p>视频我们都知道，是由一帧又一帧的图片连续显示组成的。</p>
+<p>假设有个帧率为20的1080*720分辨率的视频，1秒播放20张图片，每一帧图片用的是RGB565格式，即一个像素点占16bit。那么根据上面已知条件，可以计算出想要在线播放这段视频时需要的网速应该要 <code>20x1080x720x16/8 =31104000</code>，即29M/s，显然不现实，更别说服务器要花多少空间来存这个视频了。</p>
+<p>所以就出现了一系列的算法标准和规范，来压缩视频大小。</p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F.png?raw=true" alt="偷图小冬瓜又来了"></p>
+<h3 id="H-264"><a href="#H-264" class="headerlink" title="H.264"></a>H.264</h3><blockquote>
+<p>注意区别 </p>
+<p>MPEG-4是一整套的音频，视频，编解码标准的集合</p>
+<p>H.264是一个国际标准的视频编码压缩格式 它跟MPEG-4的视频压缩编码是一致的 是MPEG-4的第10部分</p>
+</blockquote>
+<p>具体的Data Struct详见参考。这里只是简单说一下基础的概念。</p>
+<p>视频帧经过算法压缩后的帧分为：I帧，P帧和B帧:</p>
+<p>I帧：关键帧，采用帧内压缩技术。</p>
+<p>P帧：向前参考帧，在压缩时，只参考前面已经处理的帧。采用帧音压缩技术。 </p>
+<p>B帧：双向参考帧，在压缩时，它即参考前而的帧，又参考它后面的帧。采用帧间压缩技术。</p>
+<p>GOP:两个I帧之间是一个图像序列，在一个图像序列中只有一个I帧。</p>
+<p>我的理解是他存储的是每一帧指间的差异，因为视频嘛，图片都是具有连贯性的。而关键帧I帧就是定下基调的一帧，对应的GOP中都是基于I帧不断修修补补的，编码时发现无法恢复信息时，就又会生成一个I帧，结束当前GOP。</p>
+<h3 id="其他的压缩格式-：VP9-…"><a href="#其他的压缩格式-：VP9-…" class="headerlink" title="其他的压缩格式 ：VP9 …"></a>其他的压缩格式 ：VP9 …</h3><p>了解的不多 待补充</p>
+<h2 id="视频的封装格式"><a href="#视频的封装格式" class="headerlink" title="视频的封装格式"></a>视频的封装格式</h2><p>我们常见的<strong>音视频</strong>文件格式，诸如avi、mp4和rmvb都是封装格式。</p>
+<p>跟上面编码格式的区别是什么？我觉得最大的就是封装格式里面含有音频流信息呗。</p>
+<h3 id="MP4"><a href="#MP4" class="headerlink" title="MP4"></a>MP4</h3><p>详见参考</p>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/MP4%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F.jpg?raw=true" alt=""></p>
+<p>这种文件格式的解析，基本套路都是一样的。</p>
+<h2 id="音频的编码格式"><a href="#音频的编码格式" class="headerlink" title="音频的编码格式"></a>音频的编码格式</h2><p>音频常见的压缩格式为aac mp3</p>
+<h1 id="Android中的音视频操作"><a href="#Android中的音视频操作" class="headerlink" title="Android中的音视频操作"></a>Android中的音视频操作</h1><p>了解完格式，让我们描述一个完整的android视频操作：相机录像。</p>
+<h2 id="相机录像"><a href="#相机录像" class="headerlink" title="相机录像"></a>相机录像</h2><p>根据 <code>android/hardware/Camera.java</code> 内部类Parameters的setPreviewFormat方法注释可以知道</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Sets the image format for preview pictures.</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;If this is never called, the default format will be</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> android.graphics.ImageFormat#NV21&#125;, which</span></span><br><span class="line"><span class="comment"> * uses the NV21 encoding format.&lt;/p&gt;</span></span><br><span class="line"><span class="comment"> ...</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPreviewFormat</span><span class="params">(<span class="keyword">int</span> pixel_format)</span> </span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>默认情况下 相机预览得到的照片的<strong>颜色格式</strong>是<code>NV21</code>，<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html" target="_blank" rel="noopener">这里</a>可以看到android中支持的所有ImageFormat。</p>
+<p>系统提供一个<code>YuvImage</code>的类，支持把<code>NV21</code>压缩成<code>JPEG</code>格式的图片，这个可能是我们比较熟悉的图片格式。</p>
+<blockquote>
+<p>注意</p>
+<p>这里<code>NV21</code>是<strong>颜色格式</strong>，属于<code>YUV420</code>类别的，同级别的比较应该是<code>HSV</code>与<code>RGB</code>。而<code>JPEG</code>是<strong>图片格式</strong>，同级别比较的是<code>PNG</code>、<code>BMP</code>这种的。</p>
+</blockquote>
+<p> 我们是可以在<code>Camera.onPreviewFrame(byte[] bytes, Camera camera)</code>回调方法中拿到这些数据</p>
+<p>下面就要用到Android的编码类<code>MediaCodec</code> 对数据帧进行压缩编码</p>
+<h3 id="MediaCodec"><a href="#MediaCodec" class="headerlink" title="MediaCodec"></a>MediaCodec</h3><p>典型的生产消费模型。</p>
+<p>编解码器可以处理三种类型的数据：</p>
+<ol>
+<li>压缩数据（即为经过H254. H265. 等编码的视频数据或AAC等编码的音频数据）</li>
+<li>原始音频数据</li>
+<li>原始视频数据</li>
+</ol>
+<p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/mediacodec.png?raw=true" alt=""></p>
+<h3 id="MediaMuxer"><a href="#MediaMuxer" class="headerlink" title="MediaMuxer"></a>MediaMuxer</h3><p>将音频编码和视频编码合成为封装格式(.mp4 .avi)的Android api类</p>
+<p>相应的还有<strong>MediaExtractor</strong>来负责解封装  从封装格式中提取音频流和视频流</p>
+<p>音频的获取主要依赖<strong>AudioRecord</strong>、<strong>AudioTrack</strong>  就不展开了细说了 跟视频一个意思</p>
+<h2 id="相机录像流程图"><a href="#相机录像流程图" class="headerlink" title="相机录像流程图"></a>相机录像流程图</h2><p><img src="https://github.com/MelonWXD/BlogPicStorage/blob/master/%E9%9F%B3%E8%A7%86%E9%A2%91%E5%AD%A6%E4%B9%A0-%E5%BD%95%E5%88%B6-%E6%92%AD%E6%94%BE.jpg?raw=true" alt=""></p>
+<p>注意，这个过程是可逆的，反过来就是安卓如何播放一个mp4了，合成器变分离器，编码器变解码器，输出到Surface上显示和AudioManager里播放就是了。至于音频的采集和编码就不赘述了，一个道理。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="FFmpeg"><a href="#FFmpeg" class="headerlink" title="FFmpeg"></a>FFmpeg</h3><p>Android在MediaCodec出现之前使用的编解码工具，用c写的，通过so库调用，软编码，兼容性好，性能略低。</p>
+<h3 id="openGL-ES"><a href="#openGL-ES" class="headerlink" title="openGL ES"></a>openGL ES</h3><p>这里水深，后续有机会再扩展。</p>
+<p>据我了解的在安卓中的应用应该是滤镜。</p>
+<p>应用时机应该是在YUV格式阶段。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/houxiaoni01/article/details/78812485/" target="_blank" rel="noopener">常见视频编码格式解析</a></p>
+<p><a href="https://www.cnblogs.com/yooyoo/p/4717746.html" target="_blank" rel="noopener">颜色空间模型</a></p>
+<p><a href="https://blog.csdn.net/garrylea/article/details/78536775" target="_blank" rel="noopener">H264 基本原理</a></p>
+<p><a href="https://juejin.im/post/5a8fe66b6fb9a0633e51eadc" target="_blank" rel="noopener">H264 结构</a></p>
+<p><a href="https://www.cnblogs.com/ranson7zop/p/7889272.html" target="_blank" rel="noopener">mp4结构</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/音视频/" rel="tag"># 音视频</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/05/gradle-1/" rel="next" title="Gradle构建学习">
+                <i class="fa fa-chevron-left"></i> Gradle构建学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
+              alt="Lewis" />
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#格式"><span class="nav-number">1.</span> <span class="nav-text">格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#颜色（像素）格式"><span class="nav-number">1.1.</span> <span class="nav-text">颜色（像素）格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RGB"><span class="nav-number">1.1.1.</span> <span class="nav-text">RGB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HSV"><span class="nav-number">1.1.2.</span> <span class="nav-text">HSV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YUV"><span class="nav-number">1.1.3.</span> <span class="nav-text">YUV</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视频的编码格式"><span class="nav-number">1.2.</span> <span class="nav-text">视频的编码格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#H-264"><span class="nav-number">1.2.1.</span> <span class="nav-text">H.264</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他的压缩格式-：VP9-…"><span class="nav-number">1.2.2.</span> <span class="nav-text">其他的压缩格式 ：VP9 …</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视频的封装格式"><span class="nav-number">1.3.</span> <span class="nav-text">视频的封装格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MP4"><span class="nav-number">1.3.1.</span> <span class="nav-text">MP4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#音频的编码格式"><span class="nav-number">1.4.</span> <span class="nav-text">音频的编码格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android中的音视频操作"><span class="nav-number">2.</span> <span class="nav-text">Android中的音视频操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相机录像"><span class="nav-number">2.1.</span> <span class="nav-text">相机录像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MediaCodec"><span class="nav-number">2.1.1.</span> <span class="nav-text">MediaCodec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MediaMuxer"><span class="nav-number">2.1.2.</span> <span class="nav-text">MediaMuxer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相机录像流程图"><span class="nav-number">2.2.</span> <span class="nav-text">相机录像流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">2.3.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FFmpeg"><span class="nav-number">2.3.1.</span> <span class="nav-text">FFmpeg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openGL-ES"><span class="nav-number">2.3.2.</span> <span class="nav-text">openGL ES</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
