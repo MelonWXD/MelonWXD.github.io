@@ -1,12 +1,14 @@
 ---
 title: Gradle构建学习
-date: 2019-06-05 10:40:22
+date: 2019-05-05 10:40:22
 tags: [Gradle,Android构建]  
 categories: Android
 ---
 Gradle入门
 
 <!-- more -->  
+
+
 
 # 综述
 ## LifeCycle

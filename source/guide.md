@@ -1,17 +1,8 @@
 
 
-博客：[L'blog](https://melonwxd.github.io/)
+博客首页：[L'blog](https://melonwxd.github.io/)
 
-Github:[MelonWXD](https://github.com/MelonWXD)
-
-## 个人项目介绍：
-
-- Android逆向：[基于EFL格式的Hook](https://github.com/MelonWXD/ELFHooker)
-- Android应用：[仿开源中国客户端](https://github.com/MelonWXD/SimpleOSC)
-- python:[验证码识别](https://github.com/MelonWXD/VerificationMatcher)
-
-
-## 博客摘选：
+推荐列表：
 
 - [Android注入学习](https://melonwxd.github.io/tags/%E6%B3%A8%E5%85%A5/)
 - [进程间通信](https://melonwxd.github.io/2017/10/28/android-ipc2/)
