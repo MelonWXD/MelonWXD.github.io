@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ClassLoader,JVM," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ClassLoader,JVM,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -113,7 +113,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/10/17/classloader1/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/17/classloader1/">
 
 
 
@@ -147,7 +147,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -177,7 +177,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -187,7 +187,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -197,7 +197,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -207,7 +207,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -217,7 +217,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -260,7 +260,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -296,7 +296,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -390,7 +390,7 @@
 <p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</span><br><span class="line">sun.misc.Launcher$ExtClassLoader@677327b6</span><br><span class="line">Exception in thread &quot;main&quot; java.lang.NullPointerException</span><br><span class="line">	at PckA.ClassLoaderTest.main(ClassLoaderTest.java:86)</span><br></pre></td></tr></table></figure></p>
 <p>可以看到一般我们继承ClassLoader来实现的自定义ClassLoader的父加载器，都是AppClassLoader，AppClassLoader的父加载器是ExtCLassLoader，但是ExtClassLoader居然不存在父加载器，看构造方法就知道每个ClassLoader都是有父加载器的，这不是互相矛盾了。其实不然，ExtClassLoader的父加载器就是BootstrapClassLoader，但是Bootstrap是通过C++实现的，所以Java无法拿到它的引用，自然为null了。</p>
 <p> 继承关系图：  </p>
-<p> <img src="http://img.blog.csdn.net/20170211112754197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYnJpYmx1ZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p> <img src="http://img.blog.csdn.net/20170211112754197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYnJpYmx1ZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt></p>
 <h2 id="全盘负责与双亲委托"><a href="#全盘负责与双亲委托" class="headerlink" title="全盘负责与双亲委托"></a>全盘负责与双亲委托</h2><p>全盘负责 是指当一个ClassLoader装载一个类时，除非显示地使用另一个ClassLoader，则该类所依赖及引用的类也由这个CladdLoader载入。<br>真正加载class字节码文件生成Class对象由“双亲委派”机制完成。<br>“双亲委派”机制加载Class的具体过程是：</p>
 <ol>
 <li>源ClassLoader先判断该Class是否已加载，如果已加载，则返回Class对象；如果没有则委托给父类加载器。</li>
@@ -434,7 +434,7 @@
 <p>遍历一个Element数组，Element持有DexFile实例，通过调用每个DexFile实例的<code>loadClassBinaryName</code>来根据<code>name</code>载入，实际上内部是调用了<code>defineClass</code>方法，来创建类，如果载入成功则返回，否则返回null。</p>
 <p><strong>这里基本可以找到热更的思路了，通过反射把我们的增量class添加到这个Element[]，并保证比要更新的同名类更早加载即可</strong></p>
 <p>Qzone团队的图：</p>
-<p><img src="http://img.blog.csdn.net/20160315141956321" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20160315141956321" alt></p>
 <h3 id="PathClassLoader"><a href="#PathClassLoader" class="headerlink" title="PathClassLoader"></a>PathClassLoader</h3><p>Android系统是通过PathClassLoader加载系统类和已安装的应用的。 </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">26</span>    <span class="comment">/**</span></span><br><span class="line"><span class="comment">27     * Creates a &#123;<span class="doctag">@code</span> PathClassLoader&#125; that operates on a given list of files</span></span><br><span class="line"><span class="comment">28     * and directories. This method is equivalent to calling</span></span><br><span class="line"><span class="comment">29     * &#123;<span class="doctag">@link</span> #PathClassLoader(String, String, ClassLoader)&#125; with a</span></span><br><span class="line"><span class="comment">30     * &#123;<span class="doctag">@code</span> null&#125; value for the second argument (see description there).</span></span><br><span class="line"><span class="comment">31     *</span></span><br><span class="line"><span class="comment">32     * <span class="doctag">@param</span> dexPath the list of jar/apk files containing classes and</span></span><br><span class="line"><span class="comment">33     * resources, delimited by &#123;<span class="doctag">@code</span> File.pathSeparator&#125;, which</span></span><br><span class="line"><span class="comment">34     * defaults to &#123;<span class="doctag">@code</span> ":"&#125; on Android</span></span><br><span class="line"><span class="comment">35     * <span class="doctag">@param</span> parent the parent class loader</span></span><br><span class="line"><span class="comment">36     */</span></span><br><span class="line"> </span><br><span class="line"><span class="number">37</span>    <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line"><span class="number">38</span>        <span class="keyword">super</span>(dexPath, <span class="keyword">null</span>, <span class="keyword">null</span>, parent);</span><br><span class="line"><span class="number">39</span>    &#125;</span><br></pre></td></tr></table></figure>
 <h3 id="DexClassLoader"><a href="#DexClassLoader" class="headerlink" title="DexClassLoader"></a>DexClassLoader</h3><p>DexClassPath则可以从一个jar包或者未安装的apk中加载dex</p>
@@ -538,7 +538,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -550,9 +550,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -660,7 +658,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="RxJava," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="RxJava,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -114,7 +114,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/10/15/rxjava-3/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/15/rxjava-3/">
 
 
 
@@ -148,7 +148,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -178,7 +178,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -188,7 +188,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -198,7 +198,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -208,7 +208,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -218,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -261,7 +261,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -297,7 +297,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -381,12 +381,12 @@
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>一下根据操作符的类型进行说明，不会将每个类别下的都讲一遍，具体请查阅<a href="http://reactivex.io/documentation/operators.html" target="_blank" rel="noopener">官方文档</a><br><a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">中文文档</a></p>
 <h2 id="创建Observable的操作符"><a href="#创建Observable的操作符" class="headerlink" title="创建Observable的操作符"></a>创建Observable的操作符</h2><h3 id="create"><a href="#create" class="headerlink" title="create"></a>create</h3><p>最基本的创建被观察者的方式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Observable&lt;String&gt; observable =Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;String&gt; emitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                emitter.onNext(<span class="string">"Event1"</span>);</span><br><span class="line">                emitter.onNext(<span class="string">"Event2"</span>);</span><br><span class="line">                emitter.onNext(<span class="string">"Event3"</span>);</span><br><span class="line">                emitter.onComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">```  </span><br><span class="line">### just</span><br><span class="line">将对象或者对象集合转换成被观察者，并将值发送出去。可以看到下面代码中，Consumer的accept方法参数是List类型的。</span><br><span class="line">```java</span><br><span class="line">        List&lt;Integer&gt; integers = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        integers.add(<span class="number">1</span>);</span><br><span class="line">        integers.add(<span class="number">2</span>);</span><br><span class="line">        integers.add(<span class="number">3</span>);</span><br><span class="line">        </span><br><span class="line">        Observable.just(integers)</span><br><span class="line">                .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .observeOn(Schedulers.newThread())</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Consumer&lt;List&lt;Integer&gt;&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(List&lt;Integer&gt; integers)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br></pre></td></tr></table></figure></p>
 <h3 id="from"><a href="#from" class="headerlink" title="from"></a>from</h3><p>作用跟just差不多，唯一区别就是他是将可迭代的数据结构中的对象一个个发送的，惨Consumer的accept的数据类型就知道跟just的区别了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Observable.fromIterable(integers)</span><br><span class="line">        .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">        .observeOn(Schedulers.newThread())</span><br><span class="line">        .subscribe(<span class="keyword">new</span> Consumer&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">				</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
-<h2 id="转化Observable类型的操作符"><a href="#转化Observable类型的操作符" class="headerlink" title="转化Observable类型的操作符"></a>转化Observable类型的操作符</h2><h3 id="FlatMap"><a href="#FlatMap" class="headerlink" title="FlatMap"></a>FlatMap</h3><p>将Observable发送的数据经过转换再发送给观察者<br><img src="http://reactivex.io/documentation/operators/images/flatMap.c.png" alt=""><br>与之差不多的是 ConcatMap，看上图可以知道FlatMap是无序的（绿色球和蓝色球在观察者中串在一起了），而ConcatMap是有序的，就保证了绿色四边形全都是在蓝色四边形之前收到的。<br>例子使用瓜乐天气里，场景如下，先get获取当前ip地址，再拿到ip地址去请求获取城市的编码id，然后对id进行处理。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getWeatherByIp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     mNetClient.getCurCityIP()</span><br><span class="line">             .subscribeOn(Schedulers.io())</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .concatMap(<span class="keyword">new</span> Function&lt;Response&lt;ResponseBody&gt;, ObservableSource&lt;ResponseBody&gt;&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> ObservableSource&lt;ResponseBody&gt; <span class="title">apply</span><span class="params">(Response&lt;ResponseBody&gt; response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                     JsonObject jo = Utils.string2Json(response.body().string());</span><br><span class="line">                     String ipAddr = jo.get(<span class="string">"data"</span>).getAsString();</span><br><span class="line">                     <span class="keyword">return</span> mNetClient.getCityID(ipAddr);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;)</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .subscribe(<span class="keyword">new</span> Consumer&lt;ResponseBody&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(ResponseBody responseBody)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                     JsonObject jo = <span class="keyword">new</span> JsonParser().parse(responseBody.string()).getAsJsonObject();</span><br><span class="line">                     JsonArray ja = jo.getAsJsonArray(<span class="string">"results"</span>);</span><br><span class="line">                     String cityID = ja.get(<span class="number">0</span>).getAsJsonObject().get(<span class="string">"id"</span>).getAsString();</span><br><span class="line">                     LogUtil.I(<span class="string">"id="</span> + cityID);</span><br><span class="line"></span><br><span class="line">                     getCityWeatherByID(cityID);</span><br><span class="line">                     getHourlyByID(cityID);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br><span class="line">     </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="转化Observable类型的操作符"><a href="#转化Observable类型的操作符" class="headerlink" title="转化Observable类型的操作符"></a>转化Observable类型的操作符</h2><h3 id="FlatMap"><a href="#FlatMap" class="headerlink" title="FlatMap"></a>FlatMap</h3><p>将Observable发送的数据经过转换再发送给观察者<br><img src="http://reactivex.io/documentation/operators/images/flatMap.c.png" alt><br>与之差不多的是 ConcatMap，看上图可以知道FlatMap是无序的（绿色球和蓝色球在观察者中串在一起了），而ConcatMap是有序的，就保证了绿色四边形全都是在蓝色四边形之前收到的。<br>例子使用瓜乐天气里，场景如下，先get获取当前ip地址，再拿到ip地址去请求获取城市的编码id，然后对id进行处理。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getWeatherByIp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     mNetClient.getCurCityIP()</span><br><span class="line">             .subscribeOn(Schedulers.io())</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .concatMap(<span class="keyword">new</span> Function&lt;Response&lt;ResponseBody&gt;, ObservableSource&lt;ResponseBody&gt;&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> ObservableSource&lt;ResponseBody&gt; <span class="title">apply</span><span class="params">(Response&lt;ResponseBody&gt; response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                     JsonObject jo = Utils.string2Json(response.body().string());</span><br><span class="line">                     String ipAddr = jo.get(<span class="string">"data"</span>).getAsString();</span><br><span class="line">                     <span class="keyword">return</span> mNetClient.getCityID(ipAddr);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;)</span><br><span class="line">             .observeOn(Schedulers.io())</span><br><span class="line">             .subscribe(<span class="keyword">new</span> Consumer&lt;ResponseBody&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(ResponseBody responseBody)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                     JsonObject jo = <span class="keyword">new</span> JsonParser().parse(responseBody.string()).getAsJsonObject();</span><br><span class="line">                     JsonArray ja = jo.getAsJsonArray(<span class="string">"results"</span>);</span><br><span class="line">                     String cityID = ja.get(<span class="number">0</span>).getAsJsonObject().get(<span class="string">"id"</span>).getAsString();</span><br><span class="line">                     LogUtil.I(<span class="string">"id="</span> + cityID);</span><br><span class="line"></span><br><span class="line">                     getCityWeatherByID(cityID);</span><br><span class="line">                     getHourlyByID(cityID);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br><span class="line">     </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
 <p>在concatMap中通过new Function把getCurCityIP返回的结果，处理得到ipAddr，然后返回mNetClient.getCityID(ipAddr)，这也是个Observable对象（结合retrofit），然后在观察者根据getCityID的ResponseBody获得城市id，再进一步做其他请求。</p>
 <h3 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h3><p>使用groupBy来制定分组规则，对数据源进行分组，这样观察者就可以通过自动生成的GroupedObservable的getKey方法来获得分组key，从而实现对分组数据的获取。<br>上一个网上找的例子<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Observable.range(<span class="number">1</span>, <span class="number">8</span>).groupBy(<span class="keyword">new</span> Func1&lt;Integer, String&gt;() &#123;  </span><br><span class="line">            <span class="meta">@Override</span>  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;  </span><br><span class="line">                <span class="keyword">return</span> (integer % <span class="number">2</span> == <span class="number">0</span>) ? <span class="string">"偶数组"</span> : <span class="string">"奇数组"</span>;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;).subscribe(<span class="keyword">new</span> Action1&lt;GroupedObservable&lt;String, Integer&gt;&gt;() &#123;  </span><br><span class="line">            <span class="meta">@Override</span>  </span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(<span class="keyword">final</span> GroupedObservable&lt;String, Integer&gt; stringIntegerGroupedObservable)</span> </span>&#123;  </span><br><span class="line">                System.out.println(<span class="string">"group name:"</span> + stringIntegerGroupedObservable.getKey());  </span><br><span class="line">                <span class="keyword">if</span> (stringIntegerGroupedObservable.getKey().equalsIgnoreCase(<span class="string">"奇数组"</span>))  </span><br><span class="line">                    stringIntegerGroupedObservable.subscribe(<span class="keyword">new</span> Action1&lt;Integer&gt;() &#123;  </span><br><span class="line">                        <span class="meta">@Override</span>  </span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Integer integer)</span> </span>&#123;  </span><br><span class="line">                            System.out.println(stringIntegerGroupedObservable.getKey() + <span class="string">"'member: "</span> + integer);  </span><br><span class="line">                        &#125;  </span><br><span class="line">                    &#125;);  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
 <h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p>gourpBy操作符将数据源进行分组，生成多个GroupedObservable，一旦有观察者开始订阅，每个GroupedObservable都会开始缓存，如果你只对其中一个分组的数据进行处理，就像例子中那样，对欧数组没有进行处理，那么可能造成内存泄漏。所以如果不需要该组数据，也要接收并处理掉。（官方文档上写的是take(0)，就是只接收前0个，那这样我只要奇数组不就不行了）</p>
-<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p>定期的将Observable要发送的数据放在一起同时发送给观察者，而不是一个个发送。<br><img src="http://reactivex.io/documentation/operators/images/Buffer.png" alt=""></p>
-<h2 id="不写了-健身去"><a href="#不写了-健身去" class="headerlink" title="不写了 健身去"></a>不写了 健身去</h2><p>写一半找例子的时候发现居然有人<a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">翻译</a>和<a href="https://www.jianshu.com/p/7b1f57bd1489" target="_blank" rel="noopener">总结</a>了<br>这么火的技术，肯定早就有人翻译了..<br><img src="http://ww2.sinaimg.cn/large/9150e4e5ly1fjkl5d4d1tj204g04fglo.jpg" alt=""></p>
+<h3 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h3><p>定期的将Observable要发送的数据放在一起同时发送给观察者，而不是一个个发送。<br><img src="http://reactivex.io/documentation/operators/images/Buffer.png" alt></p>
+<h2 id="不写了-健身去"><a href="#不写了-健身去" class="headerlink" title="不写了 健身去"></a>不写了 健身去</h2><p>写一半找例子的时候发现居然有人<a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">翻译</a>和<a href="https://www.jianshu.com/p/7b1f57bd1489" target="_blank" rel="noopener">总结</a>了<br>这么火的技术，肯定早就有人翻译了..<br><img src="http://ww2.sinaimg.cn/large/9150e4e5ly1fjkl5d4d1tj204g04fglo.jpg" alt></p>
 
       
     </div>
@@ -482,7 +482,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -494,9 +494,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -604,7 +602,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

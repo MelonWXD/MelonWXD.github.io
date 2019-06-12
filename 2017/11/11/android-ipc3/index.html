@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="IPC," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="IPC,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -113,7 +113,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/11/android-ipc3/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/11/android-ipc3/">
 
 
 
@@ -147,7 +147,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -177,7 +177,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -187,7 +187,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -197,7 +197,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -207,7 +207,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -217,7 +217,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -260,7 +260,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -296,7 +296,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -382,7 +382,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">49</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="number">50</span>  <span class="class"><span class="keyword">class</span> <span class="title">BnInterface</span> :</span> <span class="keyword">public</span> INTERFACE, <span class="keyword">public</span> BBinder</span><br><span class="line"><span class="number">51</span>  &#123;</span><br><span class="line"><span class="number">52</span>  <span class="keyword">public</span>:</span><br><span class="line"><span class="number">53</span>      <span class="keyword">virtual</span> sp&lt;IInterface&gt;      queryLocalInterface(<span class="keyword">const</span> String16&amp; _descriptor);</span><br><span class="line"><span class="number">54</span>      <span class="function"><span class="keyword">virtual</span> <span class="keyword">const</span> String16&amp;     <span class="title">getInterfaceDescriptor</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="number">55</span></span><br><span class="line"><span class="number">56</span>  <span class="keyword">protected</span>:</span><br><span class="line"><span class="number">57</span>      <span class="function"><span class="keyword">virtual</span> IBinder*            <span class="title">onAsBinder</span><span class="params">()</span></span>;</span><br><span class="line"><span class="number">58</span>  &#125;;</span><br><span class="line"><span class="number">59</span></span><br><span class="line"><span class="number">60</span>  <span class="comment">// ----------------------------------------------------------------------</span></span><br><span class="line"><span class="number">61</span></span><br><span class="line"><span class="number">62</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="number">63</span>  <span class="class"><span class="keyword">class</span> <span class="title">BpInterface</span> :</span> <span class="keyword">public</span> INTERFACE, <span class="keyword">public</span> BpRefBase</span><br><span class="line"><span class="number">64</span>  &#123;</span><br><span class="line"><span class="number">65</span>  <span class="keyword">public</span>:</span><br><span class="line"><span class="number">66</span>                                BpInterface(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; remote);</span><br><span class="line"><span class="number">67</span></span><br><span class="line"><span class="number">68</span>  <span class="keyword">protected</span>:</span><br><span class="line"><span class="number">69</span>      <span class="function"><span class="keyword">virtual</span> IBinder*            <span class="title">onAsBinder</span><span class="params">()</span></span>;</span><br><span class="line"><span class="number">70</span>  &#125;;</span><br></pre></td></tr></table></figure>
 <p>BnInterface和BpInterface又分别继承自<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/Binder.h" target="_blank" rel="noopener">Binder.h</a>中定义的2个类<code>BBinder</code>和<code>BpRefBase</code>（实际上是和BpRefBase中的mRemote对象BpBinder有关），BBinder和BpBinder都继承自<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/include/binder/IBinder.h" target="_blank" rel="noopener">IBinder</a>。</p>
 <p>关系比较乱，上一个红茶大佬的图：</p>
-<p><img src="http://img.blog.csdn.net/20150909221454433" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20150909221454433" alt></p>
 <h2 id="BBinder"><a href="#BBinder" class="headerlink" title="BBinder"></a>BBinder</h2><p>在<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/Binder.cpp#73" target="_blank" rel="noopener">Binder.cpp</a>中对BBinder的各个方法都进行了实现，主要关注<code>transact</code>这个方法中调用的<code>onTransact</code>，<code>onTransact</code>是会被子类重写来实现自己的业务的</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">97</span> <span class="keyword">status_t</span> BBinder::transact(</span><br><span class="line"><span class="number">98</span>    <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span><br><span class="line"><span class="number">99</span> &#123;</span><br><span class="line"><span class="number">100</span>    data.setDataPosition(<span class="number">0</span>);</span><br><span class="line"><span class="number">101</span></span><br><span class="line"><span class="number">102</span>    <span class="keyword">status_t</span> err = NO_ERROR;</span><br><span class="line"><span class="number">103</span>    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line"><span class="number">104</span>        <span class="keyword">case</span> PING_TRANSACTION:</span><br><span class="line"><span class="number">105</span>            reply-&gt;writeInt32(pingBinder());</span><br><span class="line"><span class="number">106</span>            <span class="keyword">break</span>;</span><br><span class="line"><span class="number">107</span>        <span class="keyword">default</span>:</span><br><span class="line"><span class="number">108</span>            err = onTransact(code, data, reply, flags);</span><br><span class="line"><span class="number">109</span>            <span class="keyword">break</span>;</span><br><span class="line"><span class="number">110</span>    &#125;</span><br><span class="line"><span class="number">111</span></span><br><span class="line"><span class="number">112</span>    <span class="keyword">if</span> (reply != <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="number">113</span>        reply-&gt;setDataPosition(<span class="number">0</span>);</span><br><span class="line"><span class="number">114</span>    &#125;</span><br><span class="line"><span class="number">115</span></span><br><span class="line"><span class="number">116</span>    <span class="keyword">return</span> err;</span><br><span class="line"><span class="number">117</span> &#125;</span><br></pre></td></tr></table></figure>
 <h2 id="BpBinder"><a href="#BpBinder" class="headerlink" title="BpBinder"></a>BpBinder</h2><p><a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/BpBinder.cpp#159" target="_blank" rel="noopener">BpBinder</a>的transact的内部实际调用的是<a href="http://androidxref.com/6.0.1_r10/xref/frameworks/native/libs/binder/IPCThreadState.cpp#548" target="_blank" rel="noopener">IPCThreadState::transact</a>，再跟进就是<code>IPCThreadState::writeTransactionData</code></p>
@@ -417,7 +417,7 @@
 <p>再来看看模板方法<code>interface_cast</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> INTERFACE&gt;</span><br><span class="line"><span class="keyword">inline</span> sp&lt;INTERFACE&gt; interface_cast(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; obj)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> INTERFACE::asInterface(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>实际上是调用IServiceManager的asInterface方法</p>
-<p><img src="http://img.blog.csdn.net/20150909225436079" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20150909225436079" alt></p>
 <h2 id="通过SM代理来向SM注册其他系统服务"><a href="#通过SM代理来向SM注册其他系统服务" class="headerlink" title="通过SM代理来向SM注册其他系统服务"></a>通过SM代理来向SM注册其他系统服务</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">power = <span class="keyword">new</span> PowerManagerService();</span><br><span class="line">ServiceManager.addService(Context.POWER_SERVICE, power);</span><br></pre></td></tr></table></figure>
 <p>SystemServer向SM注册PowerManagerService</p>
 <h2 id="通过SM代理向SM获得其他系统服务"><a href="#通过SM代理向SM获得其他系统服务" class="headerlink" title="通过SM代理向SM获得其他系统服务"></a>通过SM代理向SM获得其他系统服务</h2><p><code>IServiceManager</code>的实现类<code>ServiceManagerProxy</code>实例中提供了<code>add</code>、<code>get</code>等方法</p>
@@ -519,7 +519,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -531,9 +531,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -641,7 +639,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

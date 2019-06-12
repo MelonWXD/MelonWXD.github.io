@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="OpenGL," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="OpenGL,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -112,7 +112,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/04/android-opengl1/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/04/android-opengl1/">
 
 
 
@@ -146,7 +146,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -176,7 +176,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -186,7 +186,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -196,7 +196,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -206,7 +206,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -216,7 +216,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -259,7 +259,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -295,7 +295,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -377,7 +377,7 @@
       
         <p>Android OpenGL的Demo<br><a id="more"></a></p>
 <h1 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h1><p>最近在弄framework层的注入，又是学习Android系统的启动流程，IPC，还有Android的整个GUI渲染机制，看源码看了一礼拜，眼睛疼，擦。。总感觉没有成功的打通整个环节，从Android系统的启动，到执行开机通话这个环节，又得研究游戏Apk是怎么调用OpenGL的渲染，为什么不走eglSwapBuffer这个方法，我hook了又不调，烦得很哎。。还是找个简单的来做一做，先研究在Android应用上面openGL的使用吧哎。。想到这一个礼拜来一直沉迷源码，赶紧停下来写写java，我就顺手把OpenGL在安卓的应用这一块理一理吧。。唉。。 </p>
-<h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><p>先简略的说一下SurfaceFlinger，这就是一个系统服务，负责系统底层GUI这一块的管理，后面我会详细的把这一块理一理。<br>通常来说，我们一个Activity(或者说一个Window)都在SurfaceFlinger中，对应这一个Layer（见下图），像一般我们在Activity的布局中，需要显示Button啊、TextView这种的，都是往这个对应的Layer填充数据，然后由SurfaceFlinger来对各种各样的Layer进行合成渲染，最后控制底层显示在屏幕上。然后像Button这种的控件的绘制，都是在UI主线程中进行的，如果需要频繁的刷新界面，比如直播啊拍照的摄像头预览，那肯定就比较耗时嘛，耗时你主线程就没办法对用户的输入进行响应，容易ANR，所以就有了SurfaceView这个东西，他在SurfaceFlinger中单独对应一个Layer(LayerBuffer)，通过子线程来对它进行更新。<br><img src="http://img.my.csdn.net/uploads/201303/11/1363016714_1787.jpg" alt=""><br>SurfaceView继承View，有两个子类GLSurfaceView和VideoView </p>
+<h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><p>先简略的说一下SurfaceFlinger，这就是一个系统服务，负责系统底层GUI这一块的管理，后面我会详细的把这一块理一理。<br>通常来说，我们一个Activity(或者说一个Window)都在SurfaceFlinger中，对应这一个Layer（见下图），像一般我们在Activity的布局中，需要显示Button啊、TextView这种的，都是往这个对应的Layer填充数据，然后由SurfaceFlinger来对各种各样的Layer进行合成渲染，最后控制底层显示在屏幕上。然后像Button这种的控件的绘制，都是在UI主线程中进行的，如果需要频繁的刷新界面，比如直播啊拍照的摄像头预览，那肯定就比较耗时嘛，耗时你主线程就没办法对用户的输入进行响应，容易ANR，所以就有了SurfaceView这个东西，他在SurfaceFlinger中单独对应一个Layer(LayerBuffer)，通过子线程来对它进行更新。<br><img src="http://img.my.csdn.net/uploads/201303/11/1363016714_1787.jpg" alt><br>SurfaceView继承View，有两个子类GLSurfaceView和VideoView </p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>创建一个自定义的MySurfaceView，继承自SurfaceView，并实现两个接口SurfaceHolder.CallBack和Runnable(都是为了方便，如果代码复杂的应该要分别实现MySurfaceHolder已经DrawingThread来分别对应周期控制与子线程绘制)。<br>SurfaceHolder.CallBack的三个方法分别对应着SurfaceView的三个生命周期<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface Callback &#123;</span><br><span class="line">    void surfaceCreated(SurfaceHolder var1);</span><br><span class="line"></span><br><span class="line">    void surfaceChanged(SurfaceHolder var1, int var2, int var3, int var4);</span><br><span class="line"></span><br><span class="line">    void surfaceDestroyed(SurfaceHolder var1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>由此我们可以猜测这个Holder可能是Surface的主要控制类，看看这个类的部分方法，不难知道SurfaceHolder控制着SurfaceView的大小，格式，可以监控或者改变SurfaceView。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void setFixedSize(int var1, int var2);</span><br><span class="line"></span><br><span class="line">void setSizeFromLayout();</span><br><span class="line"></span><br><span class="line">void setFormat(int var1);</span><br><span class="line"></span><br><span class="line">void setKeepScreenOn(boolean var1);</span><br><span class="line"></span><br><span class="line">Canvas lockCanvas();</span><br><span class="line"></span><br><span class="line">Canvas lockCanvas(Rect var1);</span><br><span class="line"></span><br><span class="line">default Canvas lockHardwareCanvas() &#123;</span><br><span class="line">    throw new RuntimeException(&quot;Stub!&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void unlockCanvasAndPost(Canvas var1);</span><br><span class="line"></span><br><span class="line">Rect getSurfaceFrame();</span><br><span class="line"></span><br><span class="line">Surface getSurface();</span><br></pre></td></tr></table></figure></p>
 <p>需要绘制的话，还需要一个画布类Canvas，在对应的生命周期中开始绘制并且提交，Holder也提供了相应的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mCanvas = mHolder.lockCanvas(); //lock</span><br><span class="line">mHolder.unlockCanvasAndPost(mCanvas);//unLock Post</span><br></pre></td></tr></table></figure></p>
@@ -487,7 +487,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -499,9 +499,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -609,7 +607,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

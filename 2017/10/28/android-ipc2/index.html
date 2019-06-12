@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="IPC," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="IPC,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -115,7 +115,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/10/28/android-ipc2/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/28/android-ipc2/">
 
 
 
@@ -149,7 +149,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -179,7 +179,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -189,7 +189,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -199,7 +199,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -209,7 +209,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -219,7 +219,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -262,7 +262,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -298,7 +298,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -387,8 +387,8 @@
 <li>命名管道FIFO</li>
 </ul>
 <h3 id="popen-pclose"><a href="#popen-pclose" class="headerlink" title="popen() pclose()"></a>popen() pclose()</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function">FILE *<span class="title">popen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cmdstring, <span class="keyword">const</span> <span class="keyword">char</span> *type)</span></span>;</span><br><span class="line">返回值：若成功则返回文件指针，若出错则返回<span class="literal">NULL</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pclose</span><span class="params">(FILE *fp)</span></span>;</span><br><span class="line">返回值：cmdstring的终止状态，若出错则返回<span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<p>popen()函数的返回值是一个普通的标准I/O流, 它只能用 pclose() 函数来关闭/如果type是’w’，则返回的文件指针是可写的，通过这个流的写入的内容会被转化为shell命令的标准输入（就是会让读这个管道的进程执行相应的shell命令？）<br>fp = popen（cmdstring， “w”）：<br><img src="http://images.cnitblog.com/blog/468825/201402/221953109902246.jpg" alt=""><br>fp = popen（cmdstring， “r”）<br><img src="http://images.cnitblog.com/blog/468825/201402/221953097004287.jpg" alt=""></p>
-<h3 id="pipe"><a href="#pipe" class="headerlink" title="pipe()"></a>pipe()</h3><p>pipe()函数可以返回两个管道描述符:pipefd[0]和pipefd[1]，任何写入pipefd[1]的数据都可以从pipefd[0]读回；pipe()函数返回的是文件描述符(file descriptor)，因此只能使用底层的read()和write()系统调用来访问。pipe()函数通常用来实现父子进程之间的通信：<br> <img src="http://img.blog.csdn.net/20161223173958916" alt=""></p>
+<p>popen()函数的返回值是一个普通的标准I/O流, 它只能用 pclose() 函数来关闭/如果type是’w’，则返回的文件指针是可写的，通过这个流的写入的内容会被转化为shell命令的标准输入（就是会让读这个管道的进程执行相应的shell命令？）<br>fp = popen（cmdstring， “w”）：<br><img src="http://images.cnitblog.com/blog/468825/201402/221953109902246.jpg" alt><br>fp = popen（cmdstring， “r”）<br><img src="http://images.cnitblog.com/blog/468825/201402/221953097004287.jpg" alt></p>
+<h3 id="pipe"><a href="#pipe" class="headerlink" title="pipe()"></a>pipe()</h3><p>pipe()函数可以返回两个管道描述符:pipefd[0]和pipefd[1]，任何写入pipefd[1]的数据都可以从pipefd[0]读回；pipe()函数返回的是文件描述符(file descriptor)，因此只能使用底层的read()和write()系统调用来访问。pipe()函数通常用来实现父子进程之间的通信：<br> <img src="http://img.blog.csdn.net/20161223173958916" alt></p>
 <h3 id="FIFO"><a href="#FIFO" class="headerlink" title="FIFO"></a>FIFO</h3><p>终于到我大FIFO了，有没有发现前面的2种方法只能用在相关的进程中，如果2个啥关系也没有的进程怎么通过一样的原理（一个写，一个读）来实现IPC呢。<br>这就要用到命名管道FIFO了，让2个进程都打开同一个文件（特殊文件），来实现数据交换<br> 写：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* open函数以O_WRONLY方式打开FIFO文件,如果成功pipe_fd指向打开的文件 */  </span><br><span class="line"> pipe_fd = open(FIFO_NAME, O_WRONLY);  </span><br><span class="line"> /* 再使用write函数来把buffer中的内容写到fifo文件中，成功则返回实际写入的字节数 */  </span><br><span class="line"> res = write(pipe_fd, buffer, BUFFER_SIZE);</span><br></pre></td></tr></table></figure></p>
 <p>读：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* open函数打开FIFO_NAME文件,以O_RDONLY的方式(即只读) </span><br><span class="line"> * 如果成功,则返回文件描述符 */  </span><br><span class="line">pipe_fd = open(FIFO_NAME, O_RDONLY);  </span><br><span class="line">/* 再使用read函数来读取fifo文件中的内容到buffer中 */  </span><br><span class="line">res = read(pipe_fd, buffer, BUFFER_SIZE);</span><br></pre></td></tr></table></figure></p>
 <p>读写之间的阻塞操作是由系统的来调度的，具体参考参考中的FIFO读写规则。</p>
@@ -410,7 +410,7 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>每个远程服务，都是Binder的子类，继承于Binder，使得他们可以基于Binder驱动进行数据读写。可以把Binder认为是每个远程服务派到当前调用服务的用户进程的代表（代理），有什么事，跟我的代表说就行了。通过我的代表来调用我的方法。<br>一次调用系统电量服务，查询电量值的流程如下：<br>系统启动，Server向Binder驱动写入信息流：<code>使用0号Binder 注册name=PowerManagerService addr=0x001</code>，那么Binder就会解析，然后找到并调用0号Binder，对0号Binder写入<code>注册name=PowerManagerService addr=0x001</code>，然后0号Binder就会调用ServiceManager的方法，注册PowerManagerService。<br>Client向Binder驱动写入信息流<code>使用0号Binder 查找name=PowerManagerService</code>，那么Binder就会解析，然后找到并调用0号Binder，向ServiceManager请求得到PowerManagerService的引用地址。然后Binder驱动就把得到的<code>引用地址=0x001</code>返回给Client。<br>Client再通过向Binder驱动写入请求信息流<code>使用地址0x001的Binder 执行命令 getPowerValue</code>，Binder驱动就会解析，然后找到并调用地址为0x001号Binder，写入命令<code>执行命令 getPowerValue</code>，那么 <code>0x001</code>所对应的Binder就会对他对应的PowerManagerService调用getPowerValue，再把得到的值返回给Binder驱动，Binder驱动再返回给Client，结束调用。</p>
 <p><strong>那么问题来了，Server和Client是怎么和Binder驱动进行通信的呢？</strong></p>
 <p>是通过内存映射，让驱动设备文件映射到用户进程和内核进程，即用户进程地址V1和内核进程地址V2都映射着同一块物理内存，那么用户把进程把数据写到文件上，内核进程自然就能读取到内容，而不需要在copy到内核去。具体查看<a href="http://blog.csdn.net/xiaojsj111/article/details/31422175" target="_blank" rel="noopener">binder驱动——-之内存映射篇</a></p>
-<p><img src="http://hi.csdn.net/attachment/201102/27/0_1298798582y7c5.gif" alt=""></p>
+<p><img src="http://hi.csdn.net/attachment/201102/27/0_1298798582y7c5.gif" alt></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.cnblogs.com/nufangrensheng/p/3561190.html" target="_blank" rel="noopener">popen()和pclose()</a><br><a href="http://blog.csdn.net/MONKEY_D_MENG/article/details/5570468" target="_blank" rel="noopener">Linux命名管道FIFO的读写规则</a><br><a href="http://blog.csdn.net/universus/article/details/6211589" target="_blank" rel="noopener">Android Binder设计与实现 - 设计篇</a></p>
 
       
@@ -507,7 +507,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -519,9 +519,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -629,7 +627,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

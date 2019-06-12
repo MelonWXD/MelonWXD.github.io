@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="源码分析,Activity," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="源码分析,Activity,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -114,7 +114,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/28/Activity启动分析/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/28/Activity启动分析/">
 
 
 
@@ -148,7 +148,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -178,7 +178,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -188,7 +188,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -198,7 +198,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -208,7 +208,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -218,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -261,7 +261,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -297,7 +297,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -383,7 +383,7 @@
 <p>哭了</p>
 <h1 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h1><p>在学习整体流程之前先介绍几个和Activity关系比较密切的类。</p>
 <h2 id="SystemServer"><a href="#SystemServer" class="headerlink" title="SystemServer"></a>SystemServer</h2><p>之前分析的zygote进程的启动流程，最后是启动了<code>app_process</code>这个进程，那么启动之后是怎么样的呢，贴张老罗的图：</p>
-<p><img src="http://hi.csdn.net/attachment/201109/16/0_1316190384ZuU0.gif" alt=""></p>
+<p><img src="http://hi.csdn.net/attachment/201109/16/0_1316190384ZuU0.gif" alt></p>
 <p>具体源码流程就略过，最后是启动了<a href="http://androidxref.com/6.0.0_r1/xref/frameworks/base/services/java/com/android/server/SystemServer.java" target="_blank" rel="noopener">SystemServer</a>这个进程，<code>main</code>方法如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">167</span>    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="number">168</span>        <span class="keyword">new</span> SystemServer().run();</span><br><span class="line"><span class="number">169</span>    &#125;</span><br><span class="line"></span><br><span class="line"><span class="number">176</span>    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="number">246</span>        <span class="comment">// Prepare the main looper thread (this thread).</span></span><br><span class="line"><span class="number">247</span>        android.os.Process.setThreadPriority(</span><br><span class="line"><span class="number">248</span>                android.os.Process.THREAD_PRIORITY_FOREGROUND);</span><br><span class="line"><span class="number">249</span>        android.os.Process.setCanSelfBackground(<span class="keyword">false</span>);</span><br><span class="line"><span class="number">250</span>        Looper.prepareMainLooper();</span><br><span class="line"></span><br><span class="line"><span class="number">258</span></span><br><span class="line"><span class="number">259</span>        <span class="comment">// Initialize the system context.</span></span><br><span class="line"><span class="number">260</span>        createSystemContext();</span><br><span class="line"><span class="number">261</span></span><br><span class="line"><span class="number">262</span>        <span class="comment">// Create the system service manager.</span></span><br><span class="line"><span class="number">263</span>        mSystemServiceManager = <span class="keyword">new</span> SystemServiceManager(mSystemContext);</span><br><span class="line"><span class="number">264</span>        LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">  </span><br><span class="line"><span class="number">266</span>        <span class="comment">// Start services.</span></span><br><span class="line"><span class="number">267</span>        <span class="keyword">try</span> &#123;</span><br><span class="line"><span class="number">268</span>            startBootstrapServices();</span><br><span class="line"><span class="number">269</span>            startCoreServices();</span><br><span class="line"><span class="number">270</span>            startOtherServices();</span><br><span class="line"><span class="number">271</span>        &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line"><span class="number">274</span>            <span class="keyword">throw</span> ex;</span><br><span class="line"><span class="number">275</span>        &#125;</span><br><span class="line"></span><br><span class="line"><span class="number">282</span>        <span class="comment">// Loop forever.</span></span><br><span class="line"><span class="number">283</span>        Looper.loop();</span><br><span class="line"><span class="number">285</span>    &#125;</span><br></pre></td></tr></table></figure>
 <ul>
@@ -414,11 +414,11 @@
 <p><strong>ApplicationThread</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">574</span>    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationThread</span> <span class="keyword">extends</span> <span class="title">ApplicationThreadNative</span> </span>&#123;...&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//http://androidxref.com/6.0.0_r1/xref/frameworks/base/core/java/android/app/ApplicationThreadNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationThreadNative</span> <span class="keyword">extends</span> <span class="title">Binder</span></span></span><br><span class="line"><span class="class">	       <span class="keyword">implements</span> <span class="title">IApplicationThread</span> </span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="ActivityStack和ActivityStackSupervisor："><a href="#ActivityStack和ActivityStackSupervisor：" class="headerlink" title="ActivityStack和ActivityStackSupervisor："></a>ActivityStack和ActivityStackSupervisor：</h2><p>每一个ActivityRecord都会有一个Activity与之对应，一个Activity可能会有多个ActivityRecord，因为Activity可以被多次实例化，取决于其launchmode。一系列相关的ActivityRecord组成了一个TaskRecord，TaskRecord是存在于ActivityStack中，ActivityStackSupervisor是用来管理这些ActivityStack的。</p>
-<p>ActivityStack和ActivityRecord的关系如下：<br><img src="http://img.blog.csdn.net/20161220142454652?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2ViZWx6YzI0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p>ActivityStack和ActivityRecord的关系如下：<br><img src="http://img.blog.csdn.net/20161220142454652?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQva2ViZWx6YzI0/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></p>
 <p><strong>先说个关于ProcessRecord的知识：</strong></p>
 <p> 在AMS中每个ProcessRecord代表一个应用程序进程，AMS的成员ActivityStackSupervisor(ASS)在<code>startActivityMayWait</code>中通过caller（IApplicationThread）这个参数，向他的成员mService（指向AMS）调用<code>getRecordForAppLocked</code>来获取caller对应的ProcessRecord，包含了对应进程的信息pid、uid等。</p>
 <p> ActivityRecord  TaskRecord  ProcessRecord三者关系图</p>
-<p><img src="http://img.blog.csdn.net/20170519150259246?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbXdxMzg0ODA3Njgz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20170519150259246?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbXdxMzg0ODA3Njgz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt></p>
 <h1 id="Launcher启动Activity过程概述"><a href="#Launcher启动Activity过程概述" class="headerlink" title="Launcher启动Activity过程概述"></a>Launcher启动Activity过程概述</h1><h2 id="Launcher——Activity——Instrumentation——AMP"><a href="#Launcher——Activity——Instrumentation——AMP" class="headerlink" title="Launcher——Activity——Instrumentation——AMP"></a>Launcher——Activity——Instrumentation——AMP</h2><p>Launcher逐级调用到Instrumentation，利用<code>ActivityManagerNative.getDefault()</code>得到ActivityManagerProxy（AMS的Binder代理）并调用其<code>startActivity</code>方法。</p>
 <h2 id="AMP——AMS——ActivityStack"><a href="#AMP——AMS——ActivityStack" class="headerlink" title="AMP——AMS——ActivityStack"></a>AMP——AMS——ActivityStack</h2><p>AMP通过Binder来与AMS通信，调用AMS的成员ActivityStackSupervisor(ActivityStackSupervisor内部持有一个ActivityStack)</p>
 <p>在ActivityStack中有TaskRecord和ActivityRecord来记录已经启动的Activity的信息</p>
@@ -607,7 +607,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -619,9 +619,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -729,7 +727,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

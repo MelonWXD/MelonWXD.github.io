@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="注入," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="注入,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -116,7 +116,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/19/inject-1-elf/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/19/inject-1-elf/">
 
 
 
@@ -150,7 +150,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -180,7 +180,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -190,7 +190,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -200,7 +200,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -210,7 +210,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -220,7 +220,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -263,7 +263,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -299,7 +299,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -387,7 +387,7 @@
 <li>可共享文件（Shared Object file）：也是Android中常说的so库。所谓的动态库文件，在运行时被动态的加载进内存，由动态链接器来负责链接so库和可执行文件的执行。</li>
 </ul>
 <p>这些目标文件都是按照特定的文件格式来组织的，比如Windows下是PE，Mac下是Mach-O，Linux/unix下就是ELF格式。<br>这里主要就是以Linux下的so文件格式ELF来做分析，因为在逆向APK中主要也是针对so库做注入。</p>
-<h1 id="EFL文件格式"><a href="#EFL文件格式" class="headerlink" title="EFL文件格式"></a>EFL文件格式</h1><p>先放2张图，可以直观的了解ELF文件格式<br><img src="http://blog.chinaunix.net/photo/94212_101201164532.jpg" alt=""><br><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511088380577&amp;di=7d77512485a60706d6fd1ab9f949f7af&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.yeolar.com%2Fmedia%2Fnote%2F2012%2F03%2F20%2Flinux-linking%2Ffig2.png" alt=""></p>
+<h1 id="EFL文件格式"><a href="#EFL文件格式" class="headerlink" title="EFL文件格式"></a>EFL文件格式</h1><p>先放2张图，可以直观的了解ELF文件格式<br><img src="http://blog.chinaunix.net/photo/94212_101201164532.jpg" alt><br><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511088380577&amp;di=7d77512485a60706d6fd1ab9f949f7af&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.yeolar.com%2Fmedia%2Fnote%2F2012%2F03%2F20%2Flinux-linking%2Ffig2.png" alt></p>
 <h2 id="结构综述"><a href="#结构综述" class="headerlink" title="结构综述"></a>结构综述</h2><ul>
 <li>ELF文件头 ： 对ELF文件整体结构的一个描述</li>
 <li>程序头部表 Program Header Table ：描述下面的段区Segment，告诉系统如何创建进程影像</li>
@@ -413,7 +413,7 @@
 <p>也可以通过<code>readelf -p [sectionIdx] libsurfaceflinger.so</code>来以string的方式查看指定序号的Section内容，值没有经过格式化，比如这里的.dynsym序号是2，那么<code>readelf -p 2 libsurfaceflinger.so</code>输出的内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 2 libsurfaceflinger.so </span><br><span class="line"></span><br><span class="line">String dump of section &apos;.dynsym&apos;:</span><br><span class="line">  [    40]  4</span><br><span class="line">  [    50]  s</span><br><span class="line">  [    b0]  .^A</span><br><span class="line">  [    c0]  \^A</span><br><span class="line">  [    d0]  c^A</span><br><span class="line">  [   120]  A^B</span><br><span class="line">  [   130]  G^B</span><br><span class="line">  [   140]  _^B</span><br><span class="line">  [   1b0]  2^C</span><br><span class="line">  [   1c0]  Z^C</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure></p>
 <p>跟上面分析节区表和节区表的表项一样，符号表的结构是节区表的表项，那符号表的表项结构体是怎么表示的呢，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;  </span><br><span class="line">     Elf32_Word st_name;      //符号表 表项的名称。</span><br><span class="line">     //如果该值非0，则表示符号名在字符串表(.dynstr)中的索引值(offset)，为0即符号表项没有名称。</span><br><span class="line">     Elf32_Addr st_value;       //符号的取值。依赖于具体的上下文，可能是一个绝对值、一个地址等等。</span><br><span class="line">     Elf32_Word st_size;         //符号的尺寸大小。例如一个数据对象的大小是对象中包含的字节数。</span><br><span class="line">     unsigned char st_info;    //符号的类型和绑定属性。</span><br><span class="line">     unsigned char st_other;   </span><br><span class="line">     Elf32_Half st_shndx;        //每个符号表项都以和其他节区的关系的方式给出定义。</span><br><span class="line">　　　　　　　　　　　　　//此成员给出相关的节区头部表索引。</span><br><span class="line">&#125; Elf32_Sym;</span><br></pre></td></tr></table></figure></p>
 <h3 id="字符串表-dynstr"><a href="#字符串表-dynstr" class="headerlink" title="字符串表 .dynstr"></a>字符串表 .dynstr</h3><p>根据上面说的 符号表结构体的st_name项，非0值表示该符号名在字符串表中的索引，那么自然而然的就要介绍一下字符串表了。<br>字符串表中包含若干以 null 结尾的字符串，这些字符串通常是 symbol 或 section 的名字。当 ELF 文件的其它部分需要引用字符串时，只需提供该字符串在字符串表中的位置索引即可。  </p>
-<p>下图为一个长度为25字节的字符串表示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242024621822.png" alt=""><br>字符串引用示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242336658657.png" alt="">  </p>
+<p>下图为一个长度为25字节的字符串表示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242024621822.png" alt><br>字符串引用示例：<br><img src="http://images0.cnblogs.com/blog2015/763648/201506/302242336658657.png" alt>  </p>
 <p>根据上面ELF文件头 字符串表的索引为3，通过<code>readelf -p 3 libsurfaceflinger.so</code>来打印一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">duoyi@duoyi-OptiPlex-7010:~/Desktop/todo$ readelf -p 3 libsurfaceflinger.so </span><br><span class="line"></span><br><span class="line">String dump of section &apos;.dynstr&apos;:</span><br><span class="line">  [     1]  __cxa_finalize</span><br><span class="line">  [    10]  __cxa_atexit</span><br><span class="line">  [    1d]  __aeabi_unwind_cpp_pr0</span><br><span class="line">  ..</span><br><span class="line">  [  451a]  libc.so</span><br><span class="line">  [  4522]  libstdc++.so</span><br><span class="line">  [  452f]  libm.so</span><br><span class="line">  [  4537]  libsurfaceflinger.so</span><br></pre></td></tr></table></figure></p>
 <h3 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h3><p>在编译-汇编这2个操作中，编译器和汇编器为每个文件创建程序地址一般都是从0开始，但是实际加载时模块的基址肯定不是0，为了避免加载地址重叠，就引入了重定位这个东西。重定位就是为程序不同部分分配加载地址，调整程序中的数据和代码以反映所分配地址的过程。简单的言之，则是将程序中的各个部分映射到合理的地址上来。</p>
 <p><strong>.rel.text .rel.dyn .rel.plt .plt  .got .got.plt的关系</strong></p>
@@ -447,7 +447,7 @@
 <li>d_un-&gt;d_val：根据tag表示的不同有不同的意思，多数情况下表示该节大小值</li>
 <li>d_un-&gt;d_ptr：表示该节的虚拟地址（文件的虚拟地址与实际执行过程中的虚拟地址不一定匹配）</li>
 </ul>
-<h2 id="ELF文件格式图例"><a href="#ELF文件格式图例" class="headerlink" title="ELF文件格式图例"></a>ELF文件格式图例</h2><p><img src="http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<h2 id="ELF文件格式图例"><a href="#ELF文件格式图例" class="headerlink" title="ELF文件格式图例"></a>ELF文件格式图例</h2><p><img src="http://img.blog.csdn.net/20140918103240781?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpZ3V6aTExMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://bbs.pediy.com/thread-221821.htm" target="_blank" rel="noopener">【ARM】安卓SO中GOT REL PLT 作用与关系</a></p>
 <p><a href="http://blog.csdn.net/lifeshow/article/details/29597401" target="_blank" rel="noopener">EFL PLT GOT跳转关系</a><br><a href="https://www.cnblogs.com/leo0000/p/5604132.html" target="_blank" rel="noopener">ELF文件中的.plt .rel.dyn .rel.plt .got .got.plt的关系</a><br><a href="http://www.07net01.com/2016/05/1534423.html" target="_blank" rel="noopener">ELF文件格式解析</a><br><a href="https://stackoverflow.com/questions/11676472/what-is-the-difference-between-got-and-got-plt-section#comment16231745_11676472" target="_blank" rel="noopener">difference-between-got-and-got-plt</a></p>
 
@@ -545,7 +545,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -557,9 +557,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -667,7 +665,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>

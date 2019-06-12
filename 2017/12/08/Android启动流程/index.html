@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -40,7 +40,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="源码分析," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="源码分析,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
 
 
 
@@ -114,7 +114,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/12/08/Android启动流程/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/08/Android启动流程/">
 
 
 
@@ -148,7 +148,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">Lewis Unchained</span>
         <span class="logo-line-after"><i></i></span>
@@ -178,7 +178,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -188,7 +188,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -198,7 +198,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -208,7 +208,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -218,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -261,7 +261,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lewis">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
     </span>
 
@@ -297,7 +297,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -410,7 +410,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> K_service:  </span><br><span class="line">    state-&gt;context = parse_service(state, nargs, args);  </span><br><span class="line">    <span class="keyword">if</span> (state-&gt;context) &#123;  </span><br><span class="line">        state-&gt;parse_line = parse_line_service;  </span><br><span class="line">        <span class="keyword">return</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
 <h3 id="Service结构体"><a href="#Service结构体" class="headerlink" title="Service结构体"></a>Service结构体</h3><p>在具体查看解析代码之前，先来介绍一下<a href="http://androidxref.com/6.0.1_r10/xref/system/core/init/init.h#95" target="_blank" rel="noopener">Service</a>这个结构，因为最后文件的内容都要被解析成相关的信息，而Service就是存储这些信息的结构体。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">service</span> &#123;</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		用来连接所有的services。Init中有一个全局的service_list变量，专门用来保存解析配置文件后得到的service。 </span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">slist</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;			<span class="comment">// service的名字，在我们的例子中为zygote</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *classname;		<span class="comment">// service所属的class名字，默认为default</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> flags;			<span class="comment">// service的属性</span></span><br><span class="line">    <span class="keyword">pid_t</span> pid;					<span class="comment">// 进程号</span></span><br><span class="line">    <span class="keyword">time_t</span> time_started;    <span class="comment">/* 上一次启动时间 */</span></span><br><span class="line">    <span class="keyword">time_t</span> time_crashed;    <span class="comment">/* 上一次死亡时间*/</span></span><br><span class="line">    <span class="keyword">int</span> nr_crashed;         <span class="comment">/* 死亡次数 */</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">uid_t</span> uid;</span><br><span class="line">    <span class="keyword">gid_t</span> gid;</span><br><span class="line">    <span class="keyword">gid_t</span> supp_gids[NR_SVC_SUPP_GIDS];</span><br><span class="line">    <span class="keyword">size_t</span> nr_supp_gids;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> *seclabel;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		有些service需要使用socket来通信，下面这个socketinfo用来描述socket的相关信息。</span></span><br><span class="line"><span class="comment">		我们的zygote也使用了socket，配置文件中的内容是socket zygote stream 660 root system。</span></span><br><span class="line"><span class="comment">		它表示将创建一个AF_STREAM类型的socket（其实就是TCP socket），该socket的名为zygote，读写权限是660。</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">socketinfo</span> *<span class="title">sockets</span>;</span></span><br><span class="line">	<span class="comment">// service一般运行在一个单独的进程中，envvars用来描述创建这个进程时所需的环境</span></span><br><span class="line">	<span class="comment">// 变量信息。</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">svcenvinfo</span> *<span class="title">envvars</span>;</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		虽然onrestart关键字是一个OPTION，可是这个OPTION后面一般都跟着一个COMMAND，action结构体就是用来存储command信息的。</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">action</span> <span class="title">onrestart</span>;</span>  <span class="comment">/* Actions to execute on restart. */</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* keycodes for triggering this service via /dev/keychord */</span></span><br><span class="line">    <span class="keyword">int</span> *keycodes;</span><br><span class="line">    <span class="keyword">int</span> nkeycodes;</span><br><span class="line">    <span class="keyword">int</span> keychord_id;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// io优先级</span></span><br><span class="line">    <span class="keyword">int</span> ioprio_class;</span><br><span class="line">    <span class="keyword">int</span> ioprio_pri;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> nargs; 	<span class="comment">// 参数个数</span></span><br><span class="line">    <span class="comment">/* "MUST BE AT THE END OF THE STRUCT" */</span></span><br><span class="line">    <span class="keyword">char</span> *args[<span class="number">1</span>];	<span class="comment">// 用于存储参数内容</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">action</span> &#123;</span>  </span><br><span class="line">    <span class="comment">/* </span></span><br><span class="line"><span class="comment">        一个action结构可以被链入三个不同的双向链表中，其中alist用来存储所有的action， </span></span><br><span class="line"><span class="comment">        qlist用来链接那些等待执行的action，tlist用来链接那些待某些条件满足后就需要执行的action。 </span></span><br><span class="line"><span class="comment">    */</span>      </span><br><span class="line">    <span class="comment">/* node in list of all actions */</span>  </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">alist</span>;</span>  </span><br><span class="line">  </span><br><span class="line">        <span class="comment">/* node in the queue of pending actions */</span>  </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">qlist</span>;</span>  </span><br><span class="line">  </span><br><span class="line">        <span class="comment">/* node in list of actions for a trigger */</span>  </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">tlist</span>;</span>  </span><br><span class="line">  </span><br><span class="line">        <span class="keyword">unsigned</span> hash;  </span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span> *name;   <span class="comment">// 名字一般为"onrestart"  </span></span><br><span class="line">      </span><br><span class="line">    <span class="comment">/* </span></span><br><span class="line"><span class="comment">        一个command的结构列表，command结构如下： </span></span><br><span class="line"><span class="comment">        struct command </span></span><br><span class="line"><span class="comment">        &#123; </span></span><br><span class="line"><span class="comment">                /* list of commands in an action */</span>  </span><br><span class="line">                <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">clist</span>;</span>  </span><br><span class="line">                <span class="keyword">int</span> (*func)(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args);  </span><br><span class="line">                <span class="keyword">int</span> nargs;  </span><br><span class="line">                <span class="keyword">char</span> *args[<span class="number">1</span>];  </span><br><span class="line">        &#125;;  </span><br><span class="line">    */  </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">listnode</span> <span class="title">commands</span>;</span>  </span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">command</span> *<span class="title">current</span>;</span>  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.blog.csdn.net/20140730144405770?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaHUzMTY3MzQz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p><img src="http://img.blog.csdn.net/20140730144405770?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaHUzMTY3MzQz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></p>
 <h2 id="启动zygote"><a href="#启动zygote" class="headerlink" title="启动zygote"></a>启动zygote</h2><p>init.rc中有一段是</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">403 on boot</span><br><span class="line">...</span><br><span class="line">495 on nonencrypted</span><br><span class="line">496    class_start main</span><br><span class="line">497    class_start late_start</span><br></pre></td></tr></table></figure>
 <p><code>class_start</code>是一个<code>COMMAND</code>，<code>main</code>是类名，上述zygote文件中line2通过<code>class main</code>来把类名修改为<code>main</code>，所以这里就是启动zygote服务所属的类。</p>
@@ -418,10 +418,10 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="number">262</span>    <span class="keyword">pid_t</span> pid = fork();</span><br><span class="line"><span class="number">354</span>        <span class="keyword">if</span> (!dynamic_args) &#123;</span><br><span class="line"><span class="number">355</span>            <span class="keyword">if</span> (execve(svc-&gt;args[<span class="number">0</span>], (<span class="keyword">char</span>**) svc-&gt;args, (<span class="keyword">char</span>**) ENV) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">...</span><br><span class="line"><span class="number">357</span>            &#125;</span><br><span class="line"><span class="number">358</span>        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">...</span><br><span class="line"><span class="number">374</span>            execve(svc-&gt;args[<span class="number">0</span>], (<span class="keyword">char</span>**) arg_ptrs, (<span class="keyword">char</span>**) ENV);</span><br><span class="line"><span class="number">375</span>        &#125;</span><br><span class="line"><span class="number">376</span>        _exit(<span class="number">127</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>通过<code>fork</code>以及调用<code>execve</code>来执行<code>/system/bin/app_process64</code>文件来创建zygote进程。</p>
 <h1 id="Linux系统启动过程分析"><a href="#Linux系统启动过程分析" class="headerlink" title="Linux系统启动过程分析"></a>Linux系统启动过程分析</h1><p>Linux系统启动流程图如下:  </p>
-<p><img src="http://images2015.cnblogs.com/blog/607348/201512/607348-20151229231206354-919070678.png" alt=""></p>
+<p><img src="http://images2015.cnblogs.com/blog/607348/201512/607348-20151229231206354-919070678.png" alt></p>
 <h2 id="BIOS"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS</h2><p>BIOS(Basic Input/Output System)，基本输入输出系统，该系统存储于主板的ROM芯片上，计算机在开机时，会最先读取该系统。BIOS会按照启动顺序去查找第一个磁盘头的MBR信息，并加载和执行MBR中的Bootloader程序，若第一个磁盘不存在MBR，则会继续查找第二个磁盘，一旦BootLoader程序被检测并加载到内存中，BIOS就将控制权交接给了BootLoader程序。</p>
 <h2 id="MBR"><a href="#MBR" class="headerlink" title="MBR"></a>MBR</h2><p>　　MBR(Master Boot Record)，主引导记录，MBR存储于磁盘的头部，大小为512bytes，其中，446bytes用于存储BootLoader程序，64bytes用于存储分区表信息，最后2bytes用于MBR的有效性检查。</p>
-<h3 id="BootLoader"><a href="#BootLoader" class="headerlink" title="BootLoader"></a>BootLoader</h3><p>主要功能是初始化硬件设备、准备好软件环境，最后调用操作系统内核。<br><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=338703827,4227717080&amp;fm=27&amp;gp=0.jpg" alt=""></p>
+<h3 id="BootLoader"><a href="#BootLoader" class="headerlink" title="BootLoader"></a>BootLoader</h3><p>主要功能是初始化硬件设备、准备好软件环境，最后调用操作系统内核。<br><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=338703827,4227717080&amp;fm=27&amp;gp=0.jpg" alt></p>
 <ul>
 <li>Bootloader：上电后第一个程序。</li>
 <li>Boot parameters：分区中一般存放一些可设置的参数，比如IP地址、串口波特率，要传递给内核的命令行参数。</li>
@@ -530,7 +530,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -542,9 +542,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
-            <img class="site-author-image" itemprop="image"
-              src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4"
-              alt="Lewis" />
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
           
             <p class="site-author-name" itemprop="name">Lewis</p>
             <p class="site-description motion-element" itemprop="description"></p>
@@ -652,7 +650,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy;  2017 &mdash; 
   <span itemprop="copyrightYear">2019</span>
