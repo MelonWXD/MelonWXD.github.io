@@ -4,8 +4,14 @@ date: 2019-06-27 11:27:45
 tags: [View]  
 categories: Android
 ---
+
 子线程能不能更新UI？
-<!-- more -->  
+
+<!-- more -->   
+
+
+
+
 
 # 几个涉及的类说明
 
