@@ -3,11 +3,8 @@ title: Gradle构建学习
 date: 2019-05-05 10:40:22
 tags: [Gradle,Android构建]  
 categories: Android
+description: Gradle入门
 ---
-Gradle入门
-
-<!-- more -->  
-
 
 
 # 综述

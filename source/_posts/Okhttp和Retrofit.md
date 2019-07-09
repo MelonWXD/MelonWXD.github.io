@@ -450,6 +450,7 @@ lewis
     synchronized (serviceMethodCache) {
       result = serviceMethodCache.get(method);
       if (result == null) {
+        //为每个被动态代理的Method创建一个ServiceMethod实例 缓存起来
         result = new ServiceMethod.Builder<>(this, method).build();
         serviceMethodCache.put(method, result);
       }
@@ -462,11 +463,16 @@ lewis
 
 ```JAVA
 public ServiceMethod build() {
+  		//从retrofit.adapterFactories中找到对应的callAdapter给这个serviceMethod
+  		//adapterFactories.add(platform.defaultCallAdapterFactory(callbackExecutor));
       callAdapter = createCallAdapter();
-
+  	 	//根据callAdapter中的responseType 
+  		//从retrofit.responseBodyConverter中找到合适的convert
+      //converterFactories.add(new BuiltInConverters());
       responseConverter = createResponseConverter();
 
       for (Annotation annotation : methodAnnotations) {
+        //解析注解
         parseMethodAnnotation(annotation);
       }
 
@@ -493,7 +499,7 @@ final class OkHttpCall<T> implements Call<T> {
     this.serviceMethod = serviceMethod;
     this.args = args;
   }
-  
+
   
     private okhttp3.Call createRawCall() throws IOException {
     Request request = serviceMethod.toRequest(args);
@@ -657,7 +663,85 @@ final class DefaultCallAdapterFactory extends CallAdapter.Factory {
 
 根据各种条件做了一些判断，对Call进行封装，具体见源码。
 
+## call.enqueue
 
+```java
+@Override public void enqueue(final Callback<T> callback) {
+
+  okhttp3.Call call;
+  Throwable failure;
+
+  synchronized (this) {
+    if (executed) throw new IllegalStateException("Already executed.");
+    executed = true;
+
+    call = rawCall;
+    failure = creationFailure;
+    if (call == null && failure == null) {
+      try {
+        call = rawCall = createRawCall();
+      } catch (Throwable t) {
+        failure = creationFailure = t;
+      }
+    }
+  }
+
+	//还是包装的okhttp的东西
+  call.enqueue(new okhttp3.Callback() {
+    @Override public void onResponse(okhttp3.Call call, okhttp3.Response rawResponse)
+        throws IOException {
+      Response<T> response;
+      try {
+        //解析response
+        response = parseResponse(rawResponse);
+      } catch (Throwable e) {
+        callFailure(e);
+        return;
+      }
+      callSuccess(response);
+    }
+
+    @Override public void onFailure(okhttp3.Call call, IOException e) {
+      try {
+        callback.onFailure(OkHttpCall.this, e);
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
+    }
+
+    private void callFailure(Throwable e) {
+      try {
+        callback.onFailure(OkHttpCall.this, e);
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
+    }
+
+    private void callSuccess(Response<T> response) {
+      try {
+        callback.onResponse(OkHttpCall.this, response);
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
+    }
+  });
+}
+
+
+Response<T> parseResponse(okhttp3.Response rawResponse) throws IOException {
+    ResponseBody rawBody = rawResponse.body();
+    try {
+      T body = serviceMethod.toResponse(catchingBody);
+      return Response.success(body, rawResponse);
+    } catch (RuntimeException e) {
+      throw e;
+    }
+  }
+//这里调用上面创建serviceMethod里创建的ReponseConvert
+R toResponse(ResponseBody body) throws IOException {
+    return responseConverter.convert(body);
+  }
+```
 
 再上一张图来帮助理解create的这个三部曲。
 
