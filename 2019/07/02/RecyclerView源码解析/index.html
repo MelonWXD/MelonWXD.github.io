@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="View,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="RecyclerView解析与Tangram框架">
+<meta name="keywords" content="View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView解析与Tangram框架">
+<meta property="og:url" content="http://yoursite.com/2019/07/02/RecyclerView源码解析/index.html">
+<meta property="og:site_name" content="Lewis Unchained">
+<meta property="og:description" content="RecyclerView解析与Tangram框架">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-02T02:36:08.635Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView解析与Tangram框架">
+<meta name="twitter:description" content="RecyclerView解析与Tangram框架">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/02/RecyclerView源码解析/">
+
+
+
+
+
+  <title>RecyclerView解析与Tangram框架 | Lewis Unchained</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/MelonWXD"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lewis Unchained</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Life is tough, but I am tougher</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/RecyclerView源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lewis">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lewis Unchained">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RecyclerView解析与Tangram框架</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T10:36:07+08:00">
+                2019-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4,026 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  22 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RecyclerView解析与Tangram框架<br><a id="more"></a>  </p>
+<p>平常对RecyclerView的使用，代码如下，以及sdk中对应方法的注释，(学习sdk看源码注释是最容易的方法了)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line"> 	recyclerView.setAdapter(myAdaoter);</span><br><span class="line"> 	recyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>));</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">/**</span></span><br><span class="line"><span class="comment">   	当RV需要一个新的 表示给定vewiType的item的ViewHolder时  就调用这个方法</span></span><br><span class="line"><span class="comment">   	考虑到ViewHolder会被re-used用来显示不同的items 缓存sub views of View 可以避免过多的fbi调用</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">   	RV调用这个方法来展示给定postion上的数据  这个方法通常需要更新ViewHolder中的itemView</span></span><br><span class="line"><span class="comment">   	与ListView不同的是，如果当前item在数据集中的postion发生改变，RV是不会再调用这个方法的，除非item本身无  效了或者 new position cannot be determined (???)  </span></span><br><span class="line"><span class="comment">   	如果需要postion，通过ViewHolder#getAdapterPosition()来拿</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>想要分析一个View，基本上按<code>measure</code> <code>layout</code> <code>draw</code>分析 基本上就没问题了</p>
+<h1 id="Measure"><a href="#Measure" class="headerlink" title="Measure"></a>Measure</h1><p>RecyclerView 是 对逐个子view 依次 measure、layout   而不是全部measure完再layout</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">LinearLayoutManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        setOrientation(orientation);</span><br><span class="line">        setReverseLayout(reverseLayout);</span><br><span class="line">        setAutoMeasureEnabled(<span class="keyword">true</span>); <span class="comment">//mAutoMeasure 被设置为true</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span> heightSpec)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// LayoutManager mLayout;  分析这里就用 LinearLayoutManager</span></span><br><span class="line">    <span class="keyword">if</span> (mLayout == <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="comment">//省略</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mLayout.mAutoMeasure) &#123;<span class="comment">//默认true</span></span><br><span class="line">       			<span class="keyword">final</span> <span class="keyword">int</span> widthMode = MeasureSpec.getMode(widthSpec);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> heightMode = MeasureSpec.getMode(heightSpec);</span><br><span class="line">      			<span class="comment">// 如果 都是EXACTLY的话  就跳出measure 交给layout方法来做measure [注意看这里]</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">boolean</span> skipMeasure = widthMode == MeasureSpec.EXACTLY</span><br><span class="line">                    &amp;&amp; heightMode == MeasureSpec.EXACTLY;</span><br><span class="line">      			<span class="comment">//委托出去  ① Measure</span></span><br><span class="line">            mLayout.onMeasure(mRecycler, mState, widthSpec, heightSpec);</span><br><span class="line">            <span class="keyword">if</span> (skipMeasure || mAdapter == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mState.mLayoutStep == State.STEP_START) &#123;</span><br><span class="line">                 <span class="comment">//② Layout</span></span><br><span class="line">                dispatchLayoutStep1();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// set dimensions in 2nd step. Pre-layout should happen with old dimensions for</span></span><br><span class="line">            <span class="comment">// consistency</span></span><br><span class="line">            mLayout.setMeasureSpecs(widthSpec, heightSpec);</span><br><span class="line">            mState.mIsMeasuring = <span class="keyword">true</span>;</span><br><span class="line">				      <span class="comment">//② Layout</span></span><br><span class="line">            dispatchLayoutStep2();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// now we can get the width and height from the children.</span></span><br><span class="line">            mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// if RecyclerView has non-exact width and height and if there is at least one child</span></span><br><span class="line">            <span class="comment">// which also has non-exact width &amp; height, we have to re-measure.</span></span><br><span class="line">            <span class="keyword">if</span> (mLayout.shouldMeasureTwice()) &#123;</span><br><span class="line">                mLayout.setMeasureSpecs(</span><br><span class="line">                        MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),</span><br><span class="line">                        MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));</span><br><span class="line">                mState.mIsMeasuring = <span class="keyword">true</span>;</span><br><span class="line">                dispatchLayoutStep2();</span><br><span class="line">                <span class="comment">// now we can get the width and height from the children.</span></span><br><span class="line">                mLayout.setMeasuredDimensionFromChildren(widthSpec, heightSpec);</span><br><span class="line">            &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//省略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="mLayout-onMeasure"><a href="#mLayout-onMeasure" class="headerlink" title="mLayout.onMeasure"></a>mLayout.onMeasure</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(Recycler recycler, State state, <span class="keyword">int</span> widthSpec, <span class="keyword">int</span> heightSpec)</span> </span>&#123;</span><br><span class="line">            mRecyclerView.defaultOnMeasure(widthSpec, heightSpec);</span><br><span class="line">        &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">defaultOnMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span> heightSpec)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 平平无奇的 根据mode和size来返回 w h  然后setMeasuredDimension</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> width = LayoutManager.chooseSize(widthSpec,</span><br><span class="line">                getPaddingLeft() + getPaddingRight(),</span><br><span class="line">                ViewCompat.getMinimumWidth(<span class="keyword">this</span>));</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> height = LayoutManager.chooseSize(heightSpec,</span><br><span class="line">                getPaddingTop() + getPaddingBottom(),</span><br><span class="line">                ViewCompat.getMinimumHeight(<span class="keyword">this</span>));</span><br><span class="line"></span><br><span class="line">        setMeasuredDimension(width, height);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="dispatchLayoutStep1"><a href="#dispatchLayoutStep1" class="headerlink" title="dispatchLayoutStep1"></a>dispatchLayoutStep1</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The first step of a layout where we;</span></span><br><span class="line"><span class="comment"> * - process adapter updates</span></span><br><span class="line"><span class="comment"> * - decide which animation should run</span></span><br><span class="line"><span class="comment"> * - save information about current views</span></span><br><span class="line"><span class="comment"> * - If necessary, run predictive layout and save its information 如有必要 执行layout 并保存信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchLayoutStep1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mState.assertLayoutStep(State.STEP_START);</span><br><span class="line">    mState.mIsMeasuring = <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">//一堆跟动画有关的操作  记住改变状态</span></span><br><span class="line">    mState.mLayoutStep = State.STEP_LAYOUT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="dispatchLayoutStep2"><a href="#dispatchLayoutStep2" class="headerlink" title="dispatchLayoutStep2"></a>dispatchLayoutStep2</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 实际进行layout操作的步骤 可能会被调用多次</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchLayoutStep2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//状态判断</span></span><br><span class="line">    mState.assertLayoutStep(State.STEP_LAYOUT | State.STEP_ANIMATIONS);</span><br><span class="line">    mState.mItemCount = mAdapter.getItemCount();</span><br><span class="line">    mState.mDeletedInvisibleItemCountSincePreviousLayout = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Step 2: Run layout</span></span><br><span class="line">    mState.mInPreLayout = <span class="keyword">false</span>;</span><br><span class="line">    mLayout.onLayoutChildren(mRecycler, mState);</span><br><span class="line"></span><br><span class="line">    mState.mStructureChanged = <span class="keyword">false</span>;</span><br><span class="line">    mPendingSavedState = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// onLayoutChildren may have caused client code to disable item animations; re-check</span></span><br><span class="line">    mState.mRunSimpleAnimations = mState.mRunSimpleAnimations &amp;&amp; mItemAnimator != <span class="keyword">null</span>;</span><br><span class="line">    mState.mLayoutStep = State.STEP_ANIMATIONS;</span><br><span class="line">    onExitLayoutOrScroll();</span><br><span class="line">    resumeRequestLayout(<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="mLayout-onLayoutChildren"><a href="#mLayout-onLayoutChildren" class="headerlink" title="mLayout.onLayoutChildren"></a>mLayout.onLayoutChildren</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LinearLayoutManager</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLayoutChildren</span><span class="params">(RecyclerView.Recycler recycler, RecyclerView.State state)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// layout algorithm:</span></span><br><span class="line">    <span class="comment">// 1) by checking children and other variables, find an anchor coordinate and an anchor</span></span><br><span class="line">    <span class="comment">//  item position.</span></span><br><span class="line">    <span class="comment">// 2) fill towards start, stacking from bottom</span></span><br><span class="line">    <span class="comment">// 3) fill towards end, stacking from top</span></span><br><span class="line">    <span class="comment">// 4) scroll to fulfill requirements like stack from bottom.</span></span><br><span class="line">    <span class="comment">// 1 检查child 和 其他变量，确定 锚点坐标与锚点项的positon</span></span><br><span class="line">    <span class="comment">// 2 从下往上填充</span></span><br><span class="line">    <span class="comment">// 3 从上往下填充</span></span><br><span class="line">    <span class="comment">// 4 滚动已满足 步骤2、3 的要求</span></span><br><span class="line">     </span><br><span class="line">    <span class="keyword">if</span> (!mAnchorInfo.mValid || mPendingScrollPosition != NO_POSITION</span><br><span class="line">                  || mPendingSavedState != <span class="keyword">null</span>) &#123;</span><br><span class="line">              mAnchorInfo.reset();</span><br><span class="line">              mAnchorInfo.mLayoutFromEnd = mShouldReverseLayout ^ mStackFromEnd;</span><br><span class="line">              <span class="comment">// calculate anchor position and coordinate</span></span><br><span class="line">              <span class="comment">//更新锚点信息</span></span><br><span class="line">              updateAnchorInfoForLayout(recycler, state, mAnchorInfo);</span><br><span class="line">              mAnchorInfo.mValid = <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> () &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    onAnchorReady(recycler, state, mAnchorInfo, firstLayoutDirection);</span><br><span class="line">  	<span class="comment">//先把所有的child 暂时detach</span></span><br><span class="line">    detachAndScrapAttachedViews(recycler);</span><br><span class="line">    mLayoutState.mInfinite = resolveIsInfinite();</span><br><span class="line">    mLayoutState.mIsPreLayout = state.isPreLayout();</span><br><span class="line">    <span class="keyword">if</span> (mAnchorInfo.mLayoutFromEnd) &#123;</span><br><span class="line">        <span class="comment">// fill towards start</span></span><br><span class="line">        updateLayoutStateToFillStart(mAnchorInfo);</span><br><span class="line">        mLayoutState.mExtra = extraForStart;</span><br><span class="line">      	<span class="comment">//实际操作还是在fill里</span></span><br><span class="line">        fill(recycler, mLayoutState, state, <span class="keyword">false</span>);</span><br><span class="line">        startOffset = mLayoutState.mOffset;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> firstElement = mLayoutState.mCurrentPosition;</span><br><span class="line">        <span class="keyword">if</span> (mLayoutState.mAvailable &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            extraForEnd += mLayoutState.mAvailable;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// fill towards end</span></span><br><span class="line">        updateLayoutStateToFillEnd(mAnchorInfo);</span><br><span class="line">        mLayoutState.mExtra = extraForEnd;</span><br><span class="line">        mLayoutState.mCurrentPosition += mLayoutState.mItemDirection;</span><br><span class="line">        fill(recycler, mLayoutState, state, <span class="keyword">false</span>);</span><br><span class="line">        endOffset = mLayoutState.mOffset;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mLayoutState.mAvailable &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// end could not consume all. add more items towards start</span></span><br><span class="line">            extraForStart = mLayoutState.mAvailable;</span><br><span class="line">            updateLayoutStateToFillStart(firstElement, startOffset);</span><br><span class="line">            mLayoutState.mExtra = extraForStart;</span><br><span class="line">            fill(recycler, mLayoutState, state, <span class="keyword">false</span>);</span><br><span class="line">            startOffset = mLayoutState.mOffset;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fill</span><span class="params">(RecyclerView.Recycler recycler, LayoutState layoutState,</span></span></span><br><span class="line"><span class="function"><span class="params">        RecyclerView.State state, <span class="keyword">boolean</span> stopOnFocusable)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// max offset we should set is mFastScroll + available</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> start = layoutState.mAvailable;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">int</span> remainingSpace = layoutState.mAvailable + layoutState.mExtra;</span><br><span class="line">    LayoutChunkResult layoutChunkResult = mLayoutChunkResult;</span><br><span class="line">    <span class="keyword">while</span> ((layoutState.mInfinite || remainingSpace &gt; <span class="number">0</span>) &amp;&amp; layoutState.hasMore(state)) &#123;</span><br><span class="line">        <span class="comment">//result</span></span><br><span class="line">        layoutChunkResult.resetInternal();</span><br><span class="line">        <span class="comment">//layoutChunk</span></span><br><span class="line">        layoutChunk(recycler, state, layoutState, layoutChunkResult);</span><br><span class="line">        <span class="comment">//计算已消耗的</span></span><br><span class="line">        layoutState.mOffset += layoutChunkResult.mConsumed * layoutState.mLayoutDirection;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> start - layoutState.mAvailable;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">layoutChunk</span><span class="params">(RecyclerView.Recycler recycler, RecyclerView.State state,</span></span></span><br><span class="line"><span class="function"><span class="params">            LayoutState layoutState, LayoutChunkResult result)</span> </span>&#123;</span><br><span class="line">        View view = layoutState.next(recycler);</span><br><span class="line">  </span><br><span class="line">        LayoutParams params = (LayoutParams) view.getLayoutParams();</span><br><span class="line">        <span class="keyword">if</span> (layoutState.mScrapList == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mShouldReverseLayout == (layoutState.mLayoutDirection</span><br><span class="line">                    == LayoutState.LAYOUT_START)) &#123;</span><br><span class="line">                addView(view);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            		<span class="comment">//① addview</span></span><br><span class="line">                addView(view, <span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">  			<span class="comment">//② measure</span></span><br><span class="line">        measureChildWithMargins(view, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        result.mConsumed = mOrientationHelper.getDecoratedMeasurement(view);</span><br><span class="line">       </span><br><span class="line">  			<span class="comment">//③ layout</span></span><br><span class="line">        layoutDecoratedWithMargins(view, left, top, right, bottom);</span><br><span class="line"> </span><br><span class="line">        result.mFocusable = view.hasFocusable();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Layout"><a href="#Layout" class="headerlink" title="Layout"></a>Layout</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    dispatchLayout();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatchLayout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mState.mIsMeasuring = <span class="keyword">false</span>;</span><br><span class="line">  			<span class="comment">//如果之前measure的时候 specMode都是EXCATLY的话  会在measure中完成layout 并改变Step值 所以这里会被跳过 直接到 dispatchLayoutStep3()</span></span><br><span class="line">        <span class="keyword">if</span> (mState.mLayoutStep == State.STEP_START) &#123;</span><br><span class="line">            dispatchLayoutStep1();</span><br><span class="line">            mLayout.setExactMeasureSpecsFrom(<span class="keyword">this</span>);</span><br><span class="line">            dispatchLayoutStep2();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mAdapterHelper.hasUpdates() || mLayout.getWidth() != getWidth()</span><br><span class="line">                || mLayout.getHeight() != getHeight()) &#123;</span><br><span class="line">            <span class="comment">// size changed 重新搞一下</span></span><br><span class="line">            mLayout.setExactMeasureSpecsFrom(<span class="keyword">this</span>);</span><br><span class="line">            dispatchLayoutStep2();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// always make sure we sync them (to ensure mode is exact)</span></span><br><span class="line">            mLayout.setExactMeasureSpecsFrom(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        dispatchLayoutStep3();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The final step of the layout where we save the information about views for animations,</span></span><br><span class="line"><span class="comment">     * trigger animations and do any necessary cleanup.</span></span><br><span class="line"><span class="comment">     动画相关  忽略</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchLayoutStep3</span><span class="params">()</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Tangram"><a href="#Tangram" class="headerlink" title="Tangram"></a>Tangram</h1><h2 id="HelloTangram"><a href="#HelloTangram" class="headerlink" title="HelloTangram"></a>HelloTangram</h2><p>根据<a href="http://tangram.pingguohe.net/docs/android/develop-component" target="_blank" rel="noopener">官方给的接入指南</a>，写了个最简单的demo，封装了基础的Activity，建议先过一遍官方demo。</p>
+<p><strong>自定义的view</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestView1</span> <span class="keyword">extends</span> <span class="title">FrameLayout</span> <span class="keyword">implements</span> <span class="title">ITangramViewLifeCycle</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> TextView textView;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestView1</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestView1</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestView1</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        inflate(getContext(), R.layout.item, <span class="keyword">this</span>);</span><br><span class="line">        textView = findViewById(R.id.title);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cellInited</span><span class="params">(BaseCell cell)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postBindView</span><span class="params">(BaseCell cell)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//在绑定数据时，从json中拿具体数据</span></span><br><span class="line">        textView.setText((String) cell.optParam(<span class="string">"msg"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postUnBindView</span><span class="params">(BaseCell cell)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Activity</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">L1Activity</span> <span class="keyword">extends</span> <span class="title">CommonActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TYPE_TEST_VIEW_1 = <span class="string">"TestView1"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doBuilderRegister</span><span class="params">(TangramBuilder.InnerBuilder builder)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//需要注册自定义的View 否则解析的时候找不到</span></span><br><span class="line">        builder.registerCell(TYPE_TEST_VIEW_1, TestView1.class);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doEngineRegister</span><span class="params">(TangramEngine engine)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDataName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"data_1.json"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@CreateDate</span>: 2018/12/26 下午3:30</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: Lewis Weng</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 封装的base类，让所有的使用Tangram的子类都继承这个，</span></span><br><span class="line"><span class="comment"> * 使用同样的layout，不同的行为定义为抽象方法交给子类。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    RecyclerView recyclerView;</span><br><span class="line">    TangramBuilder.InnerBuilder builder;</span><br><span class="line">    TangramEngine engine;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(getLayoutId());</span><br><span class="line">        recyclerView = findViewById(R.id.rv_main);</span><br><span class="line"></span><br><span class="line">        initView();</span><br><span class="line">        <span class="comment">//初始化 TangramBuilder</span></span><br><span class="line">        builder = TangramBuilder.newInnerBuilder(<span class="keyword">this</span>);</span><br><span class="line">        doBuilderRegister(builder);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//构造engine</span></span><br><span class="line">        engine = builder.build();</span><br><span class="line">        doEngineRegister(engine);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//绑定</span></span><br><span class="line">        engine.bindView(recyclerView);</span><br><span class="line"></span><br><span class="line">        String json = <span class="keyword">new</span> String(AssetUtil.getAssertsFile(<span class="keyword">this</span>, getDataName()));</span><br><span class="line">        JSONArray data = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            data = <span class="keyword">new</span> JSONArray(json);</span><br><span class="line">            engine.setData(data);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JSONException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getLayoutId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> R.layout.activity_common;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//给子类提供一个hook点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RecyclerView <span class="title">getRecyclerView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> recyclerView;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TangramEngine <span class="title">getEngine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> engine;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//抽象出所有builder注册行为交给子类实现</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doBuilderRegister</span><span class="params">(TangramBuilder.InnerBuilder builder)</span></span>;</span><br><span class="line">    <span class="comment">//抽象出所有engine注册行为交给子类实现</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doEngineRegister</span><span class="params">(TangramEngine engine)</span></span>;</span><br><span class="line">    <span class="comment">//简单的返回每个子类需要解析的Json文件</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getDataName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        <span class="keyword">if</span> (engine != <span class="keyword">null</span>) &#123;</span><br><span class="line">            engine.destroy();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>json文件:data_1.json</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"TestView1"</span>,</span><br><span class="line">    <span class="attr">"msg"</span>: <span class="string">"Hello Tangram"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="Builder"><a href="#Builder" class="headerlink" title="Builder"></a>Builder</h2><p>逐行跟进，先看看<code>TangramBuilder.newInnerBuilder(context)</code>做了什么，以及这个builder是干嘛的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> InnerBuilder <span class="title">newInnerBuilder</span><span class="params">(@NonNull <span class="keyword">final</span> Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!TangramBuilder.isInitialized()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Tangram must be init first"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DefaultResolverRegistry registry = <span class="keyword">new</span> DefaultResolverRegistry();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// install default cards &amp; mCells</span></span><br><span class="line">    installDefaultRegistry(registry);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> InnerBuilder(context, registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="DefaultResolverRegistry"><a href="#DefaultResolverRegistry" class="headerlink" title="DefaultResolverRegistry"></a>DefaultResolverRegistry</h3><p>看命名就知道是个负责分解注册的集合类。几个成员如下，先有个印象，后续用到再来分析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultResolverRegistry</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> CardResolver mDefaultCardResolver = <span class="keyword">new</span> CardResolver();</span><br><span class="line">    <span class="keyword">final</span> BaseCellBinderResolver mDefaultCellBinderResolver;</span><br><span class="line">    <span class="keyword">final</span> BaseCardBinderResolver mDefaultCardBinderResolver;</span><br><span class="line">    ConcurrentHashMap&lt;String, ViewHolderCreator&gt; viewHolderMap;</span><br><span class="line">    MVHelper mMVHelper;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="installDefaultRegistry"><a href="#installDefaultRegistry" class="headerlink" title="installDefaultRegistry"></a>installDefaultRegistry</h3><p>负责初始化一些built-in的card和cell类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">installDefaultRegistry</span><span class="params">(@NonNull <span class="keyword">final</span> DefaultResolverRegistry registry)</span> </span>&#123;</span><br><span class="line">    MVHelper mvHelper = <span class="keyword">new</span> MVHelper(<span class="keyword">new</span> MVResolver());</span><br><span class="line">    registry.setMVHelper(mvHelper);</span><br><span class="line">    <span class="comment">// built-in mCells</span></span><br><span class="line">    registry.registerCell(TYPE_CONTAINER_SCROLL, LinearScrollView.class);</span><br><span class="line">    <span class="comment">// built-in cards</span></span><br><span class="line">    registry.registerCard(TYPE_CAROUSEL_COMPACT, BannerCard.class);</span><br><span class="line">    <span class="comment">// 省略一堆 registerCell 和 registerCard</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>既然这里用到了，就跟进看看MVResolver和MVHelper是啥吧。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MVResolver</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;String, Class&lt;? extends View&gt;&gt; typeViewMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;String, Class&lt;? extends BaseCell&gt;&gt; typeCellMap = <span class="keyword">new</span> ConcurrentHashMap(<span class="number">64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;String, Card&gt; idCardMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;BaseCell, View&gt; mvMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;View, BaseCell&gt; vmMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ServiceManager mServiceManager;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据成员和方法，不难看出是个维护 model-view 映射关系的类，内置了一些默认的json文件的key值，如type、style和id等等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MVHelper</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Tangram-MVHelper"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MVResolver mvResolver; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> VafContext mVafContext; <span class="comment">//Tangram依赖的VirtualView框架的上下文 暂不管</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;BaseCell, ConcurrentHashMap&lt;Method, Object&gt;&gt; methodMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;Class, Method[]&gt; methodCacheMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;BaseCell, Method&gt; postBindMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;BaseCell, Method&gt; postUnBindMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">private</span> ConcurrentHashMap&lt;BaseCell, Method&gt; cellInitedMap = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">128</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MVHelper就是对MVResolver的封装，是个helper类嘛。让用户有了在MVResolver建立model-view映射关系时，hook的能力，比如通过<code>cell.serviceManager.getService</code>来通知用户自定义的Support类（见mountView方法）。</p>
+<h3 id="DefaultResolverRegistry-registerCell"><a href="#DefaultResolverRegistry-registerCell" class="headerlink" title="DefaultResolverRegistry.registerCell"></a>DefaultResolverRegistry.registerCell</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;V extends View&gt; <span class="function"><span class="keyword">void</span> <span class="title">registerCell</span><span class="params">(String type, <span class="keyword">final</span> @NonNull Class&lt;V&gt; viewClz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (viewHolderMap.get(type) == <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDefaultCellBinderResolver.register(type, <span class="keyword">new</span> BaseCellBinder&lt;&gt;(viewClz, mMVHelper));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDefaultCellBinderResolver.register(type, <span class="keyword">new</span> BaseCellBinder&lt;ViewHolderCreator.ViewHolder, V&gt;(viewHolderMap.get(type),</span><br><span class="line">            mMVHelper));</span><br><span class="line">    &#125;</span><br><span class="line">    mMVHelper.resolver().register(type, viewClz);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>viewHolderMap存的是用户传入的自定义ViewHolder，一般没有，上述方法最后做的就是把type和viewClz存到对应的map里</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mMap.put(gen, type);<span class="comment">//BaseReslover.class</span></span><br><span class="line">mSparseArray.put(type, gen);<span class="comment">//BaseReslover.class</span></span><br><span class="line">typeViewMap.put(type, viewClazz); <span class="comment">//MVReslover.class</span></span><br></pre></td></tr></table></figure>
+<p>registerCard同理。</p>
+<h3 id="InnerBuilder"><a href="#InnerBuilder" class="headerlink" title="InnerBuilder"></a>InnerBuilder</h3><p>分析完上面几个类，再回归正题，InnerBuilder这个类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">InnerBuilder</span><span class="params">(@NonNull <span class="keyword">final</span> Context context, DefaultResolverRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mContext = context;</span><br><span class="line">    <span class="keyword">this</span>.mDefaultResolverRegistry = registry;</span><br><span class="line">    mMVHelper = registry.getMVHelper();</span><br><span class="line">    mMVResolver = mMVHelper.resolver();</span><br><span class="line">    mPojoAdapterBuilder = <span class="keyword">new</span> PojoAdapterBuilder();</span><br><span class="line">    mDataParser = <span class="keyword">new</span> PojoDataParser();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看做一个代理类了，封装了上面几个成员的各种方法。用到再说。</p>
+<h2 id="Engine"><a href="#Engine" class="headerlink" title="Engine"></a>Engine</h2><p>进入到InnerBuilder的build方法看下是怎么构造TangramEngine的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TangramEngine <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    TangramEngine tangramEngine =</span><br><span class="line">        <span class="keyword">new</span> TangramEngine(mContext, mDataParser, mPojoAdapterBuilder);</span><br><span class="line"></span><br><span class="line">    tangramEngine.setPerformanceMonitor(mPerformanceMonitor);</span><br><span class="line">    <span class="comment">// register service with default services</span></span><br><span class="line">    tangramEngine.register(MVHelper.class, mMVHelper);</span><br><span class="line">    tangramEngine</span><br><span class="line">        .register(CardResolver.class, mDefaultResolverRegistry.mDefaultCardResolver);</span><br><span class="line">    tangramEngine.register(BaseCellBinderResolver.class,</span><br><span class="line">        mDefaultResolverRegistry.mDefaultCellBinderResolver);</span><br><span class="line">    tangramEngine.register(BaseCardBinderResolver.class,</span><br><span class="line">        mDefaultResolverRegistry.mDefaultCardBinderResolver);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// add other features service</span></span><br><span class="line">    tangramEngine.register(TimerSupport.class, <span class="keyword">new</span> TimerSupport());</span><br><span class="line">    tangramEngine.register(BusSupport.class, <span class="keyword">new</span> BusSupport());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// add virtual view context</span></span><br><span class="line">    VafContext mVafContext = <span class="keyword">new</span> VafContext(mContext.getApplicationContext());</span><br><span class="line">    ViewManager mViewManager = mVafContext.getViewManager();</span><br><span class="line">    mViewManager.init(mContext.getApplicationContext());</span><br><span class="line">    tangramEngine.register(ViewManager.class, mViewManager);</span><br><span class="line">    tangramEngine.register(VafContext.class, mVafContext);</span><br><span class="line">    mMVHelper.setVafContext(mVafContext);</span><br><span class="line"></span><br><span class="line">    mMVResolver.setServiceManager(tangramEngine);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(callback != <span class="keyword">null</span>)&#123;</span><br><span class="line">        callback.onBuild(tangramEngine);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tangramEngine;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="TangramEngine"><a href="#TangramEngine" class="headerlink" title="TangramEngine"></a>TangramEngine</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TangramEngine</span><span class="params">(<span class="comment">/*...*/</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(context, dataParser, adapterBuilder);</span><br><span class="line">    <span class="keyword">this</span>.register(DataParser.class, dataParser);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BaseTangramEngine</span><span class="params">(<span class="keyword">final</span> Context context,</span></span></span><br><span class="line"><span class="function"><span class="params">     <span class="keyword">final</span> DataParser&lt;O, T, C, L&gt; dataParser,</span></span></span><br><span class="line"><span class="function"><span class="params">     <span class="keyword">final</span> IAdapterBuilder&lt;C, L&gt; adapterBuilder)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.mContext = context;</span><br><span class="line">    <span class="keyword">this</span>.mLayoutManager = <span class="keyword">new</span> VirtualLayoutManager(mContext);</span><br><span class="line">    <span class="keyword">this</span>.mLayoutManager.setLayoutViewFactory(<span class="keyword">new</span> LayoutViewFactory() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> View <span class="title">generateLayoutView</span><span class="params">(@NonNull Context context)</span> </span>&#123;</span><br><span class="line">            ImageView imageView = ImageUtils.createImageInstance(context);</span><br><span class="line">            <span class="keyword">return</span> imageView != <span class="keyword">null</span> ? imageView : <span class="keyword">new</span> View(context);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看看那Base类的成员</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//跟上面Registry一样的class与obj的键值对，保存注册的service</span></span><br><span class="line"><span class="keyword">private</span> ConcurrentHashMap&lt;Class&lt;?&gt;, Object&gt; mServices = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="meta">@NonNull</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Context mContext;</span><br><span class="line"><span class="comment">//tangram核心 recyclerView</span></span><br><span class="line"><span class="keyword">private</span> RecyclerView mContentView;</span><br><span class="line"><span class="comment">//v-layout相关</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> VirtualLayoutManager mLayoutManager;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> GroupBasicAdapter&lt;C, L&gt; mGroupBasicAdapter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> DataParser&lt;O, T, C, L&gt; mDataParser;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> IAdapterBuilder&lt;C, L&gt; mAdapterBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> PerformanceMonitor mPerformanceMonitor;</span><br></pre></td></tr></table></figure>
+<p>register方法也就是将clz与obj保存起来，方便后续使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;S&gt; <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(@NonNull Class&lt;S&gt; type, @NonNull S service)</span> </span>&#123;</span><br><span class="line">    mServices.put(type, type.cast(service));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="setData"><a href="#setData" class="headerlink" title="setData"></a>setData</h2><p>demo中，数据流的进入通过TangramEngine的setData方法，有了上面的基础，我们现在跟进去看看。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(@Nullable JSONArray data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.setData(data);</span><br><span class="line">    loadFirstPageCard();<span class="comment">//这个不重要 没有自定义loadSupport的时候无视即可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(@Nullable T data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//第二个参数传入的serviceManager是this，即engine本身</span></span><br><span class="line">    List&lt;C&gt; cards = mDataParser.parseGroup(data, <span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">this</span>.setData(cards);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="parse"><a href="#parse" class="headerlink" title="parse"></a>parse</h3><p>由之前的分析，Engine中的mDataParser是由Builder传入的，是在其构造函数中new的PojoDataParser实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//PojoDataParser.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Card&gt; <span class="title">parseGroup</span><span class="params">(@NonNull JSONArray data, @NonNull <span class="keyword">final</span> ServiceManager serviceManager)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> CardResolver cardResolver = serviceManager.getService(CardResolver.class);</span><br><span class="line">    <span class="keyword">final</span> MVHelper cellResolver = serviceManager.getService(MVHelper.class);</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> size = data.length();</span><br><span class="line">    <span class="keyword">final</span> List&lt;Card&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;(size);<span class="comment">//json转card的结果保存</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        JSONObject cardData = data.optJSONObject(i); <span class="comment">//取出每个card数据</span></span><br><span class="line">        <span class="keyword">final</span> Card card = parseSingleGroup(cardData, serviceManager);<span class="comment">//解析card</span></span><br><span class="line">        <span class="keyword">if</span> (card != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (card <span class="keyword">instanceof</span> IDelegateCard) &#123;</span><br><span class="line">                List&lt;Card&gt; cards = ((IDelegateCard) card).getCards(<span class="keyword">new</span> CardResolver() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> Card <span class="title">create</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">                        Card c = cardResolver.create(type);</span><br><span class="line">                        c.serviceManager = serviceManager;</span><br><span class="line">                        c.id = card.id;</span><br><span class="line">                        c.setStringType(type);</span><br><span class="line">                        c.rowId = card.rowId;</span><br><span class="line">                        <span class="keyword">return</span> c;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">for</span> (Card c : cards) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (c.isValid()) &#123;</span><br><span class="line">                        result.add(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                result.add(card);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cellResolver.resolver().setCards(result);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Card <span class="title">parseSingleGroup</span><span class="params">(@Nullable JSONObject data, <span class="keyword">final</span> ServiceManager serviceManager)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> CardResolver cardResolver = serviceManager.getService(CardResolver.class);</span><br><span class="line">    <span class="keyword">final</span> MVHelper cellResolver = serviceManager.getService(MVHelper.class);</span><br><span class="line">    <span class="keyword">final</span> String cardType = data.optString(Card.KEY_TYPE);</span><br><span class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(cardType)) &#123;</span><br><span class="line">        <span class="keyword">final</span> Card card = cardResolver.create(cardType);<span class="comment">//根据类型创建card</span></span><br><span class="line">        <span class="keyword">if</span> (card != <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="comment">/*解析数据*/</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">/*解析数据*/</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LogUtils.w(TAG, <span class="string">"Invalid card type when parse JSON data"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Card.NaN;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//CardResolver 父类 ClassResolver</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">create</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">    Class&lt;? extends T&gt; clz = mSparseArray.get(type);</span><br><span class="line">    <span class="keyword">if</span> (clz != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> clz.newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看到没，直接从mSparseArray中取。这个mSparseArray就是前面Builder.registerCell和Card的时候存到BaseResolver里的那个mSparseArray。</p>
+<p>解析完所有card之后，调用engine自己的setData方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(@Nullable List&lt;C&gt; data)</span> </span>&#123;</span><br><span class="line">    MVHelper mvHelper = (MVHelper) mServices.get(MVHelper.class);</span><br><span class="line">    <span class="keyword">if</span> (mvHelper != <span class="keyword">null</span>)</span><br><span class="line">        mvHelper.reset();<span class="comment">//reset</span></span><br><span class="line">    <span class="keyword">this</span>.mGroupBasicAdapter.setData(data);<span class="comment">//设置List&lt;Card&gt;进去，下面load时会用到就是了 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="load"><a href="#load" class="headerlink" title="load"></a>load</h3><p>解析完成，就要加载了。回到上面的setData中的this.setData看看。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(@Nullable List&lt;C&gt; data)</span> </span>&#123;</span><br><span class="line">        MVHelper mvHelper = (MVHelper) mServices.get(MVHelper.class);</span><br><span class="line">        <span class="keyword">if</span> (mvHelper != <span class="keyword">null</span>)</span><br><span class="line">            mvHelper.reset();</span><br><span class="line">    <span class="comment">//这里的adpater也是builder传入engine的PojoAdapterBuilder.newAdapter返回值</span></span><br><span class="line">    <span class="comment">//即 PojoGroupBasicAdapter</span></span><br><span class="line">        <span class="keyword">this</span>.mGroupBasicAdapter.setData(data);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//GroupBasicAdapter.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(@Nullable List&lt;L&gt; cards, <span class="keyword">boolean</span> silence)</span> </span>&#123;</span><br><span class="line">    createSnapshot();</span><br><span class="line"></span><br><span class="line">    mCards.clear();</span><br><span class="line">    mData.clear();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cards != <span class="keyword">null</span> &amp;&amp; cards.size() != <span class="number">0</span>) &#123;</span><br><span class="line">        mCards.ensureCapacity(cards.size());</span><br><span class="line">        setLayoutHelpers(transformCards(cards, mData, mCards)); <span class="comment">//跟进,暂时忽略transformCards生成layoutHelper过程</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        setLayoutHelpers(Collections.&lt;LayoutHelper&gt;emptyList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    diffWithSnapshot();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!silence)</span><br><span class="line">        notifyDataSetChanged();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用setLayoutHelpers 就正式进入Vlayout的世界了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">VirtualLayoutAdapter</span>&lt;<span class="title">VH</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">VH</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="keyword">protected</span> VirtualLayoutManager mLayoutManager;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">VirtualLayoutAdapter</span><span class="params">(@NonNull VirtualLayoutManager layoutManager)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.mLayoutManager = layoutManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLayoutHelpers</span><span class="params">(List&lt;LayoutHelper&gt; helpers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.mLayoutManager.setLayoutHelpers(helpers);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;LayoutHelper&gt; <span class="title">getLayoutHelpers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mLayoutManager.getLayoutHelpers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="V-layout的世界"><a href="#V-layout的世界" class="headerlink" title="V-layout的世界"></a>V-layout的世界</h2><p>官方使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAdapter</span> <span class="keyword">extends</span> <span class="title">VirtualLayoutAdapter</span> </span>&#123;</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyAdapter myAdapter = <span class="keyword">new</span> MyAdapter(layoutManager);</span><br><span class="line"></span><br><span class="line"><span class="comment">//create layoutHelper list</span></span><br><span class="line">List&lt;LayoutHelper&gt; helpers = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">GridLayoutHelper gridLayoutHelper = <span class="keyword">new</span> GridLayoutHelper(<span class="number">4</span>);</span><br><span class="line">gridLayoutHelper.setItemCount(<span class="number">25</span>);</span><br><span class="line">helpers.add(gridLayoutHelper);</span><br><span class="line"></span><br><span class="line">GridLayoutHelper gridLayoutHelper2 = <span class="keyword">new</span> GridLayoutHelper(<span class="number">2</span>);</span><br><span class="line">gridLayoutHelper2.setItemCount(<span class="number">25</span>);</span><br><span class="line">helpers.add(gridLayoutHelper2);</span><br><span class="line"></span><br><span class="line"><span class="comment">//set layoutHelper list to adapter</span></span><br><span class="line">myAdapter.setLayoutHelpers(helpers);</span><br><span class="line"></span><br><span class="line"><span class="comment">//set adapter to recyclerView		</span></span><br><span class="line">recycler.setAdapter(myAdapter);</span><br></pre></td></tr></table></figure>
+<h3 id="从RecyclerView说起"><a href="#从RecyclerView说起" class="headerlink" title="从RecyclerView说起"></a>从RecyclerView说起</h3><p>LayoutManager在measure和layout中扮演的角色</p>
+<p>Adapter又起到什么作用</p>
+<p>Vlayout是如何介入的</p>
+<h3 id="VirtualLayoutManager"><a href="#VirtualLayoutManager" class="headerlink" title="VirtualLayoutManager"></a>VirtualLayoutManager</h3><p>VirtualLayoutManager继承自ExposeLinearLayoutManagerEx继承自LinearLayoutManager</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ExposeLinearLayoutManagerEx is used to expose layoutChunk method</span><br><span class="line">a valid class technically</span><br></pre></td></tr></table></figure>
+<p>结合RecyclerView和LayoutManager流程，就可以知道VirtualLayout是在layoutChunk中动了手脚，把layout行为分发出去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">layoutChunk</span><span class="params">(RecyclerView.Recycler recycler, </span></span></span><br><span class="line"><span class="function"><span class="params">                           RecyclerView.State state, </span></span></span><br><span class="line"><span class="function"><span class="params">                           LayoutState layoutState, </span></span></span><br><span class="line"><span class="function"><span class="params">                           LayoutChunkResult result)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    LayoutHelper layoutHelper = mHelperFinder == <span class="keyword">null</span> ? <span class="keyword">null</span> : mHelperFinder.getLayoutHelper(position);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (layoutHelper == <span class="keyword">null</span>)</span><br><span class="line">        layoutHelper = mDefaultLayoutHelper;</span><br><span class="line"></span><br><span class="line">    layoutHelper.doLayout(recycler, state, mTempLayoutStateWrapper, result, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由此可见，我们是可以自己写LayoutHelper来实现自己的view的layout过程</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://blog.csdn.net/qq_23012315/article/details/50807224" target="_blank" rel="noopener">https://blog.csdn.net/qq_23012315/article/details/50807224</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/View/" rel="tag"># View</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/27/ViewRootImpl与Activity/" rel="next" title="ViewRootImpl与Activity">
+                <i class="fa fa-chevron-left"></i> ViewRootImpl与Activity
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image" src="https://avatars1.githubusercontent.com/u/19483597?s=460&v=4" alt="Lewis">
+          
+            <p class="site-author-name" itemprop="name">Lewis</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Fellows
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dawning7670.github.io/" title="蛋硬" target="_blank">蛋硬</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://eovie.cn" title="阿有阝" target="_blank">阿有阝</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Measure"><span class="nav-number">1.</span> <span class="nav-text">Measure</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mLayout-onMeasure"><span class="nav-number">1.1.</span> <span class="nav-text">mLayout.onMeasure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatchLayoutStep1"><span class="nav-number">1.2.</span> <span class="nav-text">dispatchLayoutStep1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatchLayoutStep2"><span class="nav-number">1.3.</span> <span class="nav-text">dispatchLayoutStep2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mLayout-onLayoutChildren"><span class="nav-number">1.4.</span> <span class="nav-text">mLayout.onLayoutChildren</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Layout"><span class="nav-number">2.</span> <span class="nav-text">Layout</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tangram"><span class="nav-number">3.</span> <span class="nav-text">Tangram</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HelloTangram"><span class="nav-number">3.1.</span> <span class="nav-text">HelloTangram</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Builder"><span class="nav-number">3.2.</span> <span class="nav-text">Builder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultResolverRegistry"><span class="nav-number">3.2.1.</span> <span class="nav-text">DefaultResolverRegistry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#installDefaultRegistry"><span class="nav-number">3.2.2.</span> <span class="nav-text">installDefaultRegistry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultResolverRegistry-registerCell"><span class="nav-number">3.2.3.</span> <span class="nav-text">DefaultResolverRegistry.registerCell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnerBuilder"><span class="nav-number">3.2.4.</span> <span class="nav-text">InnerBuilder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Engine"><span class="nav-number">3.3.</span> <span class="nav-text">Engine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TangramEngine"><span class="nav-number">3.3.1.</span> <span class="nav-text">TangramEngine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setData"><span class="nav-number">3.4.</span> <span class="nav-text">setData</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#parse"><span class="nav-number">3.4.1.</span> <span class="nav-text">parse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#load"><span class="nav-number">3.4.2.</span> <span class="nav-text">load</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V-layout的世界"><span class="nav-number">3.5.</span> <span class="nav-text">V-layout的世界</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从RecyclerView说起"><span class="nav-number">3.5.1.</span> <span class="nav-text">从RecyclerView说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualLayoutManager"><span class="nav-number">3.5.2.</span> <span class="nav-text">VirtualLayoutManager</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 &mdash; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lewis</span>
+
+ 
+  
+
+	
+</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

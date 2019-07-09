@@ -4,6 +4,68 @@
 
     
   <url>
+    <loc>http://yoursite.com/2018/02/22/Okhttp%E5%92%8CRetrofit/</loc>
+    <lastmod>2019-07-08T08:37:27.765Z</lastmod>
+    <data>
+        <display>
+        <title>Retrofit与OkHttp学习</title>
+        <pubTime>2018-02-22T06:15:50.000Z</pubTime>
+        
+        <tag>网络编程</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2019/05/05/gradle-1/</loc>
+    <lastmod>2019-07-07T07:49:49.685Z</lastmod>
+    <data>
+        <display>
+        <title>Gradle构建学习</title>
+        <pubTime>2019-05-05T02:40:22.000Z</pubTime>
+        
+        <tag>Gradle</tag>
+         
+        <tag>Android构建</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2019/07/02/RecyclerView%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2019-07-02T02:36:08.635Z</lastmod>
+    <data>
+        <display>
+        <title>RecyclerView解析与Tangram框架</title>
+        <pubTime>2019-07-02T02:36:07.000Z</pubTime>
+        
+        <tag>View</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2019/06/27/ViewRootImpl%E4%B8%8EActivity/</loc>
     <lastmod>2019-06-27T14:55:31.177Z</lastmod>
     <data>
@@ -23,28 +85,6 @@
     </url>
 
     
-    
-  <url>
-    <loc>http://yoursite.com/2019/05/05/gradle-1/</loc>
-    <lastmod>2019-06-06T07:45:35.779Z</lastmod>
-    <data>
-        <display>
-        <title>Gradle构建学习</title>
-        <pubTime>2019-05-05T02:40:22.000Z</pubTime>
-        
-        <tag>Gradle</tag>
-         
-        <tag>Android构建</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
     
   <url>
     <loc>http://yoursite.com/2019/05/15/%E9%9F%B3%E8%A7%86%E9%A2%91%E4%B8%8EFFmpeg%E5%AD%A6%E4%B9%A0%E6%B1%87%E6%80%BB/</loc>
@@ -119,14 +159,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/04/16/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3/</loc>
+    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
     <lastmod>2019-05-14T09:35:57.950Z</lastmod>
     <data>
         <display>
-        <title>Android和Java多线程学习</title>
-        <pubTime>2018-04-16T07:51:32.000Z</pubTime>
+        <title>RxJava (五)</title>
+        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
         
-        <tag>多线程</tag>
+        <tag>RxJava</tag>
          
          
            
@@ -139,14 +179,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/12/rxjava-5/</loc>
+    <loc>http://yoursite.com/2018/04/16/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3/</loc>
     <lastmod>2019-05-14T09:35:57.950Z</lastmod>
     <data>
         <display>
-        <title>RxJava (五)</title>
-        <pubTime>2018-03-12T02:34:16.000Z</pubTime>
+        <title>Android和Java多线程学习</title>
+        <pubTime>2018-04-16T07:51:32.000Z</pubTime>
         
-        <tag>RxJava</tag>
+        <tag>多线程</tag>
          
          
            
@@ -179,12 +219,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
+    <loc>http://yoursite.com/2017/10/09/rxjava-1/</loc>
     <lastmod>2019-05-14T09:35:57.949Z</lastmod>
     <data>
         <display>
-        <title>RxJava (二)</title>
-        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
+        <title>RxJava (一)</title>
+        <pubTime>2017-10-09T13:59:07.000Z</pubTime>
         
         <tag>RxJava</tag>
          
@@ -199,12 +239,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/09/rxjava-1/</loc>
+    <loc>http://yoursite.com/2017/11/01/rxjava-4/</loc>
     <lastmod>2019-05-14T09:35:57.949Z</lastmod>
     <data>
         <display>
-        <title>RxJava (一)</title>
-        <pubTime>2017-10-09T13:59:07.000Z</pubTime>
+        <title>RxJava (四)</title>
+        <pubTime>2017-11-01T11:21:30.000Z</pubTime>
         
         <tag>RxJava</tag>
          
@@ -241,12 +281,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/01/rxjava-4/</loc>
+    <loc>http://yoursite.com/2017/10/13/rxjava-2/</loc>
     <lastmod>2019-05-14T09:35:57.949Z</lastmod>
     <data>
         <display>
-        <title>RxJava (四)</title>
-        <pubTime>2017-11-01T11:21:30.000Z</pubTime>
+        <title>RxJava (二)</title>
+        <pubTime>2017-10-13T08:44:54.000Z</pubTime>
         
         <tag>RxJava</tag>
          
@@ -281,14 +321,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/10/kotlin-dp-adapter/</loc>
+    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
     <lastmod>2019-05-14T09:35:57.948Z</lastmod>
     <data>
         <display>
-        <title>Kotlin 设计模式—适配器模式</title>
-        <pubTime>2017-10-10T14:32:50.000Z</pubTime>
+        <title>Kotlin空指针安全</title>
+        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
         
-        <tag>设计模式</tag>
+        <tag>Kotlin语法</tag>
          
          
            
@@ -321,14 +361,14 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/09/29/kotlin-nullsafe/</loc>
+    <loc>http://yoursite.com/2017/10/10/kotlin-dp-adapter/</loc>
     <lastmod>2019-05-14T09:35:57.948Z</lastmod>
     <data>
         <display>
-        <title>Kotlin空指针安全</title>
-        <pubTime>2017-09-29T09:03:21.000Z</pubTime>
+        <title>Kotlin 设计模式—适配器模式</title>
+        <pubTime>2017-10-10T14:32:50.000Z</pubTime>
         
-        <tag>Kotlin语法</tag>
+        <tag>设计模式</tag>
          
          
            
@@ -401,26 +441,6 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/25/encrypt/</loc>
-    <lastmod>2019-05-14T09:35:57.946Z</lastmod>
-    <data>
-        <display>
-        <title>RSA/AES加密</title>
-        <pubTime>2017-10-25T08:43:34.000Z</pubTime>
-        
-        <tag>加密</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://yoursite.com/2018/03/18/eventbus%E6%BA%90%E7%A0%81%E8%B5%B0%E8%AF%BB/</loc>
     <lastmod>2019-05-14T09:35:57.946Z</lastmod>
     <data>
@@ -434,6 +454,26 @@
            
              
               <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2017/10/25/encrypt/</loc>
+    <lastmod>2019-05-14T09:35:57.946Z</lastmod>
+    <data>
+        <display>
+        <title>RSA/AES加密</title>
+        <pubTime>2017-10-25T08:43:34.000Z</pubTime>
+        
+        <tag>加密</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -527,19 +567,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/02/23/android-ipc4/</loc>
+    <loc>http://yoursite.com/2017/11/25/baseactivity/</loc>
     <lastmod>2019-05-14T09:35:57.944Z</lastmod>
     <data>
         <display>
-        <title>浅析Android进程间通信（四）</title>
-        <pubTime>2018-02-23T02:13:28.000Z</pubTime>
+        <title>BaseActivity/BaseToolBarActivity</title>
+        <pubTime>2017-11-25T08:05:57.000Z</pubTime>
         
-        <tag>IPC</tag>
+        <tag>Base</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -567,32 +607,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/11/25/baseactivity/</loc>
+    <loc>http://yoursite.com/2018/02/23/android-ipc4/</loc>
     <lastmod>2019-05-14T09:35:57.944Z</lastmod>
     <data>
         <display>
-        <title>BaseActivity/BaseToolBarActivity</title>
-        <pubTime>2017-11-25T08:05:57.000Z</pubTime>
-        
-        <tag>Base</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/11/11/android-ipc3/</loc>
-    <lastmod>2019-05-14T09:35:57.943Z</lastmod>
-    <data>
-        <display>
-        <title>浅析Android进程间通信（三）</title>
-        <pubTime>2017-11-11T09:28:11.000Z</pubTime>
+        <title>浅析Android进程间通信（四）</title>
+        <pubTime>2018-02-23T02:13:28.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -627,12 +647,12 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/19/android-ipc/</loc>
-    <lastmod>2019-05-14T09:35:57.942Z</lastmod>
+    <loc>http://yoursite.com/2017/11/11/android-ipc3/</loc>
+    <lastmod>2019-05-14T09:35:57.943Z</lastmod>
     <data>
         <display>
-        <title>浅析Android进程间通信（一）</title>
-        <pubTime>2017-10-19T12:35:38.000Z</pubTime>
+        <title>浅析Android进程间通信（三）</title>
+        <pubTime>2017-11-11T09:28:11.000Z</pubTime>
         
         <tag>IPC</tag>
          
@@ -667,19 +687,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2017/10/24/and-util-dialog/</loc>
+    <loc>http://yoursite.com/2017/10/19/android-ipc/</loc>
     <lastmod>2019-05-14T09:35:57.942Z</lastmod>
     <data>
         <display>
-        <title>Android Dialog 帮助类</title>
-        <pubTime>2017-10-24T14:08:45.000Z</pubTime>
+        <title>浅析Android进程间通信（一）</title>
+        <pubTime>2017-10-19T12:35:38.000Z</pubTime>
         
-        <tag>Dialog</tag>
+        <tag>IPC</tag>
          
          
            
              
-              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
@@ -707,39 +727,19 @@
 
     
   <url>
-    <loc>http://yoursite.com/2018/03/28/RxJava%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2019-05-14T09:35:57.941Z</lastmod>
+    <loc>http://yoursite.com/2017/10/24/and-util-dialog/</loc>
+    <lastmod>2019-05-14T09:35:57.942Z</lastmod>
     <data>
         <display>
-        <title>RxJava</title>
-        <pubTime>2018-03-28T02:17:06.000Z</pubTime>
+        <title>Android Dialog 帮助类</title>
+        <pubTime>2017-10-24T14:08:45.000Z</pubTime>
         
-        <tag>RxJava</tag>
+        <tag>Dialog</tag>
          
          
            
              
-              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2018/02/22/Okhttp%E5%92%8CRetrofit/</loc>
-    <lastmod>2019-05-14T09:35:57.941Z</lastmod>
-    <data>
-        <display>
-        <title>Retrofit与OkHttp学习</title>
-        <pubTime>2018-02-22T06:15:50.000Z</pubTime>
-        
-        <tag>网络编程</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android框架" url="http://yoursite.com/categories/Android%E6%A1%86%E6%9E%B6/"/>
+              <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
           
         </display>
     </data>
@@ -760,6 +760,26 @@
            
              
               <breadCrumb title="Android代码库" url="http://yoursite.com/categories/Android%E4%BB%A3%E7%A0%81%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/2018/03/28/RxJava%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2019-05-14T09:35:57.941Z</lastmod>
+    <data>
+        <display>
+        <title>RxJava</title>
+        <pubTime>2018-03-28T02:17:06.000Z</pubTime>
+        
+        <tag>RxJava</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://yoursite.com/categories/Android/"/>
           
         </display>
     </data>
